@@ -1,4 +1,7 @@
-﻿using Microsoft.Maui;
+﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
+// Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
+
+using Microsoft.Maui;
 using Microsoft.Maui.Hosting;
 
 // To learn more about WinUI, the WinUI project structure,
@@ -17,7 +20,7 @@ namespace DragonFruit.Six.Client.Maui.WinUI
         /// </summary>
         public App()
         {
-            this.InitializeComponent();
+            InitializeComponent();
         }
 
         protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();

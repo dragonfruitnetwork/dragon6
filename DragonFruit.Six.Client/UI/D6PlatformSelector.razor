@@ -1,5 +1,4 @@
 ﻿@using DragonFruit.Six.Api.Accounts.Enums
-
 <HxDropdownToggleElement ElementName="button" CssClass="btn btn-primary d6-platform-selector" role="button">
     <i class="fa-brands fa-@(_platforms[Platform].icon)"></i>
 </HxDropdownToggleElement>
@@ -15,8 +14,9 @@
 
 
 @code {
-    
+
     private Platform _platform = Platform.PC;
+
     private readonly Dictionary<Platform, (string name, string icon)> _platforms = new()
     {
         [Platform.PC] = ("PC", "windows"),
@@ -32,7 +32,7 @@
         {
             if (value == _platform || !_platforms.ContainsKey(value))
                 return;
-            
+
             _platform = value;
             PlatformChanged.InvokeAsync(value);
         }
