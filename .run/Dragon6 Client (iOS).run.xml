@@ -1,0 +1,8 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Dragon6 Client (iOS)" type="XamarinIOSProject" factoryName="Xamarin.iOS">
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/DragonFruit.Six.Client.Maui/DragonFruit.Six.Client.Maui.csproj" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="IS_PASS_PARENT_ENVS" value="false" />
+    <method v="2" />
+  </configuration>
+</component>
