@@ -1,0 +1,19 @@
+﻿@using DragonFruit.Six.Api.Accounts.Enums
+
+<form @onsubmit="() => OnUserSubmit.InvokeAsync((Username, Platform))">
+    <div class="input-group">
+        <D6PlatformSelector @bind-Platform="Platform"/>
+        <input type="text" @bind="Username" placeholder="Username" class="form-control"/>
+        <HxButton Color="ThemeColor.Success" Text="Search" type="submit"/>
+    </div>
+</form>
+
+@code {
+
+    private Platform Platform { get; set; } = Platform.PC;
+    private string Username { get; set; }
+
+    [Parameter]
+    public EventCallback<(string username, Platform platform)> OnUserSubmit { get; set; }
+
+}

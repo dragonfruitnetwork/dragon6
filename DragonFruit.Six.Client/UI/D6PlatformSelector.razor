@@ -1,0 +1,44 @@
+﻿@using DragonFruit.Six.Api.Accounts.Enums
+
+<HxDropdownToggleElement ElementName="button" CssClass="btn btn-primary d6-platform-selector" role="button">
+    <i class="fa-brands fa-@(_platforms[Platform].icon)"></i>
+</HxDropdownToggleElement>
+<HxDropdownMenu CssClass="dropdown-menu-dark">
+    @foreach (var (id, info) in _platforms)
+    {
+        <HxDropdownItem OnClick="() => Platform = id">
+            <i class="fa-brands fa-@info.icon d6-dropdown-icon"></i>
+            <span>@info.name</span>
+        </HxDropdownItem>
+    }
+</HxDropdownMenu>
+
+
+@code {
+    
+    private Platform _platform = Platform.PC;
+    private readonly Dictionary<Platform, (string name, string icon)> _platforms = new()
+    {
+        [Platform.PC] = ("PC", "windows"),
+        [Platform.PSN] = ("PlayStation", "playstation"),
+        [Platform.XB1] = ("Xbox", "xbox")
+    };
+
+    [Parameter]
+    public Platform Platform
+    {
+        get => _platform;
+        set
+        {
+            if (value == _platform || !_platforms.ContainsKey(value))
+                return;
+            
+            _platform = value;
+            PlatformChanged.InvokeAsync(value);
+        }
+    }
+
+    [Parameter]
+    public EventCallback<Platform> PlatformChanged { get; set; }
+
+}
