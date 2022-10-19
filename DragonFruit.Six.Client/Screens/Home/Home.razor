@@ -1,50 +1,15 @@
 ﻿@page "/"
 @layout CoreLayout
 
+<SearchProvider @ref="_search"/>
+
 <div class="d6-home">
     <D6Header Title="Home"/>
 
     <div class="container d-flex flex-column">
         <h1 class="py-4 mx-auto display-4">Dragon6</h1>
-        <D6Searchbar OnUserSubmit="q => SearchForAccount(q.username, q.platform)"/>
+        <D6Searchbar OnUserSubmit="q => _search.SearchForAccount(q.username, q.platform)"/>
     </div>
 
     <D6Footer/>
 </div>
-
-<HxOffcanvas @ref="_searchOverlay"
-             CloseOnEscape="false"
-             BodyCssClass="bg-dark"
-             HeaderCssClass="d-none"
-             ShowCloseButton="false"
-             Size="OffcanvasSize.Small"
-             CssClass="d6-search-overlay"
-             Backdrop="OffcanvasBackdrop.Static"
-             Placement="OffcanvasPlacement.Bottom">
-    <BodyTemplate>
-        <div class="d-flex align-items-center h-100 gap-4 container">
-            @switch (CurrentState)
-            {
-                case SearchState.Searching:
-                    <HxSpinner Color="@ThemeColor.Success"/>
-                    <span>Searching for account</span>
-                    break;
-
-                case SearchState.Discovered:
-                    <img src="@DiscoveredAccount.Image" alt="" class="d6-search-overlay-avatar"/>
-                    <span>Account Found. Loading <strong>@DiscoveredAccount.Username</strong>...</span>
-                    break;
-
-                case SearchState.NotFound:
-                    <span class="material-icons-round d6-search-overlay-avatar text-danger">error</span>
-                    <span>Account not found. Check the username and give it another go!</span>
-                    break;
-
-                case SearchState.OtherError:
-                    <span class="material-icons-round d6-search-overlay-avatar text-danger">wifi_tethering_error</span>
-                    <span>An unknown error occured. Please try again later...</span>
-                    break;
-            }
-        </div>
-    </BodyTemplate>
-</HxOffcanvas>
