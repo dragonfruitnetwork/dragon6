@@ -1,0 +1,55 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+    
+    <PropertyGroup>
+        <Title>Dragon6</Title>
+        <Product>Dragon6</Product>
+        <Company>DragonFruit Network</Company>
+        <Authors>DragonFruit Network</Authors>
+        <Copyright>Copyright 2022 (C) DragonFruit Network</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0-android;net6.0-ios;net6.0-maccatalyst</TargetFrameworks>
+        <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net6.0-windows10.0.19041.0</TargetFrameworks>
+
+        <UseMaui>true</UseMaui>
+        <OutputType>Exe</OutputType>
+        <SingleProject>true</SingleProject>
+        <WindowsPackageType>None</WindowsPackageType>
+        <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
+
+        <ApplicationTitle>Dragon6</ApplicationTitle>
+        <ApplicationId>com.dragon.six</ApplicationId>
+        <ApplicationIdGuid>83F46F5A-3967-4453-B5AD-00902361F7C1</ApplicationIdGuid>
+
+        <!-- Versions -->
+        <ApplicationVersion>1</ApplicationVersion>
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+        <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
+
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*" />
+        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="Resources\Splash\dragon6.svg">
+        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </Content>
+    </ItemGroup>
+
+</Project>
