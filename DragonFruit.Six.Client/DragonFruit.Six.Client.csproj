@@ -15,7 +15,6 @@
         <Folder Include="Database" />
         <Folder Include="Network" />
         <Folder Include="Overlays" />
-        <Folder Include="wwwroot\assets" />
     </ItemGroup>
 
 </Project>
