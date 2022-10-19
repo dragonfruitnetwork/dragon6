@@ -1,0 +1,12 @@
+﻿.d6-home {
+    height: 100vh;
+    width: 100vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-image: var(--d6-background-overlay), var(--d6-background);
+}
