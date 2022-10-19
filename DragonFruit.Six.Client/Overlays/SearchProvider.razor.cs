@@ -32,10 +32,12 @@ namespace DragonFruit.Six.Client.Overlays
             };
 
             CurrentState = SearchState.Discovered;
-            // await Task.Delay(1000).ConfigureAwait(false);
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+
+            await Task.Delay(2000).ConfigureAwait(false);
 
             // todo redirect to stats page
-            // await _searchOverlay.HideAsync().ConfigureAwait(false);
+            await _searchOverlay.HideAsync().ConfigureAwait(false);
         }
     }
 
