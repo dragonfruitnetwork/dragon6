@@ -58,3 +58,14 @@
     border: solid var(--bs-dark) 10px;
     margin-top: calc(-0.35 * var(--avatar-size));
 }
+
+.d6-search-overlay {
+    max-height: 115px !important;
+}
+
+.d6-search-overlay-avatar {
+    height: max(60px, 80%);
+    width: auto;
+
+    border-radius: 50%;
+}
