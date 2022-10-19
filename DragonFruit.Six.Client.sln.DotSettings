@@ -5,8 +5,7 @@
 	xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 	<s:String x:Key="/Default/CodeInspection/ExcludedFiles/FilesAndFoldersToSkip2/=FF1CA25F_002DA285_002D451D_002DA452_002DE2D665EE644E_002Fd_003ADatabase_002Fd_003AMigrations/@EntryIndexedValue">ExplicitlyExcluded</s:String>
 	<s:Boolean x:Key="/Default/CodeStyle/CodeFormatting/CSharpFormat/WRAP_LINES/@EntryValue">False</s:Boolean>
-	<s:String x:Key="/Default/CodeStyle/FileHeader/FileHeaderText/@EntryValue">Dragon6 Client Copyright (c) DragonFruit Network &lt;inbox@dragonfruit.network&gt;&#xD;
-    Licensed under GNU AGPLv3. Refer to the LICENSE file for more info</s:String>
+	<s:String x:Key="/Default/CodeStyle/FileHeader/FileHeaderText/@EntryValue">Dragon6 Client Copyright (c) DragonFruit Network &lt;inbox@dragonfruit.network&gt;&#xD;Licensed under GNU AGPLv3. Refer to the LICENSE file for more info</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/AnalysisEnabled/@EntryValue">SOLUTION</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ArrangeAccessorOwnerBody/@EntryIndexedValue">WARNING</s:String>
 	<s:String x:Key="/Default/CodeInspection/Highlighting/InspectionSeverities/=ArrangeMissingParentheses/@EntryIndexedValue">WARNING</s:String>
