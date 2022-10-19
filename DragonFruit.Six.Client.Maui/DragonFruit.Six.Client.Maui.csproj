@@ -35,21 +35,11 @@
 
     <ItemGroup>
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
-
-        <!-- Images -->
-        <MauiImage Include="Resources\Images\*" />
-        <MauiImage Update="Resources\Images\dotnet_bot.svg" BaseSize="168,208" />
+        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392"/>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="Resources\Splash\dragon6.svg">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
     </ItemGroup>
 
 </Project>
