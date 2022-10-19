@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-
-namespace DragonFruit.Six.Client.Maui
+﻿namespace DragonFruit.Six.Client.Maui
 {
     public partial class App
     {
