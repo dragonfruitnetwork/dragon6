@@ -1,0 +1,15 @@
+﻿@inherits LayoutComponentBase
+@layout CoreLayout
+
+<CascadingValue Value="@(this)">
+    <D6Header Title="@Title"/>
+    @Body
+    <D6Footer/>
+</CascadingValue>
+
+
+@code {
+
+    public string Title { get; set; }
+
+}
