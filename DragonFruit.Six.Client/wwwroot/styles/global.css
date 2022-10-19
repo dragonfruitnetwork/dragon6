@@ -1,0 +1,106 @@
+﻿:root {
+    --d6-background: url(https://d6static.dragonfruit.network/backgrounds/27.jpg);
+    --d6-background-blur: url(https://d6static.dragonfruit.network/backgrounds/27-b.jpg);
+    --d6-background-overlay: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.7));
+    --d6-background-overlay-text: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4));
+
+    --d6-color-red: #bd1818;
+    --d6-header-margin: 8px 10%;
+}
+
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #bd1818 transparent;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 14px;
+}
+
+*::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+    height: 50px;
+    border-radius: 8px;
+    background-color: #bd1818;
+    background-clip: content-box;
+    border: 4px solid transparent;
+}
+
+body {
+    background-color: var(--bs-dark) !important;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, div, button {
+    font-family: 'Jost', sans-serif;
+    color: #f8f9fa;
+}
+
+a:hover {
+    color: unset !important;
+}
+
+.d6-logo {
+    width: auto;
+    height: 50px;
+    filter: invert(1);
+}
+
+.d6-logo-subtitle {
+    font-size: 20px;
+}
+
+.d6-header-footer {
+    padding: var(--d6-header-margin);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.d6-header-footer--container {
+    display: flex;
+    min-height: 65px;
+    align-items: center;
+}
+
+.d6-header--links {
+    display: flex;
+    user-select: none;
+    margin-right: 20px;
+}
+
+.d6-header--links > * {
+    text-decoration: none;
+    color: unset;
+    padding: 5px;
+    margin: 0 10px;
+}
+
+.d6-header--links > button {
+    background: none;
+    color: inherit;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
+.d6-header--links > button > i {
+    height: 25px;
+}
+
+.d6-dropdown-icon {
+    width: 15px;
+    height: auto;
+    margin-right: .5rem;
+}
+
+.d6-platform-selector {
+    min-width: 50px;
+}

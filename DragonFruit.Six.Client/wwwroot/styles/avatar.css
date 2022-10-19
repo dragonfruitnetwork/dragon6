@@ -1,0 +1,60 @@
+﻿:root {
+    --avatar-size: min(150px, 35vw);
+}
+
+@media screen and (min-width: 768px) {
+    .d6-account-container {
+        margin: var(--d6-header-margin);
+
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+}
+
+@media not screen and (min-width: 768px) {
+    .d6-account-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+.d6-user-card {
+    padding: 0 1rem;
+    border-radius: 5px;
+}
+
+.d6-account-cover, .d6-user-card {
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    background-image: var(--d6-background-blur);
+}
+
+.d6-account-cover {
+    height: calc(475px + 0.5rem);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.d6-account-cover {
+    background-image: var(--d6-background-overlay-text), var(--d6-background-blur);
+}
+
+.d6-account-avatar {
+    width: var(--avatar-size);
+    height: var(--avatar-size);
+
+    border-radius: 50% !important;
+    background-color: var(--bs-dark);
+}
+
+.d6-account-container .d6-account-avatar {
+    border: solid var(--bs-dark) 10px;
+    margin-top: calc(-0.35 * var(--avatar-size));
+}
