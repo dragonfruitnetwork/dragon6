@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragonFruit.Six.Client.Maui
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragonFruit.Six.Client", "DragonFruit.Six.Client\DragonFruit.Six.Client.csproj", "{CA1997DD-BF9B-4A5F-B0F5-CD189DA97CCA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DragonFruit.Six.Client.WebServer", "DragonFruit.Six.Client.WebServer\DragonFruit.Six.Client.WebServer.csproj", "{B0A5922A-DAA8-435B-AE86-417DC65F355B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{CA1997DD-BF9B-4A5F-B0F5-CD189DA97CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA1997DD-BF9B-4A5F-B0F5-CD189DA97CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA1997DD-BF9B-4A5F-B0F5-CD189DA97CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0A5922A-DAA8-435B-AE86-417DC65F355B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0A5922A-DAA8-435B-AE86-417DC65F355B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0A5922A-DAA8-435B-AE86-417DC65F355B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0A5922A-DAA8-435B-AE86-417DC65F355B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
