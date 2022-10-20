@@ -17,8 +17,8 @@
                     break;
 
                 case SearchState.Discovered:
-                    <img src="@DiscoveredAccount.Image" alt="" class="d6-search-overlay-avatar"/>
-                    <span>Account Found. Loading <strong>@DiscoveredAccount.Username</strong>...</span>
+                    <img src="@SearchProviderState.DiscoveredAccount.Image" alt="" class="d6-search-overlay-avatar"/>
+                    <span>Account Found. Loading <strong>@SearchProviderState.DiscoveredAccount.Username</strong>...</span>
                     break;
 
                 case SearchState.NotFound:

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
 using Havit.Blazor.Components.Web.Bootstrap;
+using Microsoft.AspNetCore.Components;
 
-namespace DragonFruit.Six.Client.Overlays
+namespace DragonFruit.Six.Client.Overlays.Search
 {
     public partial class SearchProvider
     {
@@ -15,10 +16,8 @@ namespace DragonFruit.Six.Client.Overlays
 
         private SearchState CurrentState { get; set; }
 
-        /// <summary>
-        /// The most recently discovered account
-        /// </summary>
-        public UbisoftAccount DiscoveredAccount { get; set; }
+        [CascadingParameter]
+        private SearchProviderState SearchProviderState { get; set; }
 
         /// <summary>
         /// Begins searching for an account. Causes the current window to be blocked until completed.
@@ -35,7 +34,7 @@ namespace DragonFruit.Six.Client.Overlays
             identifierType ??= Guid.TryParse(identifier, out _) ? IdentifierType.UserId : IdentifierType.Name;
 
             await Task.Delay(2500).ConfigureAwait(false);
-            DiscoveredAccount = new UbisoftAccount
+            SearchProviderState.DiscoveredAccount = new UbisoftAccount
             {
                 Username = "PaPa.Curry",
                 Platform = Platform.PC,
