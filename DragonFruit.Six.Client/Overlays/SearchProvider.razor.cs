@@ -1,6 +1,7 @@
 // Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using System;
 using System.Threading.Tasks;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
@@ -13,14 +14,26 @@ namespace DragonFruit.Six.Client.Overlays
         private HxOffcanvas _searchOverlay;
 
         private SearchState CurrentState { get; set; }
-        private UbisoftAccount DiscoveredAccount { get; set; }
 
-        public async Task SearchForAccount(string username, Platform platform)
+        /// <summary>
+        /// The most recently discovered account
+        /// </summary>
+        public UbisoftAccount DiscoveredAccount { get; set; }
+
+        /// <summary>
+        /// Begins searching for an account. Causes the current window to be blocked until completed.
+        /// </summary>
+        /// <param name="identifier">The username or ubisoft id of the user to load</param>
+        /// <param name="platform">The <see cref="Platform"/> the user is playing on</param>
+        /// <param name="identifierType">The type of <see cref="identifier"/>, if known</param>
+        public async Task SearchForAccount(string identifier, Platform platform, IdentifierType? identifierType = null)
         {
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
 
             // do account search
+            identifierType ??= Guid.TryParse(identifier, out _) ? IdentifierType.UserId : IdentifierType.Name;
+
             await Task.Delay(2500).ConfigureAwait(false);
             DiscoveredAccount = new UbisoftAccount
             {
@@ -39,28 +52,28 @@ namespace DragonFruit.Six.Client.Overlays
             // todo redirect to stats page
             await _searchOverlay.HideAsync().ConfigureAwait(false);
         }
-    }
 
-    internal enum SearchState
-    {
-        /// <summary>
-        /// Account search is in progress
-        /// </summary>
-        Searching,
+        private enum SearchState
+        {
+            /// <summary>
+            /// Account search is in progress
+            /// </summary>
+            Searching,
 
-        /// <summary>
-        /// Account Discovered
-        /// </summary>
-        Discovered,
+            /// <summary>
+            /// Account Discovered
+            /// </summary>
+            Discovered,
 
-        /// <summary>
-        /// User was not found
-        /// </summary>
-        NotFound,
+            /// <summary>
+            /// User was not found
+            /// </summary>
+            NotFound,
 
-        /// <summary>
-        /// Other error occured (network or something similar)
-        /// </summary>
-        OtherError
+            /// <summary>
+            /// Other error occured (network or something similar)
+            /// </summary>
+            OtherError
+        }
     }
 }
