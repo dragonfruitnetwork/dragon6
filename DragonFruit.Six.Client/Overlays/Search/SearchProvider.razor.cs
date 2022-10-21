@@ -2,7 +2,10 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using DragonFruit.Six.Api;
+using DragonFruit.Six.Api.Accounts;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
 using Havit.Blazor.Components.Web.Bootstrap;
@@ -15,6 +18,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
         private HxOffcanvas _searchOverlay;
 
         private SearchState CurrentState { get; set; }
+
+        [Inject]
+        private Dragon6Client Client { get; set; }
 
         [CascadingParameter]
         private SearchProviderState SearchProviderState { get; set; }
@@ -29,24 +35,24 @@ namespace DragonFruit.Six.Client.Overlays.Search
         {
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
+            await Task.Delay(500).ConfigureAwait(false);
 
             // do account search
             identifierType ??= Guid.TryParse(identifier, out _) ? IdentifierType.UserId : IdentifierType.Name;
 
-            await Task.Delay(2500).ConfigureAwait(false);
-            SearchProviderState.DiscoveredAccount = new UbisoftAccount
+            try
             {
-                Username = "PaPa.Curry",
-                Platform = Platform.PC,
-                ProfileId = "14c01250-ef26-4a32-92ba-e04aa557d619",
-                UbisoftId = "14c01250-ef26-4a32-92ba-e04aa557d619",
-                PlatformId = "14c01250-ef26-4a32-92ba-e04aa557d619"
-            };
+                SearchProviderState.DiscoveredAccount = await Client.GetAccountAsync(identifier, platform, identifierType.Value).ConfigureAwait(false);
+                CurrentState = SearchProviderState.DiscoveredAccount == null ? SearchState.NotFound : SearchState.Discovered;
+            }
+            catch
+            {
+                // todo add logging
+                CurrentState = SearchState.OtherError;
+            }
 
-            CurrentState = SearchState.Discovered;
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-
-            await Task.Delay(2000).ConfigureAwait(false);
+            await Task.Delay(3000).ConfigureAwait(false);
 
             // todo redirect to stats page
             await _searchOverlay.HideAsync().ConfigureAwait(false);
