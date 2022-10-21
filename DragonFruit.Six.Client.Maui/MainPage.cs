@@ -19,7 +19,7 @@ namespace DragonFruit.Six.Client.Maui
                     new RootComponent
                     {
                         Selector = "#app",
-                        ComponentType = typeof(Dragon6Client)
+                        ComponentType = typeof(Dragon6App)
                     }
                 }
             };
