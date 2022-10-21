@@ -1,7 +1,7 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
-using System;
+using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Interop;
 using Havit.Blazor.Components.Web;
@@ -29,7 +29,7 @@ namespace DragonFruit.Six.Client.Maui
             builder.Services.AddTransient<IFileSystemStructure, MauiFileSystemStructure>();
 
             // todo locate DragonFruit.Six.Services.dll and load in IDragon6Services from that
-            Activator.CreateInstance<Dragon6DeveloperServices>().InitialiseServices(builder.Services);
+            builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
 
             return builder.Build();
         }
