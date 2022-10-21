@@ -2,6 +2,7 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Interop;
 using Havit.Blazor.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,8 +16,7 @@ namespace DragonFruit.Six.Client.Maui
         public static MauiApp CreateMauiApp()
         {
             var builder = MauiApp.CreateBuilder();
-            builder.UseMauiApp<App>()
-                   .ConfigureFonts(fonts => { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
+            builder.UseMauiApp<App>();
 
             // maui webview services
             builder.Services.AddMauiBlazorWebView();
@@ -26,6 +26,7 @@ namespace DragonFruit.Six.Client.Maui
 
             // blazor bootstrap services
             builder.Services.AddHxServices();
+            builder.Services.AddTransient<IFileSystemStructure, MauiFileSystemStructure>();
 
             // todo locate DragonFruit.Six.Services.dll and load in IDragon6Services from that
             Activator.CreateInstance<Dragon6DeveloperServices>().InitialiseServices(builder.Services);
