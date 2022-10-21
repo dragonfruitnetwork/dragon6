@@ -1,4 +1,6 @@
+using System;
 using System.Threading.Tasks;
+using DragonFruit.Six.Client.Interop;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -16,6 +18,7 @@ namespace DragonFruit.Six.Client.WebServer
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
             builder.Services.AddHxServices();
+            Activator.CreateInstance<Dragon6DeveloperServices>().InitialiseServices(builder.Services);
 
             var app = builder.Build();
 
