@@ -1,0 +1,22 @@
+.d6-splash {
+    height: 100vh;
+    width: 100vw;
+    gap: .75rem;
+
+    display: flex;
+    flex-direction: column;
+    
+    align-items: center;
+    justify-content: center;
+}
+
+.d6-splash > img {
+    margin-bottom: 2rem;
+}
+
+.d6-splash-logo {
+    height: max(125px, 15vh);
+    width: auto;
+    
+    filter: invert(1);
+}
