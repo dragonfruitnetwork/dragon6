@@ -13,7 +13,6 @@
 
     <ItemGroup>
         <Folder Include="Database" />
-        <Folder Include="Network" />
     </ItemGroup>
 
 </Project>
