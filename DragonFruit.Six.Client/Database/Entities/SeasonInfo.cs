@@ -8,6 +8,7 @@ using Realms;
 namespace DragonFruit.Six.Client.Database.Entities
 {
     [MapTo("seasons")]
+    [JsonObject(MemberSerialization.OptIn)]
     public class SeasonInfo : RealmObject, IUpdatableEntity
     {
         [PrimaryKey]
