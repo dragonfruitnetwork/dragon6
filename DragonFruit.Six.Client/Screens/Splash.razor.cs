@@ -26,7 +26,7 @@ namespace DragonFruit.Six.Client.Screens
         {
             RealmConfigurator.Initialise(Services.GetRequiredService<IFileSystemStructure>());
 
-            CurrentStatus = "Updating database...";
+            CurrentStatus = "Preparing database...";
             await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);
             await StaticAssetUpdater.UpdateTable<OperatorInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/operators-v2.json")).ConfigureAwait(false);
 
@@ -34,7 +34,7 @@ namespace DragonFruit.Six.Client.Screens
             Realm.Compact();
 
             CurrentStatus = "Welcome to Dragon6";
-            await Task.Delay(500).ConfigureAwait(false);
+            await Task.Delay(1000).ConfigureAwait(false);
 
             Navigation.NavigateTo("/home");
         }
