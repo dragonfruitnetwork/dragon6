@@ -6,21 +6,25 @@ using System.Threading.Tasks;
 using DragonFruit.Data.Serializers.Newtonsoft;
 using DragonFruit.Six.Api.Authentication.Entities;
 using DragonFruit.Six.Api.Services.Developer;
+using DragonFruit.Six.Client.Database;
 
-namespace DragonFruit.Six.Client.Interop
+namespace DragonFruit.Six.Client.Network
 {
     public class Dragon6DebugClient : Dragon6DeveloperClient
     {
         private const string TokenFileName = "ubi.token";
 
-        public Dragon6DebugClient()
+        private readonly IFileSystemStructure _fileSystem;
+
+        public Dragon6DebugClient(IFileSystemStructure fileSystem)
             : base("00000000-0000-0000-0000-000000000001.045a00e5c0", "EzsMSGkhL9Z5EDUYzuMnBsf1GyL/ygAR0DjdHl60coQ", "dragon6.token.read")
         {
+            _fileSystem = fileSystem;
         }
 
         protected override async Task<IUbisoftToken> GetToken(string sessionId)
         {
-            var tokenFile = Path.Combine(Path.GetTempPath(), TokenFileName);
+            var tokenFile = Path.Combine(_fileSystem.Cache, TokenFileName);
             IUbisoftToken token = FileServices.ReadFileOrDefault<Dragon6Token>(tokenFile);
 
             if (token != null && token.SessionId != sessionId)

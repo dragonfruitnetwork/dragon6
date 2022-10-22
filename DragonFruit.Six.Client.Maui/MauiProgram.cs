@@ -3,7 +3,7 @@
 
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
-using DragonFruit.Six.Client.Interop;
+using DragonFruit.Six.Client.Network;
 using Havit.Blazor.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
