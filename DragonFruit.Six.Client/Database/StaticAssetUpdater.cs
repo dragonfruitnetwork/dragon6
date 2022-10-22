@@ -25,7 +25,7 @@ namespace DragonFruit.Six.Client.Database
             var emptyCollection = true;
 
             // async methods need to have different realms after await usages (because we don't guarantee returning to the same thread)
-            using var realm = await Realm.GetInstanceAsync();
+            using var realm = await Realm.GetInstanceAsync().ConfigureAwait(true);
 
             if (realm.All<T>().Any())
             {
@@ -41,11 +41,7 @@ namespace DragonFruit.Six.Client.Database
             {
                 var date = DateTime.UtcNow;
                 var responseStream = await response.Content.ReadAsStreamAsync();
-                var deserializer = client.Serializer.Resolve<T>(DataDirection.In);
-
-                var elements = deserializer is IAsyncSerializer async
-                    ? await async.DeserializeAsync<IList<T>>(responseStream)
-                    : deserializer.Deserialize<IList<T>>(responseStream);
+                var elements = client.Serializer.Resolve<T>(DataDirection.In).Deserialize<IList<T>>(responseStream);
 
                 foreach (var element in elements)
                 {
