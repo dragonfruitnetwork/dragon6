@@ -8,6 +8,7 @@ using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Realms;
 
 namespace DragonFruit.Six.Client.Screens
 {
@@ -25,9 +26,12 @@ namespace DragonFruit.Six.Client.Screens
         {
             RealmConfigurator.Initialise(Services.GetRequiredService<IFileSystemStructure>());
 
-            CurrentStatus = "Setting up database...";
+            CurrentStatus = "Updating database...";
             await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);
             await StaticAssetUpdater.UpdateTable<OperatorInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/operators-v2.json")).ConfigureAwait(false);
+
+            // reduce filesize
+            Realm.Compact();
 
             CurrentStatus = "Welcome to Dragon6";
             await Task.Delay(500).ConfigureAwait(false);
