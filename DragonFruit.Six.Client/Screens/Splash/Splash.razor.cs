@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Realms;
 
-namespace DragonFruit.Six.Client.Screens
+namespace DragonFruit.Six.Client.Screens.Splash
 {
     public partial class Splash
     {
