@@ -1,0 +1,25 @@
+<div>
+    <h3 class="mt-0">{this.props.title}</h3>
+    <div class="d6-progress progress">
+        <div class="progress-bar bg-success" role="progressbar" style="width: @Progress.ToString("f2")%"></div>
+    </div>
+    <div class="d-flex">
+        @foreach (var stat in Descriptors)
+        {
+            <p class="d6-substat lead @stat.className">@stat.content</p>)
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public float Progress { get; set; }
+
+    [Parameter]
+    public (string className, string content)[] Descriptors { get; set; }
+
+}

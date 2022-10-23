@@ -1,0 +1,22 @@
+<div>
+    <i class="fa-solid fa-@Icon fa-3x mb-3" style="color: @Colour"></i>
+
+    <h5>@Title</h5>
+    <p class="text-secondary">@Subtitle</p>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Icon { get; set; }
+
+    [Parameter]
+    public string Colour { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public string Subtitle { get; set; }
+
+}
