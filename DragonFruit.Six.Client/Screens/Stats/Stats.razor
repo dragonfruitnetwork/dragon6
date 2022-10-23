@@ -9,7 +9,7 @@
 
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
-    
+
 </HeadContent>
 
 <div class="d6-account-cover">
@@ -35,5 +35,14 @@
         <StatsAggregation Board="BoardType.Casual" Stats="Casual"/>
         <StatsAggregation Board="BoardType.Ranked" Stats="Ranked"/>
         <StatsAggregation Board="BoardType.Deathmatch" Stats="Deathmatch"/>
+    </div>
+
+    <div class="d6-modern-stats">
+        <div>
+            <h3>Recent Activity Overview</h3>
+            <p class="text-muted">Stats collected for Casual, Ranked and Unranked over the past ~@ModernStatsRange days</p>
+        </div>
+
+        <StatsOverview Account="Account"/>
     </div>
 </div>

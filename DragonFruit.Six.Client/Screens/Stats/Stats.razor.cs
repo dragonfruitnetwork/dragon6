@@ -24,6 +24,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
     public partial class Stats
     {
         private const int ModernSeasonStart = 23;
+        internal const int ModernStatsRange = 60;
 
         private SearchProvider _searchProvider;
 

@@ -1,0 +1,102 @@
+﻿@using DragonFruit.Six.Api.Accounts.Entities
+@using DragonFruit.Six.Api.Modern.Entities
+@using DragonFruit.Six.Api
+@using DragonFruit.Six.Api.Enums
+@using DragonFruit.Six.Api.Modern
+@using DragonFruit.Six.Api.Modern.Enums
+@using DragonFruit.Six.Client.Utils
+@using Humanizer
+@using Humanizer.Localisation
+
+@if (Summary != null)
+{
+    <div class="d6-icon-stats">
+        <StatsOverviewCard Icon="bullseye"
+                           Title="@($"{Summary.Kd:0.00} K/D")"
+                           Subtitle="@($"{Summary.Kills:N0} Kills / {Summary.Deaths:N0} Deaths")"
+                           Colour="@ColourUtils.SampleFromGradient(_standardGradient, Summary.Kd)"/>
+
+        <StatsOverviewCard Icon="yin-yang"
+                           Title="@($"{Summary.MatchWl:0.00} W/L")"
+                           Subtitle="@($"{Summary.MatchesWon:N0} Wins / {Summary.MatchesLost:N0} Losses")"
+                           Colour="@ColourUtils.SampleFromGradient(_standardGradient, Summary.Kd)"/>
+
+        <StatsOverviewCard Icon="skull-crossbones"
+                           Title="@($"{Summary.Headshots:N0} Headshots")"
+                           Subtitle="@($"{Summary.Knifes:N0} Melee Kill(s)")"/>
+
+        <StatsOverviewCard Icon="handshake-angle"
+                           Title="@($"{Summary.Assists:N0} Assists")"
+                           Subtitle="@($"{Summary.Revives:N0} Revives")"/>
+
+        @{
+            var totalAces = (int)(Summary.RoundsAced * Summary.RoundsPlayed);
+            var totalKostRounds = (int)(Summary.RoundsWithKillObjectiveSurvivalOrTrade * Summary.RoundsPlayed);
+            var totalOpeningDeaths = (int)(Summary.RoundsWithFirstDeath * Summary.RoundsPlayed);
+
+            var acesIcon = totalAces switch {
+                >= 2 => "dumpster-fire",
+                1 => "dumpster",
+                _ => "trash"
+            };
+        }
+
+        <StatsOverviewCard Icon="@acesIcon"
+                           Title="@($"{totalAces} Aces")"
+                           Subtitle="@($"{totalKostRounds:N0} / {Summary.RoundsPlayed} rounds completing KOST")"
+                           Colour="@ColourUtils.SampleFromGradient(_aceCountGradient, totalAces)"/>
+
+        <StatsOverviewCard Icon="person-rifle"
+                           Title="@($"{Summary.TeamKills:N0} Teamkills")"
+                           Subtitle="@($"died first {totalOpeningDeaths:N0} times")"
+                           Colour="@ColourUtils.SampleFromGradient(_teamkillGradient, Summary.TeamKills)"/>
+    
+        <StatsOverviewCard Icon="stopwatch"
+                           Title="@($"{Summary.TimePlayed.Humanize(maxUnit: TimeUnit.Hour, precision: 2)} played")"
+                           Subtitle="@($"{Summary.TimeAlivePerMatch.Humanize(precision: 1)} average time alive per match")"/>
+    
+        <StatsOverviewCard Icon="shoe-prints"
+                           Title="@($"{Summary.DistanceTravelled:N0}m Travelled")"
+                           Subtitle="@($"{Summary.DistanceTravelledPerRound:N0} average distance per round")"/>
+    </div>
+}
+
+@code {
+
+    private readonly (float position, int colour)[] _standardGradient =
+    {
+        (0f, 0xDC3545),
+        (0.5f, 0xF0AD4E),
+        (1f, 0x198754)
+    };
+
+    private readonly (float position, int colour)[] _teamkillGradient =
+    {
+        (0f, 0xFFFFFF),
+        (1f, 0xDD3E54),
+        (10f, 0xA80077)
+    };
+
+    private readonly (float position, int colour)[] _aceCountGradient =
+    {
+        (0f, 0xFFFFFF),
+        (1f, 0xFF7800),
+        (2f, 0XFF4200),
+        (5f, 0xFF0000)
+    };
+
+    [Parameter]
+    public UbisoftAccount Account { get; set; }
+
+    [Inject]
+    private Dragon6Client Client { get; set; }
+
+    private ModernStatsSummary Summary { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var summaryContainer = await Client.GetModernStatsSummaryAsync(Account, PlaylistType.Independent, OperatorType.Independent, DateTime.UtcNow.AddDays(-Stats.ModernStatsRange)).ConfigureAwait(false);
+        Summary = summaryContainer.AllModes.AsAny.FirstOrDefault();
+    }
+
+}

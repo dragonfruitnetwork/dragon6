@@ -1,5 +1,15 @@
-﻿.d6-stats {
+﻿.d6-stats, .d6-modern-stats {
+    display: flex;
+    flex-direction: column;
+}
+
+.d6-stats {
     margin: var(--d6-header-margin);
+    row-gap: 2rem;
+}
+
+.d6-modern-stats {
+    row-gap: 1rem;
 }
 
 .d6-season-current .d6-season-card {
