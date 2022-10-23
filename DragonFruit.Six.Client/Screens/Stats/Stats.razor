@@ -1,10 +1,34 @@
 @page "/stats"
 @page "/stats/{platform}/{identifier}"
+@layout CoreLayout
 @using DragonFruit.Six.Api.Seasonal.Enums
+@using DragonFruit.Six.Client.Overlays.Search
+@using Humanizer
+
+<SearchProvider @ref="_searchProvider"/>
 
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
+    
 </HeadContent>
+
+<div class="d6-account-cover">
+    <D6Header/>
+    <div class="container mt-5">
+        <D6Searchbar OnUserSubmit="q => _searchProvider.SearchForAccount(q.username, q.platform)"/>
+    </div>
+</div>
+
+<div class="d6-account-container">
+    <img src="@Account.Image" alt="player image" class="d6-account-avatar"/>
+    <div class="d-flex align-items-center align-items-md-baseline ms-md-3 mb-md-4 mb-2">
+        <h1 class="mb-0 mb-md-2">@Account.Username</h1>
+    </div>
+    @if (AccountActivity != null)
+    {
+        <h5 class="mx-auto ms-md-auto me-md-0 mb-md-4">Last seen @AccountActivity.LastSession.Humanize()</h5>
+    }
+</div>
 
 <div class="d6-stats">
     <div class="d6-stat-container">

@@ -25,6 +25,8 @@ namespace DragonFruit.Six.Client.Screens.Stats
     {
         private const int ModernSeasonStart = 23;
 
+        private SearchProvider _searchProvider;
+
         [Parameter]
         public string Identifier { get; set; }
 
