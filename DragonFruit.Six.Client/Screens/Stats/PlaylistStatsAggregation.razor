@@ -1,0 +1,27 @@
+@using DragonFruit.Six.Api.Legacy.Entities
+@using DragonFruit.Six.Api.Seasonal.Enums
+
+@if (Stats != null)
+{
+    <StatsAggregationCard Title="@($"{Board} K/D")" Progress="Stats.Kd / 0.02f">
+        <StatsAggregationCardDescriptor>@Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
+        <StatsAggregationCardDescriptor CssClass="text-success">@Stats.Kills.ToString("N0") Kills</StatsAggregationCardDescriptor>
+        <StatsAggregationCardDescriptor CssClass="text-danger">@Stats.Deaths.ToString("N0") Deaths</StatsAggregationCardDescriptor>
+    </StatsAggregationCard>
+
+    <StatsAggregationCard Title="@($"{Board} W/L")" Progress="Stats.Wl / 0.02f">
+        <StatsAggregationCardDescriptor>@Stats.Wl.ToString("0.00") W/L</StatsAggregationCardDescriptor>
+        <StatsAggregationCardDescriptor CssClass="text-success">@Stats.Wins.ToString("N0") Wins</StatsAggregationCardDescriptor>
+        <StatsAggregationCardDescriptor CssClass="text-danger">@Stats.Losses.ToString("N0") Losses</StatsAggregationCardDescriptor>
+    </StatsAggregationCard>
+}
+
+@code {
+
+    [Parameter]
+    public BoardType Board { get; set; }
+
+    [Parameter]
+    public LegacyPlaylistStats Stats { get; set; }
+
+}

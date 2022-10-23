@@ -4,10 +4,7 @@
         <div class="progress-bar bg-success" role="progressbar" style="width: @Progress.ToString("f2")%"></div>
     </div>
     <div class="d-flex">
-        @foreach (var stat in Descriptors)
-        {
-            <p class="d6-substat lead @stat.className">@stat.content</p>
-        }
+        @ChildContent
     </div>
 </div>
 
@@ -20,6 +17,6 @@
     public float Progress { get; set; }
 
     [Parameter]
-    public (string className, string content)[] Descriptors { get; set; }
+    public RenderFragment ChildContent { get; set; }
 
 }
