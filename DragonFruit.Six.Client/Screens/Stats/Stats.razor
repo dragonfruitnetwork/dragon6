@@ -1,2 +1,15 @@
 @page "/stats"
 @page "/stats/{platform}/{identifier}"
+@using DragonFruit.Six.Api.Seasonal.Enums
+
+<HeadContent>
+    <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
+</HeadContent>
+
+<div class="d6-stats">
+    <div class="d6-stat-container">
+        <PlaylistStatsAggregation Board="BoardType.Casual" Stats="Casual"/>
+        <PlaylistStatsAggregation Board="BoardType.Ranked" Stats="Ranked"/>
+        <PlaylistStatsAggregation Board="BoardType.Deathmatch" Stats="Deathmatch"/>
+    </div>
+</div>

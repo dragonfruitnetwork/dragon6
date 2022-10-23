@@ -63,11 +63,11 @@ namespace DragonFruit.Six.Client.Screens.Stats
             else
             {
                 Account = await Client.GetAccountAsync(Identifier, Platform, Guid.TryParse(Identifier, out _) ? IdentifierType.UserId : IdentifierType.Name).ConfigureAwait(false);
+            }
 
-                if (Account == null)
-                {
-                    Navigation.NavigateTo("/home");
-                }
+            if (Account == null)
+            {
+                Navigation.NavigateTo("/home");
             }
 
             AccountActivity = await Client.GetAccountActivityAsync(Account).ConfigureAwait(false);
@@ -78,16 +78,13 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             var legacyStats = await Client.GetLegacyStatsAsync(Account).ConfigureAwait(false);
-
-            Casual = legacyStats.Casual;
-            Ranked = legacyStats.Ranked;
-            Deathmatch = new LegacyPlaylistStats();
+            var deathmatch = new LegacyPlaylistStats();
 
             // get latest season id and create range to collect from the server
             using (var realm = await Realm.GetInstanceAsync().ConfigureAwait(true))
             {
                 var latestSeason = Math.Max(ModernSeasonStart, realm.All<SeasonInfo>().OrderByDescending(x => x.SeasonId).First().SeasonId);
-                var range = Enumerable.Range(ModernSeasonStart, latestSeason - ModernSeasonStart - 1);
+                var range = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
 
                 PostFreezeSeasons = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Deathmatch, Region.EMEA).ConfigureAwait(false);
             }
@@ -98,15 +95,19 @@ namespace DragonFruit.Six.Client.Screens.Stats
             {
                 var targetPlaylist = season.Board switch
                 {
-                    BoardType.Ranked => Ranked,
-                    BoardType.Casual => Casual,
-                    BoardType.Deathmatch => Deathmatch,
+                    BoardType.Ranked => legacyStats.Ranked,
+                    BoardType.Casual => legacyStats.Casual,
+                    BoardType.Deathmatch => deathmatch,
 
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
                 targetPlaylist.Include(season);
             }
+
+            Casual = legacyStats.Casual;
+            Ranked = legacyStats.Ranked;
+            Deathmatch = deathmatch;
         }
     }
 }
