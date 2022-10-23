@@ -24,8 +24,9 @@ namespace DragonFruit.Six.Client.Database
             var request = requestFactory.Invoke();
             var emptyCollection = true;
 
-            // async methods need to have different realms after await usages (because we don't guarantee returning to the same thread)
-            using var realm = await Realm.GetInstanceAsync().ConfigureAwait(true);
+            // ReSharper disable once MethodHasAsyncOverload
+            // using async overload breaks the write() call at the bottom - todo consider using two realms to complete this task
+            using var realm = Realm.GetInstance();
 
             if (realm.All<T>().Any())
             {
