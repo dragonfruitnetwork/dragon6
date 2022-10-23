@@ -10,6 +10,7 @@ using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
+using Microsoft.JSInterop;
 
 namespace DragonFruit.Six.Client.Overlays.Search
 {
@@ -23,10 +24,20 @@ namespace DragonFruit.Six.Client.Overlays.Search
         private Dragon6Client Client { get; set; }
 
         [Inject]
+        private IJSRuntime JavaRuntime { get; set; }
+
+        [Inject]
         private NavigationManager Navigation { get; set; }
 
         [CascadingParameter]
         private SearchProviderState SearchProviderState { get; set; }
+
+        protected override async Task OnInitializedAsync()
+        {
+            // to fix the blocked scrolling (https://github.com/havit/Havit.Blazor/issues/110), the body element needs to have its styling removed.
+            // see util.js in wwwroot for implementation details - ideally we'd wait for HxOffcanvas_HandleOffcanvasHidden to be invoked, but their lib doesn't do that...
+            await JavaRuntime.InvokeVoidAsync("cleanupBody").ConfigureAwait(false);
+        }
 
         /// <summary>
         /// Begins searching for an account. Causes the current window to be blocked until completed.
