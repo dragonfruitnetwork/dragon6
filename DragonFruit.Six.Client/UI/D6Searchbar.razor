@@ -1,5 +1,5 @@
 ﻿@using DragonFruit.Six.Api.Accounts.Enums
-<form @onsubmit="() => OnUserSubmit.InvokeAsync((Username, Platform))">
+<form class="d6-search" @onsubmit="() => OnUserSubmit.InvokeAsync((Username, Platform))">
     <div class="input-group">
         <D6PlatformSelector @bind-Platform="Platform"/>
         <input type="text" @bind="Username" placeholder="Username" class="form-control"/>
