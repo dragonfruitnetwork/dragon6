@@ -22,6 +22,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
         [Inject]
         private Dragon6Client Client { get; set; }
 
+        [Inject]
+        private NavigationManager Navigation { get; set; }
+
         [CascadingParameter]
         private SearchProviderState SearchProviderState { get; set; }
 
@@ -54,8 +57,8 @@ namespace DragonFruit.Six.Client.Overlays.Search
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
             await Task.Delay(3000).ConfigureAwait(false);
 
-            // todo redirect to stats page
             await _searchOverlay.HideAsync().ConfigureAwait(false);
+            Navigation.NavigateTo("/stats");
         }
 
         private enum SearchState
