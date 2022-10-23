@@ -55,10 +55,14 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
 
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-            await Task.Delay(3000).ConfigureAwait(false);
+            await Task.Delay(2500).ConfigureAwait(false);
 
             await _searchOverlay.HideAsync().ConfigureAwait(false);
-            Navigation.NavigateTo("/stats");
+
+            if (CurrentState == SearchState.Discovered)
+            {
+                Navigation.NavigateTo("/stats");
+            }
         }
 
         private enum SearchState
