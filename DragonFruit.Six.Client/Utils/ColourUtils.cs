@@ -16,10 +16,10 @@ namespace DragonFruit.Six.Client.Utils
         /// <param name="gradient">The gradient, defining the colour stops and their positions (in [0-1] range) in the gradient.</param>
         /// <param name="point">The point to sample the colour at.</param>
         /// <returns>A <see cref="Color"/> sampled from the linear gradient.</returns>
-        public static Color SampleFromGradient(IReadOnlyList<(float position, Color colour)> gradient, float point)
+        public static string SampleFromGradient(IReadOnlyList<(float position, int colour)> gradient, float point)
         {
             if (point < gradient[0].position)
-                return gradient[0].colour;
+                return $"#{gradient[0].colour:X}";
 
             for (int i = 0; i < gradient.Count - 1; i++)
             {
@@ -29,10 +29,11 @@ namespace DragonFruit.Six.Client.Utils
                 if (point >= endStop.position)
                     continue;
 
-                return InterpolateColour(point, startStop.colour, endStop.colour, startStop.position, endStop.position);
+                var interpolated = InterpolateColour(point, Color.FromArgb(startStop.colour), Color.FromArgb(endStop.colour), startStop.position, endStop.position);
+                return $"#{interpolated.ToArgb():X}";
             }
 
-            return gradient[^1].colour;
+            return $"#{gradient[^1].colour:X}";
         }
 
         private static Color InterpolateColour(double value, Color startColour, Color endColour, double startValue, double endValue)
