@@ -4,37 +4,34 @@
 }
 
 .d6-stats {
+    padding-top: 1.5rem;
     margin: var(--d6-header-margin);
-    row-gap: 2rem;
+    row-gap: 3rem;
 }
 
 .d6-modern-stats {
-    row-gap: 1rem;
+    row-gap: 2rem;
 }
 
-.d6-season-current .d6-season-card {
-    border: none !important;
+.d6-seasons {
+    display: flex;
+    align-items: center;
 }
 
 .d6-season-cards {
+    flex-grow: 0.9;
     display: grid;
     grid-gap: 15px;
-    grid-template-columns: repeat(auto-fit, 275px);
+    grid-template-columns: repeat(4, 1fr);
 }
 
 .d6-season-card {
-    padding-left: 10px;
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: start;
-}
+    justify-content: center;
 
-.d6-season-card {
-    border-style: none;
-    border-left-style: solid;
-    border-color: lightgray;
-    border-width: 2px;
+    user-select: none;
 }
 
 img.d6-season-rank {
@@ -42,10 +39,27 @@ img.d6-season-rank {
     width: 75px;
 }
 
+img.d6-season-rank-mmr {
+    opacity: 0.5;
+}
+
 .d6-season-stats {
     display: flex;
     align-items: center;
     margin: 0 .5rem;
+}
+
+.d6-seasonal-stats-detail {
+    display: flex;
+    gap: 20px;
+}
+
+.d6-seasonal-stats-detail > div {
+    display: grid;
+    column-gap: 15px;
+    grid-template-columns: 30px 1fr;
+    align-items: center;
+    justify-content: center;
 }
 
 .d6-progress {
@@ -55,8 +69,6 @@ img.d6-season-rank {
 }
 
 .d6-stat-container {
-    margin-top: 3rem;
-
     display: grid;
     align-content: center;
     justify-content: space-between;
