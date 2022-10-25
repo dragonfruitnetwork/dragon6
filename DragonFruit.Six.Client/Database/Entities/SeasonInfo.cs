@@ -14,7 +14,7 @@ namespace DragonFruit.Six.Client.Database.Entities
         [PrimaryKey]
         [JsonProperty("id")]
         [MapTo("season_id")]
-        public int SeasonId { get; set; }
+        public byte SeasonId { get; set; }
 
         [JsonProperty("operation")]
         [MapTo("season_name")]
