@@ -1,0 +1,45 @@
+﻿@using DragonFruit.Six.Api.Seasonal.Enums
+
+<div>
+    <div class="d6-seasons">
+        @if (Boards != null)
+        {
+            <button class="btn btn-text text-secondary" @onclick="() => ChangePage(-1)" style="@(Page == 1 ? "visibility: hidden" : null)">
+                <i class="fa-solid fa-angle-left"></i>
+            </button>
+
+            <div class="d6-season-cards">
+                @foreach (var season in Boards[SelectedBoard].Skip((Page - 1) * 4).Take(EntriesPerPage))
+                {
+                    <StatsSeasonCard Season="@season" DisplayMaxRank="@DisplayMaxRank" OnSeasonSelected="SetSelectedSeason"/>
+                }
+            </div>
+
+            <div class="d-flex flex-column ms-auto">
+                <button class="btn btn-text text-secondary" @onclick="() => ChangePage(1)" style="@(Page == MaxPage ? "visibility: hidden" : null)">
+                    <i class="fa-solid fa-angle-right"></i>
+                </button>
+                <button class="btn btn-text text-secondary" @onclick="SwapDisplayedBoard">
+                    <i class="fa-solid fa-ranking-star @(SelectedBoard != BoardType.Ranked ? "text-secondary" : "text-success")"></i>
+                </button>
+            </div>
+        }
+        else
+        {
+            <div class="d6-season-cards justify-content-center">
+                @for (int i = 0; i < 4; i++)
+                {
+                    <HxPlaceholderContainer Animation="PlaceholderAnimation.Wave">
+                        <HxPlaceholder Columns="8" Size="PlaceholderSize.Small"/>
+                        <HxPlaceholder Columns="12" Size="PlaceholderSize.Large"/>
+                    </HxPlaceholderContainer>
+                }
+            </div>
+        }
+    </div>
+
+    @if (SelectedSeason != null)
+    {
+        <StatsSeasonDetails Season="SelectedSeason" DisplayMaxRank="DisplayMaxRank"/>
+    }
+</div>

@@ -1,0 +1,35 @@
+﻿@using DragonFruit.Six.Api.Seasonal.Enums
+@using DragonFruit.Six.Api.Seasonal.Entities
+@using DragonFruit.Six.Client.Utils
+@using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
+@{
+    var rankInfo = IsCasualRank switch
+    {
+        true => Season.Stats.MMRRankInfo,
+        false when DisplayMaxRank => Season.Stats.MaxRankInfo,
+
+        _ => Season.Stats.RankInfo
+    };
+}
+
+<div class="d6-season-card" id="d6-season-@Season.Info.Season" role="button" @onclick="() => OnSeasonSelected.InvokeAsync(Season)">
+    <img src="@RankIconUtils.FormatRankIconUrl(rankInfo.IconUrl)" alt="@rankInfo.Name" class="d6-season-rank user-select-none @(IsCasualRank ? "d6-season-rank-mmr" : null)">
+    <div class="d-flex flex-column ms-2">
+        <span class="text-truncate" style="color: @Season.Info.AccentColour">@Season.Info.SeasonName</span>
+        <h4 class="m-0">@rankInfo.Name</h4>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public bool DisplayMaxRank { get; set; }
+
+    [Parameter]
+    public SeasonalStatsContainer Season { get; set; }
+
+    [Parameter]
+    public EventCallback<SeasonalStatsContainer> OnSeasonSelected { get; set; }
+
+    private bool IsCasualRank => Season.Stats.Board == BoardType.Casual && Season.Stats.Wins + Season.Stats.Losses + Season.Stats.Abandons > 0;
+}

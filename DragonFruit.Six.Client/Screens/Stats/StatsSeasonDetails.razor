@@ -1,0 +1,62 @@
+﻿@using DragonFruit.Six.Api.Seasonal.Enums
+@using DragonFruit.Six.Client.Utils
+@using Humanizer
+@using DragonFruit.Six.Api.Seasonal.Entities
+@using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
+
+<div>
+    <hr class="text-secondary mt-3"/>
+    <div class="d6-stat-container mt-4">
+        <StatsAggregationCard Title="@($"{Season.Info.SeasonName} K/D")" Progress="Season.Stats.Kd / 0.02f">
+            <StatsAggregationCardDescriptor>@Season.Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
+            <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Kills.ToString("N0") Kills</StatsAggregationCardDescriptor>
+            <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Deaths.ToString("N0") Deaths</StatsAggregationCardDescriptor>
+        </StatsAggregationCard>
+
+        <StatsAggregationCard Title="@($"{Season.Info.SeasonName} W/L")" Progress="Season.Stats.Wl / 0.02f">
+            <StatsAggregationCardDescriptor>@Season.Stats.Wl.ToString("0.00") W/L</StatsAggregationCardDescriptor>
+            <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Wins.ToString("N0") Wins</StatsAggregationCardDescriptor>
+            <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Losses.ToString("N0") Losses</StatsAggregationCardDescriptor>
+        </StatsAggregationCard>
+    </div>
+    <div class="d6-icon-stats mt-4">
+        @if (Season.Stats.Board == BoardType.Ranked)
+        {
+            <div>
+                <img src="@RankIconUtils.FormatRankIconUrl(Season.Stats.MaxRankInfo.IconUrl)" alt="final rank" height="48" class="mb-3"/>
+                <h5>@Season.Stats.MaxRankInfo.Name</h5>
+                <p class="text-secondary">Final Rank</p>
+            </div>
+        }
+
+        <div>
+            <i class="fa-solid fa-chart-line fa-3x mb-3"></i>
+            <h5>@Season.Stats.MMR.ToString("N0") MMR</h5>
+            <p class="text-secondary">&PlusMinus; @((Season.Stats.SkillUncertainty * 100).ToString("N0")) Skill Uncertainty</p>
+        </div>
+
+        @if (Season.Stats.Board == BoardType.Ranked && Season.Stats.MaxRank > 0)
+        {
+            <div>
+                <i class="fa-solid fa-trophy fa-3x mb-3"></i>
+                <h5>@Season.Stats.MaxMMR.ToString("N0") Max MMR</h5>
+            </div>
+        }
+
+        <div>
+            <i class="fa-solid fa-clock-rotate-left fa-3x mb-3"></i>
+            <h5>Last Match @Season.Stats.LastMatchResult.Humanize()</h5>
+            <p class="text-secondary">@((Season.Stats.LastMatchSkillChange * 100).ToString("N0")) MMR Change</p>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public bool DisplayMaxRank { get; set; }
+
+    [Parameter]
+    public SeasonalStatsContainer Season { get; set; }
+
+}
