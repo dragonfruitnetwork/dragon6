@@ -19,9 +19,18 @@
 </div>
 
 <div class="d6-account-container">
-    <img src="@Account.Image" alt="player image" class="d6-account-avatar"/>
+    <img src="@(Account?.Image ?? "/_content/DragonFruit.Six.Client/assets/generic-avatar.png")" alt="player image" class="d6-account-avatar"/>
     <div class="d-flex align-items-center align-items-md-baseline ms-md-3 mb-md-4 mb-2">
-        <h1 class="mb-0 mb-md-2">@Account.Username</h1>
+        @if (Account != null)
+        {
+            <h1 class="mb-0 mb-md-2">@Account.Username</h1>
+        }
+        else
+        {
+            <HxPlaceholderContainer Animation="PlaceholderAnimation.Glow">
+                <HxPlaceholder Columns="8"/>
+            </HxPlaceholderContainer>
+        }
     </div>
     @if (AccountActivity != null)
     {
