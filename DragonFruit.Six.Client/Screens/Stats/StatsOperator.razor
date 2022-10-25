@@ -1,0 +1,58 @@
+@using DragonFruit.Six.Client.Database.Entities
+@using DragonFruit.Six.Api.Modern.Entities
+@using DragonFruit.Six.Api.Accounts.Entities
+@using DragonFruit.Six.Api
+@using DragonFruit.Six.Api.Enums
+@using DragonFruit.Six.Api.Modern
+@using DragonFruit.Six.Api.Modern.Enums
+@using Havit.Linq
+@using Humanizer
+@using Realms
+
+<div class="d-flex align-items-center">
+    <h3>Operator Stats</h3>
+    @* todo add filtering/ordering *@
+</div>
+
+@if (Stats != null)
+{
+    var groups = Stats.ToLookup(x => x.info.Type);
+    <div class="d6-stat-container mt-4">
+        @foreach (var group in groups.OrderBy(x => x.Key))
+        {
+            <div>
+                <h4 class="m-0 mb-2 text-center">@group.Key.Humanize().Pluralize()</h4>
+                <hr class="w-100 text-secondary"/>
+                <div class="d6-operator-card-container">
+                    @foreach (var op in group)
+                    {
+                        <StatsOperatorCard Info="op.info" Stats="op.stats"/>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+
+    [Parameter]
+    public UbisoftAccount Account { get; set; }
+
+    [Inject]
+    private Dragon6Client Client { get; set; }
+
+    private IReadOnlyCollection<(OperatorInfo info, ModernOperatorStats stats)> Stats { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var operatorStatsContainer = await Client.GetModernOperatorStatsAsync(Account, PlaylistType.Independent, OperatorType.Attacker | OperatorType.Defender, startDate: DateTime.UtcNow.AddDays(-Screens.Stats.Stats.ModernStatsRange)).ConfigureAwait(false);
+        var operatorStats = operatorStatsContainer.AllModes.AsAttacker.Concat(operatorStatsContainer.AllModes.AsDefender);
+
+        using var realm = await Realm.GetInstanceAsync().ConfigureAwait(false);
+
+        // because realm entities are locked to the thread the realm was created on, the items need to be frozen to allow read-only access on render threads.
+        Stats = realm.All<OperatorInfo>().ToList().LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => (info.Freeze(), stats)).ToList();
+    }
+
+}

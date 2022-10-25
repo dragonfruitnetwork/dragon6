@@ -1,0 +1,39 @@
+@using DragonFruit.Six.Api.Modern.Entities
+@using DragonFruit.Six.Client.Database.Entities
+@using Realms
+
+<div class="@(Stats == null ? "d-none d-md-flex" : "d-flex") align-items-center flex-column flex-md-row justify-content-md-start justify-content-center">
+    <img width="80"
+         height="80"
+         alt="@Info.Name - icon"
+         style="@(Stats == null ? "filter: grayscale(100%)" : null)"
+         src="https://d6static.dragonfruit.network/ops/@(Info.Id).svg"/>
+
+    <h5 class="m-0 mx-3">@Info.Name</h5>
+
+    @if (Stats == null)
+    {
+        <span class="text-secondary ms-md-auto">not played recently</span>
+    }
+    else
+    {
+        <div class="d-flex flex-column align-items-md-end align-items-center mt-md-0 mt-2 w-100">
+            <span class="text-secondary">
+                @Stats.Kd.ToString("0.00") K/D &middot; @Stats.RoundWl.ToString("0.00") W/L
+            </span>
+            <span class="text-secondary">
+                @Stats.RoundsPlayed.ToString("N0") round(s) played
+            </span>
+        </div>
+    }
+</div>
+
+@code {
+
+    [Parameter]
+    public ModernOperatorStats Stats { get; set; }
+
+    [Parameter]
+    public OperatorInfo Info { get; set; }
+
+}
