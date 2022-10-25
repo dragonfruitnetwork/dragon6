@@ -10,9 +10,20 @@
 @using Realms
 @using System.ComponentModel
 
-<div class="d-flex align-items-center">
+<div class="d6-operator-card-header flex-md-row justify-content-md-between">
     <h3>Operator Stats</h3>
-    @* todo add filtering/ordering *@
+    <div class="d6-operator-card-header-options flex-md-nowrap">
+        <div class="form-check form-switch">
+          <input class="form-check-input" type="checkbox" @bind="FilterUnplayed">
+          <label class="form-check-label">Filter unplayed</label>
+        </div>
+        <select class="form-control bg-dark text-light" @bind="SortMode">
+            @foreach (var option in Enum.GetValues<OperatorSortMode>())
+            {
+                <option value="@option">@option.Humanize()</option>
+            }
+        </select>
+    </div>
 </div>
 
 @if (Stats != null)
@@ -61,7 +72,7 @@
     private IEnumerable<OperatorStatsContainer> GetDisplayableGroup(IEnumerable<OperatorStatsContainer> stats)
     {
         // perform filtering first, then partition based on whether the operator has been played.
-        var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats.RoundsPlayed > 0) : stats;
+        var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats?.RoundsPlayed > 0) : stats;
         var partitionedGroups = filteredGroups.ToLookup(x => x.Stats != null);
 
         return SortMode switch

@@ -100,6 +100,28 @@ img.d6-season-rank {
     justify-content: center;
 }
 
+.d6-operator-card-header {
+    gap: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.d6-operator-card-header-options {
+    gap: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    
+    align-items: center;
+}
+
+.d6-operator-card-header-options > * {
+    flex-shrink: 0;
+}
+
 .d6-operator-card-container {
     gap: 1.5rem;
     display: flex;
