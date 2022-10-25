@@ -99,3 +99,9 @@ img.d6-season-rank {
     align-items: center;
     justify-content: center;
 }
+
+.d6-operator-card-container {
+    gap: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
