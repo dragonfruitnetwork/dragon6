@@ -29,7 +29,7 @@
             <div class="d6-season-cards justify-content-center">
                 @for (int i = 0; i < 4; i++)
                 {
-                    <HxPlaceholderContainer Animation="PlaceholderAnimation.Wave">
+                    <HxPlaceholderContainer Color="ThemeColor.Dark" Animation="PlaceholderAnimation.Wave">
                         <HxPlaceholder Columns="8" Size="PlaceholderSize.Small"/>
                         <HxPlaceholder Columns="12" Size="PlaceholderSize.Large"/>
                     </HxPlaceholderContainer>
@@ -37,7 +37,8 @@
             </div>
         }
     </div>
-
+    
+    <hr class="text-secondary mt-3"/>
     @if (SelectedSeason != null)
     {
         <StatsSeasonDetails Season="SelectedSeason" DisplayMaxRank="DisplayMaxRank"/>
