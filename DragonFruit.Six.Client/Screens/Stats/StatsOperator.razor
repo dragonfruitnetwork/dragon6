@@ -8,6 +8,7 @@
 @using Havit.Linq
 @using Humanizer
 @using Realms
+@using System.ComponentModel
 
 <div class="d-flex align-items-center">
     <h3>Operator Stats</h3>
@@ -16,7 +17,7 @@
 
 @if (Stats != null)
 {
-    var groups = Stats.ToLookup(x => x.info.Type);
+    var groups = Stats.ToLookup(x => x.Info.Type);
     <div class="d6-stat-container mt-4">
         @foreach (var group in groups.OrderBy(x => x.Key))
         {
@@ -24,9 +25,9 @@
                 <h4 class="m-0 mb-2 text-center">@group.Key.Humanize().Pluralize()</h4>
                 <hr class="w-100 text-secondary"/>
                 <div class="d6-operator-card-container">
-                    @foreach (var op in group)
+                    @foreach (var op in GetDisplayableGroup(group))
                     {
-                        <StatsOperatorCard Info="op.info" Stats="op.stats"/>
+                        <StatsOperatorCard Info="op.Info" Stats="op.Stats"/>
                     }
                 </div>
             </div>
@@ -42,7 +43,9 @@
     [Inject]
     private Dragon6Client Client { get; set; }
 
-    private IReadOnlyCollection<(OperatorInfo info, ModernOperatorStats stats)> Stats { get; set; }
+    private bool FilterUnplayed { get; set; }
+    private OperatorSortMode SortMode { get; set; } = OperatorSortMode.RoundsPlayed;
+    private IReadOnlyCollection<OperatorStatsContainer> Stats { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -52,7 +55,48 @@
         using var realm = await Realm.GetInstanceAsync().ConfigureAwait(false);
 
         // because realm entities are locked to the thread the realm was created on, the items need to be frozen to allow read-only access on render threads.
-        Stats = realm.All<OperatorInfo>().ToList().LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => (info.Freeze(), stats)).ToList();
+        Stats = realm.All<OperatorInfo>().ToList().LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => new OperatorStatsContainer(info.Freeze(), stats)).ToList();
+    }
+
+    private IEnumerable<OperatorStatsContainer> GetDisplayableGroup(IEnumerable<OperatorStatsContainer> stats)
+    {
+        // perform filtering first, then partition based on whether the operator has been played.
+        var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats.RoundsPlayed > 0) : stats;
+        var partitionedGroups = filteredGroups.ToLookup(x => x.Stats != null);
+
+        return SortMode switch
+        {
+            OperatorSortMode.Default => filteredGroups,
+            OperatorSortMode.Kd => partitionedGroups[true].OrderByDescending(x => x.Stats.Kd).Concat(partitionedGroups[false]),
+            OperatorSortMode.Wl => partitionedGroups[true].OrderByDescending(x => x.Stats.RoundWl).Concat(partitionedGroups[false]),
+            OperatorSortMode.RoundsPlayed => partitionedGroups[true].OrderByDescending(x => x.Stats.RoundsPlayed).Concat(partitionedGroups[false]),
+
+            _ => throw new ArgumentOutOfRangeException()
+        };
+    }
+
+    private enum OperatorSortMode
+    {
+        Default,
+        RoundsPlayed,
+
+        [Description("K/D")]
+        Kd,
+
+        [Description("W/L")]
+        Wl
+    }
+
+    private class OperatorStatsContainer
+    {
+        public OperatorStatsContainer(OperatorInfo info, ModernOperatorStats stats)
+        {
+            Info = info;
+            Stats = stats;
+        }
+
+        public OperatorInfo Info { get; set; }
+        public ModernOperatorStats Stats { get; set; }
     }
 
 }
