@@ -5,7 +5,6 @@
 @using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
 
 <div>
-    <hr class="text-secondary mt-3"/>
     <div class="d6-stat-container mt-4">
         <StatsAggregationCard Title="@($"{Season.Info.SeasonName} K/D")" Progress="Season.Stats.Kd / 0.02f">
             <StatsAggregationCardDescriptor>@Season.Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
