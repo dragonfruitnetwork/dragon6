@@ -73,11 +73,14 @@
     {
         // perform filtering first, then partition based on whether the operator has been played.
         var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats?.RoundsPlayed > 0) : stats;
+
+        if (SortMode is OperatorSortMode.Default)
+            return filteredGroups;
+
         var partitionedGroups = filteredGroups.ToLookup(x => x.Stats != null);
 
         return SortMode switch
         {
-            OperatorSortMode.Default => filteredGroups,
             OperatorSortMode.Kd => partitionedGroups[true].OrderByDescending(x => x.Stats.Kd).Concat(partitionedGroups[false]),
             OperatorSortMode.Wl => partitionedGroups[true].OrderByDescending(x => x.Stats.RoundWl).Concat(partitionedGroups[false]),
             OperatorSortMode.RoundsPlayed => partitionedGroups[true].OrderByDescending(x => x.Stats.RoundsPlayed).Concat(partitionedGroups[false]),
