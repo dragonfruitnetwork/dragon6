@@ -4,7 +4,7 @@
     <div class="d6-seasons">
         @if (Boards != null)
         {
-            <button class="btn btn-text text-secondary" @onclick="() => ChangePage(-1)" style="@(Page == 1 ? "visibility: hidden" : null)">
+            <button class="btn btn-text text-secondary" @onclick="() => ChangePage(-1)">
                 <i class="fa-solid fa-angle-left"></i>
             </button>
 
@@ -16,7 +16,7 @@
             </div>
 
             <div class="d-flex flex-column ms-auto">
-                <button class="btn btn-text text-secondary" @onclick="() => ChangePage(1)" style="@(Page == MaxPage ? "visibility: hidden" : null)">
+                <button class="btn btn-text text-secondary" @onclick="() => ChangePage(1)">
                     <i class="fa-solid fa-angle-right"></i>
                 </button>
                 <button class="btn btn-text text-secondary" @onclick="SwapDisplayedBoard">
