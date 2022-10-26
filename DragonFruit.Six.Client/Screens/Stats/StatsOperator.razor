@@ -14,15 +14,21 @@
     <h3 class="m-0">Operator Stats</h3>
     <div class="d6-operator-card-header-options flex-md-nowrap">
         <div class="form-check form-switch">
-          <input class="form-check-input" type="checkbox" @bind="FilterUnplayed">
-          <label class="form-check-label">Filter unplayed</label>
+            <input class="form-check-input" type="checkbox" @bind="FilterUnplayed">
+            <label class="form-check-label">Filter unplayed</label>
         </div>
-        <select class="form-control bg-dark text-light" @bind="SortMode">
-            @foreach (var option in Enum.GetValues<OperatorSortMode>())
-            {
-                <option value="@option">@option.Humanize()</option>
-            }
-        </select>
+
+        <HxDropdownButtonGroup Direction="DropdownDirection.Down">
+            <HxDropdownToggleButton CssClass="text-light border" Color="ThemeColor.None">
+                @SortMode.Humanize()
+            </HxDropdownToggleButton>
+            <HxDropdownMenu CssClass="dropdown-menu-dark">
+                @foreach (var sortMode in Enum.GetValues<OperatorSortMode>())
+                {
+                    <HxDropdownItem OnClick="() => SortMode = sortMode">@sortMode.Humanize()</HxDropdownItem>
+                }
+            </HxDropdownMenu>
+        </HxDropdownButtonGroup>
     </div>
 </div>
 
@@ -65,13 +71,13 @@
 
         using var realm = await Realm.GetInstanceAsync().ConfigureAwait(false);
 
-        // because realm entities are locked to the thread the realm was created on, the items need to be frozen to allow read-only access on render threads.
+    // because realm entities are locked to the thread the realm was created on, the items need to be frozen to allow read-only access on render threads.
         Stats = realm.All<OperatorInfo>().ToList().LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => new OperatorStatsContainer(info.Freeze(), stats)).ToList();
     }
 
     private IEnumerable<OperatorStatsContainer> GetDisplayableGroup(IEnumerable<OperatorStatsContainer> stats)
     {
-        // perform filtering first, then partition based on whether the operator has been played.
+    // perform filtering first, then partition based on whether the operator has been played.
         var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats?.RoundsPlayed > 0) : stats;
 
         if (SortMode is OperatorSortMode.Default)
@@ -86,7 +92,7 @@
             OperatorSortMode.RoundsPlayed => partitionedGroups[true].OrderByDescending(x => x.Stats.RoundsPlayed).Concat(partitionedGroups[false]),
 
             _ => throw new ArgumentOutOfRangeException()
-        };
+            };
     }
 
     private enum OperatorSortMode
