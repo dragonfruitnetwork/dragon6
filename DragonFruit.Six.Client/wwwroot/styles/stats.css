@@ -14,15 +14,24 @@
 }
 
 .d6-seasons {
-    display: flex;
-    align-items: center;
+    display: flex;  
+    flex-direction: column;
 }
 
 .d6-season-cards {
-    flex-grow: 0.9;
-    display: grid;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+
     grid-gap: 15px;
     grid-template-columns: repeat(4, 1fr);
+}
+
+.d6-season-controls {
+    gap: 15px;
+    display: flex;
+    align-items: center; 
+    justify-content: center;
 }
 
 .d6-season-card {
@@ -126,7 +135,7 @@ img.d6-season-rank-mmr {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    
+
     align-items: center;
 }
 
