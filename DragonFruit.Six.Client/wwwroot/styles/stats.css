@@ -14,7 +14,7 @@
 }
 
 .d6-seasons {
-    display: flex;  
+    display: flex;
     flex-direction: column;
 }
 
@@ -30,7 +30,7 @@
 .d6-season-controls {
     gap: 15px;
     display: flex;
-    align-items: center; 
+    align-items: center;
     justify-content: center;
 }
 
@@ -41,6 +41,10 @@
     justify-content: center;
 
     user-select: none;
+}
+
+.d6-season-board-selector::after {
+    display: none !important;
 }
 
 img.d6-season-rank {

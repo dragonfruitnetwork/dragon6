@@ -17,9 +17,19 @@
                 <button class="btn btn-text text-secondary" @onclick="() => ChangePage(-1)">
                     <i class="fa-solid fa-angle-left"></i>
                 </button>
-                <button class="btn btn-text text-secondary" @onclick="SwapDisplayedBoard">
-                    <i class="fa-solid fa-ranking-star @(SelectedBoard != BoardType.Ranked ? "text-secondary" : "text-success")"></i>
-                </button>
+
+                <HxDropdownButtonGroup Direction="DropdownDirection.Down">
+                    <HxDropdownToggleButton CssClass="text-light d6-season-board-selector" Color="ThemeColor.None">
+                        @SelectedBoard.ToString()
+                    </HxDropdownToggleButton>
+                    <HxDropdownMenu CssClass="dropdown-menu-dark">
+                        @foreach (var board in Enum.GetValues<BoardType>())
+                        {
+                            <HxDropdownItem OnClick="() => SelectedBoard = board">@board.ToString()</HxDropdownItem>
+                        }
+                    </HxDropdownMenu>
+                </HxDropdownButtonGroup>
+
                 <button class="btn btn-text text-secondary" @onclick="() => ChangePage(1)">
                     <i class="fa-solid fa-angle-right"></i>
                 </button>
