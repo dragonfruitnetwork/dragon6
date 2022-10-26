@@ -18,6 +18,13 @@
     flex-direction: column;
 }
 
+.d6-season-controls {
+    gap: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .d6-season-cards {
     display: flex;
     align-items: center;
@@ -27,18 +34,10 @@
     grid-template-columns: repeat(4, 1fr);
 }
 
-.d6-season-controls {
-    gap: 15px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .d6-season-card {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
 
     user-select: none;
 }
