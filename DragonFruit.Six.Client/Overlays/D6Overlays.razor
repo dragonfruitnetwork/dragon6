@@ -1,0 +1,25 @@
+<div class="d6-header-footer--container">
+    <div class="d6-header--links">
+        @foreach (var overlay in Overlays)
+        {
+            <OverlayWrapper Info="overlay" IsMobileMode="false"/>
+        }
+    </div>
+</div>
+
+@code {
+
+    private IEnumerable<IDragon6OverlayInfo> Overlays { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Overlays = GetType().Assembly
+                            .GetTypes()
+                            .Where(x => !x.IsInterface && !x.IsAbstract && x.IsAssignableTo(typeof(IDragon6OverlayInfo)))
+                            .Select(Activator.CreateInstance)
+                            .Cast<IDragon6OverlayInfo>()
+                            .OrderBy(x => x.Order)
+                            .ToList();
+    }
+
+}

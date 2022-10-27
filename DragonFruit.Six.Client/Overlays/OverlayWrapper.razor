@@ -1,0 +1,29 @@
+<HxOffcanvas @ref="_offcanvas"
+             Title="@Info.FullName"
+             ShowCloseButton="false"
+             BodyCssClass="bg-dark"
+             CssClass="bg-dark text-light mx-0"
+             RenderMode="OffcanvasRenderMode.Always"
+             HeaderCssClass="d-flex justify-content-center">
+    <BodyTemplate>
+        <DynamicComponent Type="Info.OverlayContent"/>
+    </BodyTemplate>
+</HxOffcanvas>
+
+<HxTooltip Text="@Info.Name" Placement="TooltipPlacement.Bottom">
+    <div role="button" @onclick="() => _offcanvas.ShowAsync()">
+        <i role="button" class="fa-solid fa-@Info.Icon"></i>
+    </div>
+</HxTooltip>
+
+@code {
+
+    private HxOffcanvas _offcanvas;
+
+    [Parameter]
+    public bool IsMobileMode { get; set; }
+
+    [Parameter]
+    public IDragon6OverlayInfo Info { get; set; }
+
+}
