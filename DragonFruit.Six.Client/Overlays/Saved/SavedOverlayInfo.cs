@@ -2,6 +2,7 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using Havit.Blazor.Components.Web.Bootstrap;
 
 namespace DragonFruit.Six.Client.Overlays.Saved
 {
@@ -14,6 +15,7 @@ namespace DragonFruit.Six.Client.Overlays.Saved
 
         public string Icon => "star";
 
+        public OffcanvasSize Size => OffcanvasSize.Large;
         public Type OverlayContent => typeof(SavedOverlay);
     }
 }
