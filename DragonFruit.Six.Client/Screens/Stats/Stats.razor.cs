@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts;
 using DragonFruit.Six.Api.Accounts.Entities;
@@ -14,6 +15,7 @@ using DragonFruit.Six.Api.Legacy.Entities;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
+using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Overlays.Search;
 using Microsoft.AspNetCore.Components;
 using Realms;
@@ -39,6 +41,9 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
         [Inject]
         private Dragon6Client Client { get; set; }
+
+        [Inject]
+        private IMapper EntityMapper { get; set; }
 
         [Inject]
         private NavigationManager Navigation { get; set; }
@@ -111,6 +116,13 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Casual = legacyStats.Casual;
             Ranked = legacyStats.Ranked;
             Deathmatch = deathmatch;
+
+            // add/update user recent profiles
+            using (var realm = await Realm.GetInstanceAsync())
+            {
+                var recentAccount = EntityMapper.Map<RecentAccount>(Account);
+                await realm.WriteAsync(() => realm.Add(recentAccount, true)).ConfigureAwait(false);
+            }
         }
     }
 }
