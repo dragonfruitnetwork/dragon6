@@ -26,6 +26,7 @@ namespace DragonFruit.Six.Client.Maui
 
             // blazor bootstrap services
             builder.Services.AddHxServices();
+            builder.Services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
             builder.Services.AddTransient<IFileSystemStructure, MauiFileSystemStructure>();
 
             // todo locate DragonFruit.Six.Services.dll and load in IDragon6Services from that

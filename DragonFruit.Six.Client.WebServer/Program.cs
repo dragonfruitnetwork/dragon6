@@ -19,6 +19,7 @@ namespace DragonFruit.Six.Client.WebServer
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
             builder.Services.AddHxServices();
+            builder.Services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
 
             builder.Services.AddTransient<IFileSystemStructure, WebServerFileSystemStructure>();
             builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
