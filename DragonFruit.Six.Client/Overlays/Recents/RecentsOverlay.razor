@@ -27,7 +27,7 @@
     {
         _realm ??= await Realm.GetInstanceAsync();
 
-        Accounts = _realm.All<RecentAccount>().OrderByDescending(x => x.LastSearched).AsEnumerable().Select(x => x.Freeze()).ToList();
+        Accounts = _realm.All<RecentAccount>().AsEnumerable().Select(x => x.Freeze()).ToList();
         _notification = _realm.All<RecentAccount>().SubscribeForNotifications((sender, changes, _) =>
         {
             if (changes == null)
@@ -40,7 +40,7 @@
 
             foreach (var insertedIndex in changes.InsertedIndices)
             {
-                Accounts.Add(sender[insertedIndex].Freeze());
+                Accounts.Insert(0, sender[insertedIndex].Freeze());
             }
 
             InvokeAsync(StateHasChanged);
