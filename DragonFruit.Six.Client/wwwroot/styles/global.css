@@ -104,3 +104,20 @@ a:hover {
 .d6-platform-selector {
     min-width: 50px;
 }
+
+.d6-recents-grid {
+    gap: 1rem;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.overlay-avatar {
+    height: 75px;
+    width: 75px;
+    border-radius: 50%;
+}
+
+.overlay-rank {
+    height: 60px;
+    width: 60px;
+}

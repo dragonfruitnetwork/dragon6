@@ -1,0 +1,27 @@
+﻿@using DragonFruit.Six.Client.Database.Entities
+@using DragonFruit.Six.Client.Utils
+
+<div class="card bg-transparent user-select-none" role="button" @onclick="Clicked">
+    <div class="card-body d-flex align-items-center">
+        <img class="overlay-avatar" src="https://ubisoft-avatars.akamaized.net/@Account.UbisoftId/default_256_256.png" alt=""/>
+        <div class="ms-3">
+            <div class="d-flex align-items-center w-100">
+                <h4 class="m-0 text-truncate">@Account.Username</h4>
+                @{
+                    var (icon, colour) = Account.Platform.GetPlatformIcon();
+                    <i class="fa-brands fa-@icon ms-3" style="color: @colour"></i>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public RecentAccount Account { get; set; }
+
+    [Parameter]
+    public EventCallback Clicked { get; set; }
+
+}

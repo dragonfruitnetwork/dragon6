@@ -1,0 +1,56 @@
+@using DragonFruit.Six.Client.Overlays.Search
+@using DragonFruit.Six.Client.Database.Entities
+@using Realms
+@using DragonFruit.Six.Api.Accounts.Enums
+
+@implements IDisposable
+
+<SearchProvider @ref="_search"/>
+
+<div class="d6-recents-grid">
+    @foreach (var user in Accounts ?? Enumerable.Empty<RecentAccount>())
+    {
+        <RecentAccountCard Account="user" Clicked="() => _search.SearchForAccount(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
+    }
+</div>
+
+@code {
+
+    private Realm _realm;
+    private IDisposable _notification;
+
+    private SearchProvider _search;
+
+    private List<RecentAccount> Accounts { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _realm ??= await Realm.GetInstanceAsync();
+
+        Accounts = _realm.All<RecentAccount>().OrderByDescending(x => x.LastSearched).AsEnumerable().Select(x => x.Freeze()).ToList();
+        _notification = _realm.All<RecentAccount>().SubscribeForNotifications((sender, changes, _) =>
+        {
+            if (changes == null)
+                return;
+
+            foreach (var deletedIndex in changes.DeletedIndices)
+            {
+                Accounts.Remove(sender[deletedIndex]);
+            }
+
+            foreach (var insertedIndex in changes.InsertedIndices)
+            {
+                Accounts.Add(sender[insertedIndex].Freeze());
+            }
+
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    public void Dispose()
+    {
+        _realm?.Dispose();
+        _notification?.Dispose();
+    }
+
+}
