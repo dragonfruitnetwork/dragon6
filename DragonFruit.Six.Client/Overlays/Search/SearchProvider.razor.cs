@@ -34,13 +34,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
         [CascadingParameter]
         private SearchProviderState SearchProviderState { get; set; }
 
-        protected override async Task OnInitializedAsync()
+        protected override void OnInitialized()
         {
             SearchProviderState.AccountSearchRequested += SearchForAccount;
-
-            // to fix the blocked scrolling (https://github.com/havit/Havit.Blazor/issues/110), the body element needs to have its styling removed.
-            // see util.js in wwwroot for implementation details - ideally we'd wait for HxOffcanvas_HandleOffcanvasHidden to be invoked, but their lib doesn't do that...
-            await JavaRuntime.InvokeVoidAsync("cleanupBody").ConfigureAwait(false);
         }
 
         /// <summary>
@@ -79,7 +75,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
                 Navigation.NavigateTo("/stats");
             }
         }
-        
+
         public void Dispose()
         {
             SearchProviderState.AccountSearchRequested -= SearchForAccount;
