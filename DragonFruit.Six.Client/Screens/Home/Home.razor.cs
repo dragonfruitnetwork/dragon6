@@ -2,11 +2,13 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using DragonFruit.Six.Client.Overlays.Search;
+using Microsoft.AspNetCore.Components;
 
 namespace DragonFruit.Six.Client.Screens.Home
 {
     public partial class Home
     {
-        private SearchProvider _search;
+        [CascadingParameter]
+        private SearchProviderState SearchProvider { get; set; }
     }
 }

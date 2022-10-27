@@ -12,9 +12,11 @@ using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 
+#pragma warning disable CS4014
+
 namespace DragonFruit.Six.Client.Overlays.Search
 {
-    public partial class SearchProvider
+    public partial class SearchProvider : IDisposable
     {
         private HxOffcanvas _searchOverlay;
 
@@ -34,6 +36,8 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
         protected override async Task OnInitializedAsync()
         {
+            SearchProviderState.AccountSearchRequested += SearchForAccount;
+
             // to fix the blocked scrolling (https://github.com/havit/Havit.Blazor/issues/110), the body element needs to have its styling removed.
             // see util.js in wwwroot for implementation details - ideally we'd wait for HxOffcanvas_HandleOffcanvasHidden to be invoked, but their lib doesn't do that...
             await JavaRuntime.InvokeVoidAsync("cleanupBody").ConfigureAwait(false);
@@ -45,7 +49,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
         /// <param name="identifier">The username or ubisoft id of the user to load</param>
         /// <param name="platform">The <see cref="Platform"/> the user is playing on</param>
         /// <param name="identifierType">The type of <see cref="identifier"/>, if known</param>
-        public async Task SearchForAccount(string identifier, Platform platform, IdentifierType? identifierType = null)
+        private async void SearchForAccount(string identifier, Platform platform, IdentifierType? identifierType = null)
         {
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
@@ -74,6 +78,11 @@ namespace DragonFruit.Six.Client.Overlays.Search
             {
                 Navigation.NavigateTo("/stats");
             }
+        }
+        
+        public void Dispose()
+        {
+            SearchProviderState.AccountSearchRequested -= SearchForAccount;
         }
 
         private enum SearchState

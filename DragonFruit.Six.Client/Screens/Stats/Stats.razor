@@ -2,10 +2,7 @@
 @page "/stats/{platform}/{identifier}"
 @layout CoreLayout
 @using DragonFruit.Six.Api.Seasonal.Enums
-@using DragonFruit.Six.Client.Overlays.Search
 @using Humanizer
-
-<SearchProvider @ref="_searchProvider"/>
 
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
@@ -14,7 +11,7 @@
 <div class="d6-account-cover">
     <D6Header Title="Stats"/>
     <div class="container mt-5">
-        <D6Searchbar OnUserSubmit="q => _searchProvider.SearchForAccount(q.username, q.platform)"/>
+        <D6Searchbar OnUserSubmit="q => SearchProviderState.TriggerSearch(q.username, q.platform)"/>
     </div>
 </div>
 

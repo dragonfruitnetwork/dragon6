@@ -28,8 +28,6 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private const byte ModernSeasonStart = 23;
         internal const int ModernStatsRange = 60;
 
-        private SearchProvider _searchProvider;
-
         [Parameter]
         public string Identifier { get; set; }
 
