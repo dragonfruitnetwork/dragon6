@@ -29,6 +29,7 @@ namespace DragonFruit.Six.Client.Database.Entities
         [MapTo("sub")]
         public string Subtitle { get; set; }
 
+        [Ignored]
         [JsonProperty("type")]
         public OperatorType Type
         {
