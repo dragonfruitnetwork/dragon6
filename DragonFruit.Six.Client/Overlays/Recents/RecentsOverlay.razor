@@ -4,7 +4,7 @@
 @using DragonFruit.Six.Api.Accounts.Enums
 @implements IDisposable
 
-@if (Accounts != null)
+@if (Accounts?.Any() == true)
 {
     <div class="d6-recents-grid d-md-flex">
         @foreach (var user in Accounts.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze()))
