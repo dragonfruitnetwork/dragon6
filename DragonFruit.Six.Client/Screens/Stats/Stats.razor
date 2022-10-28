@@ -31,7 +31,10 @@
     </div>
     @if (AccountActivity != null)
     {
-        <h5 class="mx-auto ms-md-auto me-md-0 mb-md-4">Last seen @AccountActivity.LastSession.Humanize()</h5>
+        <div class="mx-auto ms-md-auto me-md-0 mb-md-4 d-flex align-items-center">
+            <h5 class="m-0">Last seen @AccountActivity.LastSession.Humanize()</h5>
+            <AccountSaveControl Account="Account"/>
+        </div>
     }
 </div>
 
