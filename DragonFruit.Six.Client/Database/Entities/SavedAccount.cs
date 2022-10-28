@@ -17,9 +17,6 @@ namespace DragonFruit.Six.Client.Database.Entities
         [MapTo("ubisoft_id")]
         public string UbisoftId { get; set; }
 
-        [MapTo("username")]
-        public string Username { get; set; }
-
         [Ignored]
         public Platform Platform
         {
@@ -34,6 +31,9 @@ namespace DragonFruit.Six.Client.Database.Entities
         public DateTimeOffset SavedAt { get; set; } = DateTimeOffset.Now;
 
         [MapTo("current_rank")]
-        public int CurrentRank { get; set; }
+        public int SeasonMaxRank { get; set; }
+
+        [MapTo("last_stats_update")]
+        public DateTimeOffset LastStatsUpdate { get; set; }
     }
 }
