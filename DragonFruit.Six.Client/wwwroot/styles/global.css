@@ -119,7 +119,7 @@ a:hover {
     min-width: 50px;
 }
 
-.d6-recents-grid {
+.d6-account-grid {
     gap: 1rem;
     display: grid;
     flex-wrap: wrap;
