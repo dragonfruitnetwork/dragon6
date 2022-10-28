@@ -44,6 +44,10 @@ a:hover {
     color: unset !important;
 }
 
+.offcanvas-backdrop {
+    margin: 0 !important;
+}
+
 .d6-icon-button {
     gap: 10px;
     display: flex;
@@ -118,6 +122,7 @@ a:hover {
 .d6-recents-grid {
     gap: 1rem;
     display: grid;
+    flex-wrap: wrap;
     grid-template-columns: 1fr;
 }
 
