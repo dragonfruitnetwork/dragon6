@@ -1,7 +1,62 @@
-<p>Content</p>
+@using DragonFruit.Six.Client.Database.Services
+@using Realms
+@using DragonFruit.Six.Client.Database.Entities
+@implements IDisposable
+
+@if (Accounts?.Any() == true)
+{
+    <div class="d6-account-grid">
+        @foreach (var account in Accounts.Freeze().OrderBy(x => x.SavedAt))
+        {
+            <p>@account.UbisoftId</p>
+        }
+    </div>
+}
+else
+{
+    <div class="d6-overlay-center-content">
+        <span class="material-icons-round text-warning fa-2x">star</span>
+        
+        <div>
+            <h4>Save a user for future access.</h4>
+            <p>Pressing the star on the right hand side of the account info will save an account to this area so that you can find them easily. It also shows you their best rank in the current season!</p>
+        </div>
+    </div>
+}
 
 @code {
 
-    protected override Task OnInitializedAsync() => Task.Delay(1000).ContinueWith(_ => throw new Exception());
+    private Realm _realm;
+    private IDisposable _notificationListener;
+
+    [Inject]
+    private SavedPlayerRankService StatsService { get; set; }
+
+    private IRealmCollection<SavedAccount> Accounts { get; set; }
+
+    protected override void OnInitialized()
+    {
+        StatsService.StartService();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _realm = await Realm.GetInstanceAsync();
+        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, changes, error) =>
+        {
+            if (changes == null)
+            {
+                Accounts = sender;
+            }
+
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    public void Dispose()
+    {
+        _realm?.Dispose();
+        _notificationListener?.Dispose();
+    }
 
 }
