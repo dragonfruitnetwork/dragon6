@@ -30,7 +30,7 @@
     top: 0.5rem;
 }
 
-.d6-error {
+.d6-overlay-center-content {
     height: 100%;
 
     gap: 1rem;
@@ -41,6 +41,6 @@
     justify-content: center;
 }
 
-.d6-error > * {
+.d6-overlay-center-content > * {
     text-align: center;
 }

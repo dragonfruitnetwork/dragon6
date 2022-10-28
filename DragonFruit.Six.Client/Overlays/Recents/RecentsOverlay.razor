@@ -4,12 +4,35 @@
 @using DragonFruit.Six.Api.Accounts.Enums
 @implements IDisposable
 
-<div class="d6-recents-grid">
-    @foreach (var user in Accounts ?? Enumerable.Empty<RecentAccount>())
-    {
-        <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
-    }
-</div>
+@if (Accounts != null)
+{
+    <div class="d6-recents-grid d-md-flex">
+        @foreach (var user in Accounts.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze()))
+        {
+            <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
+        }
+    </div>
+
+    <hr class="text-secondary my-3"/>
+
+    <div class="d-flex justify-content-end">
+        <HxButton CssClass="btn-text d6-icon-button text-danger" OnClick="() => _realm.WriteAsync(() => _realm.RemoveAll<RecentAccount>())">
+            <span class="material-icons-round">delete</span>
+            <span>Clear All</span>
+        </HxButton>
+    </div>
+}
+else
+{
+    <div class="d6-overlay-center-content">
+        <span class="material-icons-round fa-2x">history</span>
+        
+        <div>
+            <h4>Lookup a user and they will appear here.</h4>
+            <p>Dragon6 stores the most recent @RecentsOverlayInfo.MaxAccounts.ToString() users, along with their last username so you can find a user even if they've changed their username.</p>
+        </div>
+    </div>
+}
 
 @code {
 
@@ -19,26 +42,16 @@
     [CascadingParameter]
     private SearchProviderState SearchProviderState { get; set; }
 
-    private List<RecentAccount> Accounts { get; set; }
+    private IRealmCollection<RecentAccount> Accounts { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         _realm ??= await Realm.GetInstanceAsync();
-
-        Accounts = _realm.All<RecentAccount>().AsEnumerable().Select(x => x.Freeze()).ToList();
         _notification = _realm.All<RecentAccount>().SubscribeForNotifications((sender, changes, _) =>
         {
             if (changes == null)
-                return;
-
-            foreach (var deletedIndex in changes.DeletedIndices)
             {
-                Accounts.Remove(sender[deletedIndex]);
-            }
-
-            foreach (var insertedIndex in changes.InsertedIndices)
-            {
-                Accounts.Insert(0, sender[insertedIndex].Freeze());
+                Accounts = sender;
             }
 
             InvokeAsync(StateHasChanged);
@@ -47,8 +60,8 @@
 
     public void Dispose()
     {
-        _realm?.Dispose();
         _notification?.Dispose();
+        _realm?.Dispose();
     }
 
 }

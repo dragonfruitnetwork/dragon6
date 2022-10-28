@@ -1,0 +1,7 @@
+<p>Content</p>
+
+@code {
+
+    protected override Task OnInitializedAsync() => Task.Delay(1000).ContinueWith(_ => throw new Exception());
+
+}
