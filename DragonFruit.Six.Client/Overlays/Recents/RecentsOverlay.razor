@@ -6,7 +6,7 @@
 
 @if (Accounts?.Any() == true)
 {
-    <div class="d6-recents-grid d-md-flex">
+    <div class="d6-recents-grid">
         @foreach (var user in Accounts.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze()))
         {
             <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
