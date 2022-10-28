@@ -36,7 +36,7 @@ namespace DragonFruit.Six.Client.Database.Services
 
         private void DatabaseChangeOccured(IRealmCollection<SavedAccount> sender, ChangeSet changes, Exception error)
         {
-            if (changes == null)
+            if (changes == null && sender.Any())
             {
                 // do full update check
                 _ = UpdateAccounts(sender.Where(x => x.LastStatsUpdate < DateTimeOffset.Now.AddHours(-6)));
