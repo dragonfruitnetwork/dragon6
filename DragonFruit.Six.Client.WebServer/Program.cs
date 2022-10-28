@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
+using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Network;
 using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Builder;
@@ -23,6 +24,7 @@ namespace DragonFruit.Six.Client.WebServer
 
             builder.Services.AddTransient<IFileSystemStructure, WebServerFileSystemStructure>();
             builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
+            builder.Services.AddSingleton<SavedPlayerRankService>();
 
             var app = builder.Build();
 
