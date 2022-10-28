@@ -44,6 +44,16 @@ a:hover {
     color: unset !important;
 }
 
+.d6-icon-button {
+    gap: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.d6-icon-button * {
+    color: inherit;
+}
+
 .d6-logo {
     width: auto;
     height: 50px;

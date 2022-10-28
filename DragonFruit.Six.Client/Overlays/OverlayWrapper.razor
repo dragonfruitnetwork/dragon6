@@ -7,7 +7,26 @@
              RenderMode="OffcanvasRenderMode.Always"
              HeaderCssClass="d-flex justify-content-center">
     <BodyTemplate>
-        <DynamicComponent Type="Info.OverlayContent"/>
+        <ErrorBoundary @ref="_error">
+            <ChildContent>
+                <DynamicComponent Type="Info.OverlayContent"/>
+            </ChildContent>
+            <ErrorContent>
+                <div class="d6-error">
+                    <span class="material-icons-round fa-2x text-danger">report</span>
+
+                    <div>
+                        <h4>Well this is unexpected...</h4>
+                        <p>There's been an issue with this overlay. We've reported the error and will get to fixing it ASAP</p>
+                    </div>
+
+                    <HxButton CssClass="btn-text d6-icon-button text-success" OnClick="() => _error?.Recover()">
+                        <span class="material-icons-round">refresh</span>
+                        <span>Reload</span>
+                    </HxButton>
+                </div>
+            </ErrorContent>
+        </ErrorBoundary>
     </BodyTemplate>
 </HxOffcanvas>
 
@@ -19,6 +38,7 @@
 
 @code {
 
+    private ErrorBoundary _error;
     private HxOffcanvas _offcanvas;
 
     [Parameter]
