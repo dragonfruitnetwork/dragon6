@@ -8,6 +8,8 @@ namespace DragonFruit.Six.Client.Overlays.Recents
 {
     public class RecentsOverlayInfo : IDragon6OverlayInfo
     {
+        internal const int MaxAccounts = 50;
+
         public int Order => 2;
 
         public string Name => "Recents";
