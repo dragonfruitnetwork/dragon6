@@ -41,7 +41,7 @@ namespace DragonFruit.Six.Client.Database.Services
                 // do full update check
                 _ = UpdateAccounts(sender.Where(x => x.LastStatsUpdate < DateTimeOffset.Now.AddHours(-6)));
             }
-            else if (changes.InsertedIndices.Any())
+            else if (changes?.InsertedIndices.Any() == true)
             {
                 // process new accounts
                 _ = UpdateAccounts(changes.InsertedIndices.Select(x => sender[x]));
