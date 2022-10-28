@@ -11,9 +11,8 @@ namespace DragonFruit.Six.Client.Database
     {
         public static void ConfigureMapper(IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<UbisoftAccount, RecentAccount>()
-               .ForMember(x => x.LastSearched, x => x.UseDestinationValue())
-               .ReverseMap();
+            cfg.CreateMap<UbisoftAccount, SavedAccount>().ForMember(x => x.SavedAt, x => x.UseDestinationValue());
+            cfg.CreateMap<UbisoftAccount, RecentAccount>().ForMember(x => x.LastSearched, x => x.UseDestinationValue());
         }
     }
 }
