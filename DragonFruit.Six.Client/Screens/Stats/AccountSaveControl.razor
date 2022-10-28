@@ -1,0 +1,61 @@
+@using DragonFruit.Six.Api.Accounts.Entities
+@using DragonFruit.Six.Client.Database.Entities
+@using Realms
+@using AutoMapper
+
+@implements IDisposable
+
+<button class="btn btn-text text-@(IsSaved ? "warning" : "secondary")" @onclick="ToggleSave">
+    <i class="fa-solid fa-star"></i>
+</button>
+
+@code {
+
+    private Realm _realm;
+    private IDisposable _notificationListener;
+
+    [Parameter]
+    public UbisoftAccount Account { get; set; }
+
+    [Inject]
+    public IMapper Mapper { get; set; }
+
+    public bool IsSaved { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _realm = await Realm.GetInstanceAsync();
+        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, changes, error) =>
+        {
+            IsSaved = sender.Any(x => x.ProfileId == Account.ProfileId);
+            InvokeAsync(StateHasChanged);
+        });
+    }
+
+    private void ToggleSave()
+    {
+        if (IsSaved)
+        {
+            _realm.Write(() =>
+            {
+                var account = _realm.Find<SavedAccount>(Account.ProfileId);
+                if (account != null)
+                {
+                    _realm.Remove(account);
+                }
+            });
+        }
+        else
+        {
+            var savedAccount = Mapper.Map<SavedAccount>(Account);
+            _realm.Write(() => _realm.Add(savedAccount));
+        }
+    }
+
+    public void Dispose()
+    {
+        _notificationListener?.Dispose();
+        _realm?.Dispose();
+    }
+
+}
