@@ -33,37 +33,39 @@ namespace DragonFruit.Six.Client.Database.Services
         /// <param name="ids">A collection of identifiers to lookup</param>
         /// <param name="platform">The <see cref="Platform"/> the users are on</param>
         /// <param name="type">The <see cref="IdentifierType"/> to <see cref="ids"/> represent</param>
-        public async IAsyncEnumerable<UbisoftAccount> LookupAsync(IReadOnlyCollection<string> ids, Platform platform, IdentifierType type)
+        public async ValueTask<IReadOnlyList<UbisoftAccount>> LookupAsync(IReadOnlyCollection<string> ids, Platform platform, IdentifierType type)
         {
-            var missingIds = ids.ToList();
+            var missingIds = new List<string>(ids);
+            var resultantAccounts = new List<UbisoftAccount>(ids.Count);
 
             // check realm first
-            using (var realm = await Realm.GetInstanceAsync())
+            // ReSharper disable once MethodHasAsyncOverload (so that we can use ValueTask here)
+            using (var readRealm = Realm.GetInstance())
             {
-                var table = realm.All<CachedUbisoftAccount>().Where(x => x.Expires < DateTimeOffset.Now && x.PlatformValue == (int)platform);
+                var table = readRealm.All<CachedUbisoftAccount>().Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform);
 
                 foreach (var id in ids)
                 {
-                    var discoveredAccount = type switch
+                    var cachedAccounts = type switch
                     {
-                        IdentifierType.Name => table.SingleOrDefault(x => x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                        IdentifierType.UserId => table.SingleOrDefault(x => x.UbisoftId.Equals(id)),
-                        IdentifierType.PlatformId => table.SingleOrDefault(x => x.PlatformId.Equals(id)),
+                        IdentifierType.Name => table.Where(x => x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                        IdentifierType.UserId => table.Where(x => x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                        IdentifierType.PlatformId => table.Where(x => x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
 
                         _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
                     };
 
-                    if (discoveredAccount != null)
+                    if (cachedAccounts.Any())
                     {
                         missingIds.Remove(id);
-                        yield return _mapper.Map<UbisoftAccount>(discoveredAccount);
+                        resultantAccounts.AddRange(cachedAccounts.AsEnumerable().Select(_mapper.Map<UbisoftAccount>));
                     }
                 }
             }
 
             if (!missingIds.Any())
             {
-                yield break;
+                return resultantAccounts;
             }
 
             IEnumerable<UbisoftAccount> discoveredAccounts;
@@ -79,19 +81,18 @@ namespace DragonFruit.Six.Client.Database.Services
                 discoveredAccounts = await Task.WhenAll(lookupTasks).ConfigureAwait(false);
             }
 
-            if (discoveredAccounts.Any())
+            using var writeRealm = await Realm.GetInstanceAsync();
+            using var transaction = await writeRealm.BeginWriteAsync();
+
+            foreach (var account in discoveredAccounts)
             {
-                using var realm = await Realm.GetInstanceAsync();
-                using var transaction = await realm.BeginWriteAsync();
-
-                foreach (var account in discoveredAccounts)
-                {
-                    realm.Add(_mapper.Map<CachedUbisoftAccount>(account));
-                    yield return account;
-                }
-
-                await transaction.CommitAsync();
+                writeRealm.Add(_mapper.Map<CachedUbisoftAccount>(account), true);
+                resultantAccounts.Add(account);
             }
+
+            await transaction.CommitAsync().ConfigureAwait(false);
+
+            return resultantAccounts;
         }
     }
 }
