@@ -8,6 +8,7 @@ using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
 {
+    [MapTo("cached_accounts")]
     public class CachedUbisoftAccount : RealmObject, IEquatable<UbisoftAccount>
     {
         [PrimaryKey]
