@@ -3,11 +3,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Api.Utils;
+using DragonFruit.Six.Client.Database.Services;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -23,10 +26,10 @@ namespace DragonFruit.Six.Client.Overlays.Search
         private SearchState CurrentState { get; set; }
 
         [Inject]
-        private Dragon6Client Client { get; set; }
+        private IJSRuntime JavaRuntime { get; set; }
 
         [Inject]
-        private IJSRuntime JavaRuntime { get; set; }
+        private AccountLookupCache Accounts { get; set; }
 
         [Inject]
         private NavigationManager Navigation { get; set; }
@@ -56,7 +59,10 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
             try
             {
-                SearchProviderState.DiscoveredAccount = await Client.GetAccountAsync(identifier, platform, identifierType.Value).ConfigureAwait(false);
+                var matchingAccounts = await Accounts.LookupAsync(new[] { identifier }, platform, identifierType.Value).ConfigureAwait(false);
+
+                // todo handle edge cases where multiple accounts are returned
+                SearchProviderState.DiscoveredAccount = matchingAccounts.FirstOrDefault();
                 CurrentState = SearchProviderState.DiscoveredAccount == null ? SearchState.NotFound : SearchState.Discovered;
             }
             catch
