@@ -3,9 +3,7 @@
 
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
-using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Network;
-using Havit.Blazor.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
@@ -26,13 +24,7 @@ namespace DragonFruit.Six.Client.Maui
 #endif
 
             // blazor bootstrap services
-            builder.Services.AddHxServices();
-            builder.Services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
-
-            builder.Services.AddSingleton<SavedPlayerRankService>();
             builder.Services.AddTransient<IFileSystemStructure, MauiFileSystemStructure>();
-
-            // todo locate DragonFruit.Six.Services.dll and load in IDragon6Services from that
             builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
 
             return builder.Build();

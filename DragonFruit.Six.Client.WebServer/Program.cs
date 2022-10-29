@@ -1,9 +1,5 @@
 using System.Threading.Tasks;
-using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
-using DragonFruit.Six.Client.Database.Services;
-using DragonFruit.Six.Client.Network;
-using Havit.Blazor.Components.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,12 +15,8 @@ namespace DragonFruit.Six.Client.WebServer
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-            builder.Services.AddHxServices();
-            builder.Services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
-
             builder.Services.AddTransient<IFileSystemStructure, WebServerFileSystemStructure>();
-            builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
-            builder.Services.AddSingleton<SavedPlayerRankService>();
+            builder.Services.AddDragon6Services();
 
             var app = builder.Build();
 

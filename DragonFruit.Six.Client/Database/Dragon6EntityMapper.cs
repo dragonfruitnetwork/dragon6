@@ -7,7 +7,7 @@ using DragonFruit.Six.Client.Database.Entities;
 
 namespace DragonFruit.Six.Client.Database
 {
-    public static class Dragon6EntityMapper
+    internal static class Dragon6EntityMapper
     {
         public static void ConfigureMapper(IMapperConfigurationExpression cfg)
         {
