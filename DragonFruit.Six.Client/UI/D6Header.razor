@@ -15,7 +15,7 @@
                         break;
 
                     case INavigationButton navigation:
-                        <Dragon6HeaderButton Name="@button.Name" Icon="@button.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
+                        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
                         break;
 
                     case ICustomButton custom:
