@@ -33,14 +33,13 @@ namespace DragonFruit.Six.Client.Database.Services
         /// <param name="ids">A collection of identifiers to lookup</param>
         /// <param name="platform">The <see cref="Platform"/> the users are on</param>
         /// <param name="type">The <see cref="IdentifierType"/> to <see cref="ids"/> represent</param>
-        public async ValueTask<IReadOnlyList<UbisoftAccount>> LookupAsync(IReadOnlyCollection<string> ids, Platform platform, IdentifierType type)
+        public async Task<IReadOnlyList<UbisoftAccount>> LookupAsync(IReadOnlyCollection<string> ids, Platform platform, IdentifierType type)
         {
             var missingIds = new List<string>(ids);
             var resultantAccounts = new List<UbisoftAccount>(ids.Count);
 
             // check realm first
-            // ReSharper disable once MethodHasAsyncOverload (so that we can use ValueTask here)
-            using (var readRealm = Realm.GetInstance())
+            using (var readRealm = await Realm.GetInstanceAsync())
             {
                 var table = readRealm.All<CachedUbisoftAccount>().Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform);
 
