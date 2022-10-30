@@ -10,6 +10,9 @@ namespace DragonFruit.Six.Client.Overlays
     /// </summary>
     public interface INavigationButton : IHeaderButton
     {
+        string Icon { get; }
+        string Name { get; }
+
         void OnClick(NavigationManager nav);
     }
 }

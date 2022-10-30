@@ -9,7 +9,5 @@ namespace DragonFruit.Six.Client.Overlays
     public interface IHeaderButton
     {
         int Order { get; }
-        string Icon { get; }
-        string Name { get; }
     }
 }

@@ -8,6 +8,8 @@ namespace DragonFruit.Six.Client.Overlays
 {
     public interface IOverlayInfo : IHeaderButton
     {
+        string Icon { get; }
+        string Name { get; }
         string FullName { get; }
 
         OffcanvasSize Size { get; }
