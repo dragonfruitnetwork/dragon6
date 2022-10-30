@@ -32,7 +32,9 @@
     @if (AccountActivity != null)
     {
         <div class="mx-auto ms-md-auto me-md-0 mb-md-4 d-flex align-items-center">
-            <h5 class="m-0">Last seen @AccountActivity.LastSession.Humanize()</h5>
+            <HxTooltip Text="@AccountActivity.LastSession.ToString("f")" Placement="TooltipPlacement.Left">
+                <h5 class="m-0">Last seen @AccountActivity.LastSession.Humanize()</h5>
+            </HxTooltip>
             <AccountSaveControl Account="Account"/>
         </div>
     }
