@@ -15,7 +15,7 @@ namespace DragonFruit.Six.Client.WebServer
             builder.Services.AddRazorPages();
             builder.Services.AddServerSideBlazor().AddCircuitOptions(options => { options.DetailedErrors = true; });
 
-            builder.Services.AddTransient<IFileSystemStructure, WebServerFileSystemStructure>();
+            builder.Services.AddTransient<IDragon6Platform, WebServerPlatform>();
             builder.Services.AddDragon6Services();
 
             var app = builder.Build();

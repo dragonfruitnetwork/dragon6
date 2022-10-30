@@ -26,7 +26,7 @@ namespace DragonFruit.Six.Client.Screens.Splash
 
         protected override async Task OnInitializedAsync()
         {
-            RealmConfigurator.Initialise(Services.GetRequiredService<IFileSystemStructure>());
+            RealmConfigurator.Initialise(Services.GetRequiredService<IDragon6Platform>());
 
             CurrentStatus = "Preparing database...";
             await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);

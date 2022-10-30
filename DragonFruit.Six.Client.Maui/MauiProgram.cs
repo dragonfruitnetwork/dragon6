@@ -24,7 +24,7 @@ namespace DragonFruit.Six.Client.Maui
 #endif
 
             // blazor bootstrap services
-            builder.Services.AddTransient<IFileSystemStructure, MauiFileSystemStructure>();
+            builder.Services.AddTransient<IDragon6Platform, MauiPlatform>();
             builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
 
             return builder.Build();

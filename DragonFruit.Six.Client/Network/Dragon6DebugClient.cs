@@ -14,9 +14,9 @@ namespace DragonFruit.Six.Client.Network
     {
         private const string TokenFileName = "ubi.token";
 
-        private readonly IFileSystemStructure _fileSystem;
+        private readonly IDragon6Platform _fileSystem;
 
-        public Dragon6DebugClient(IFileSystemStructure fileSystem)
+        public Dragon6DebugClient(IDragon6Platform fileSystem)
             : base("00000000-0000-0000-0000-000000000001.045a00e5c0", "EzsMSGkhL9Z5EDUYzuMnBsf1GyL/ygAR0DjdHl60coQ", "dragon6.token.read")
         {
             _fileSystem = fileSystem;

@@ -6,9 +6,11 @@ namespace DragonFruit.Six.Client.Database
     /// <summary>
     /// Provides a way to set folder structures on a per-system level
     /// </summary>
-    public interface IFileSystemStructure
+    public interface IDragon6Platform
     {
         public string Cache { get; }
         public string AppData { get; }
+
+        public void OpenUrl(string url);
     }
 }

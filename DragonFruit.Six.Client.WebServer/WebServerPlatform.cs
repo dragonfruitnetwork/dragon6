@@ -2,14 +2,15 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using DragonFruit.Six.Client.Database;
 
 namespace DragonFruit.Six.Client.WebServer
 {
-    public class WebServerFileSystemStructure : IFileSystemStructure
+    public class WebServerPlatform : IDragon6Platform
     {
-        public WebServerFileSystemStructure()
+        public WebServerPlatform()
         {
             Directory.CreateDirectory(Cache);
             Directory.CreateDirectory(AppData);
@@ -17,5 +18,16 @@ namespace DragonFruit.Six.Client.WebServer
 
         public string Cache => Path.Combine(Path.GetTempPath(), "dragon6");
         public string AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Client");
+
+        public void OpenUrl(string url)
+        {
+            var psi = new ProcessStartInfo(url)
+            {
+                Verb = "open",
+                UseShellExecute = true
+            };
+
+            Process.Start(psi);
+        }
     }
 }

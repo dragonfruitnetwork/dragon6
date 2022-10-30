@@ -11,12 +11,12 @@ namespace DragonFruit.Six.Client.Database
         private const int SchemaVersion = 1;
         private const string RealmName = "dragon6.realm";
 
-        public static void Initialise(IFileSystemStructure fileSystemStructure)
+        public static void Initialise(IDragon6Platform devicePlatform)
         {
             var fallbackDir = Path.Combine(Path.GetTempPath(), "dragon6");
             Directory.CreateDirectory(fallbackDir);
 
-            RealmConfiguration.DefaultConfiguration = new RealmConfiguration(Path.Combine(fileSystemStructure.AppData, RealmName))
+            RealmConfiguration.DefaultConfiguration = new RealmConfiguration(Path.Combine(devicePlatform.AppData, RealmName))
             {
                 SchemaVersion = SchemaVersion,
                 FallbackPipePath = fallbackDir,
