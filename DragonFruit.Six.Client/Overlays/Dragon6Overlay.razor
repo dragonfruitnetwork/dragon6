@@ -1,3 +1,5 @@
+<Dragon6HeaderButton Name="@Info.Name" Icon="@Info.Icon" Clicked="() => _offcanvas?.ShowAsync()"/>
+
 <HxOffcanvas @ref="_offcanvas"
              Size="@Info.Size"
              Title="@Info.FullName"
@@ -30,21 +32,15 @@
     </BodyTemplate>
 </HxOffcanvas>
 
-<HxTooltip Text="@Info.Name" Placement="TooltipPlacement.Bottom">
-    <div role="button" @onclick="() => _offcanvas.ShowAsync()">
-        <i role="button" class="fa-solid fa-@Info.Icon"></i>
-    </div>
-</HxTooltip>
-
 @code {
 
     private ErrorBoundary _error;
     private HxOffcanvas _offcanvas;
 
     [Parameter]
-    public bool IsMobileMode { get; set; }
+    public IOverlayInfo Info { get; set; }
 
     [Parameter]
-    public IDragon6OverlayInfo Info { get; set; }
+    public RenderFragment ChildContent { get; set; }
 
 }
