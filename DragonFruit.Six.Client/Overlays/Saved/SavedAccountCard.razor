@@ -1,0 +1,56 @@
+@using DragonFruit.Six.Api.Accounts.Entities
+@using DragonFruit.Six.Api.Accounts.Enums
+@using DragonFruit.Six.Api.Seasonal
+@using DragonFruit.Six.Client.Database.Entities
+@using DragonFruit.Six.Client.Database.Services
+@using DragonFruit.Six.Client.Overlays.Search
+@using DragonFruit.Six.Client.Utils
+
+<div class="card bg-transparent user-select-none" role="button" @onclick="() => SearchProviderState.TriggerSearch(Account.UbisoftId, Account.Platform, IdentifierType.UserId)">
+    <div class="card-body d-flex align-items-center gap-3">
+        @if (Info == null)
+        {
+            <HxSpinner Color="ThemeColor.Info"/>
+            <p>Loading account...</p>
+        }
+        else
+        {
+            <img class="overlay-avatar" src="@Info.Image" alt=""/>
+
+            <div>
+                <div class="d-flex align-items-center">
+                    <h4 class="m-0 text-truncate">@Info.Username</h4>
+                    <D6PlatformBadge Platform="Info.Platform"/>
+                </div>
+            </div>
+
+            <img class="overlay-rank ms-auto" alt="" src="@RankIconUtils.FormatRankIconUrl(Ranks.GetFromId(Account.SeasonMaxRank).IconUrl)"/>
+        }
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public SavedAccount Account { get; set; }
+
+    [Inject]
+    private AccountLookupCache Accounts { get; set; }
+
+    [CascadingParameter]
+    private SearchProviderState SearchProviderState { get; set; }
+
+    private UbisoftAccount Info { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Account.ProfileId == Info?.ProfileId)
+        {
+            return;
+        }
+
+        var matchingAccounts = await Accounts.LookupAsync(new[] { Account.UbisoftId }, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
+        Info = matchingAccounts.SingleOrDefault(x => x.ProfileId == Account.ProfileId);
+    }
+
+}
