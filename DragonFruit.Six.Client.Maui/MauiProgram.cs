@@ -1,9 +1,7 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
-using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database;
-using DragonFruit.Six.Client.Network;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
@@ -25,7 +23,7 @@ namespace DragonFruit.Six.Client.Maui
 
             // blazor bootstrap services
             builder.Services.AddTransient<IDragon6Platform, MauiPlatform>();
-            builder.Services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
+            builder.Services.AddDragon6Services();
 
             return builder.Build();
         }
