@@ -1,6 +1,7 @@
 ﻿@using DragonFruit.Six.Api
 @using DragonFruit.Six.Api.Services.Status
 @using System.Threading
+@using DragonFruit.Six.Client.Database
 @using Humanizer
 @implements IDisposable
 
@@ -16,17 +17,21 @@
     };
 }
 
-@* todo add device-specific launcher *@
 <Dragon6HeaderButton Icon="globe"
                      CssClass="@($"color: {iconColour}")"
+                     Clicked="() => Platform.OpenUrl(StatusUrl)"
                      Name="@($"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
 
 @code {
 
     private Timer _timer;
+    private const string StatusUrl = "https://www.ubisoft.com/en-us/game/rainbow-six/siege/status";
 
     [Inject]
     private Dragon6Client Client { get; set; }
+
+    [Inject]
+    private IDragon6Platform Platform { get; set; }
 
     private ServerStatus? Status { get; set; }
 
