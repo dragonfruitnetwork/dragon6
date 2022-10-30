@@ -25,7 +25,12 @@
     protected override async Task OnInitializedAsync()
     {
         _realm = await Realm.GetInstanceAsync();
-        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, changes, error) =>
+    }
+
+    protected override void OnParametersSet()
+    {
+        _notificationListener?.Dispose();
+        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
         {
             IsSaved = sender.Any(x => x.ProfileId == Account.ProfileId);
             InvokeAsync(StateHasChanged);
