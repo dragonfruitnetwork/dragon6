@@ -53,11 +53,24 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private LegacyPlaylistStats Ranked { get; set; }
         private LegacyPlaylistStats Deathmatch { get; set; }
 
+        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0;
+
         /// <summary>
         /// Seasonal stats for the provided <see cref="Account"/> after the legacy stats were frozen.
         /// Used to recalculate all-time stats and quickly load in data to the season selector.
         /// </summary>
         private IEnumerable<SeasonalStats> PostFreezeSeasons { get; set; }
+
+        protected override void OnParametersSet()
+        {
+            // reset all stats properties
+            Account = null;
+            AccountActivity = null;
+
+            Casual = null;
+            Ranked = null;
+            Deathmatch = null;
+        }
 
         protected override async Task OnParametersSetAsync()
         {
@@ -78,7 +91,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             AccountActivity = await Client.GetAccountActivityAsync(Account).ConfigureAwait(false);
 
-            if (AccountActivity == null || AccountActivity.SessionCount == 0)
+            if (!AccountHasPlayedGame)
             {
                 return;
             }
