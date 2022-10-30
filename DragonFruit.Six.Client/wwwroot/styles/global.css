@@ -44,10 +44,6 @@ a:hover {
     color: unset !important;
 }
 
-.offcanvas-backdrop {
-    margin: 0 !important;
-}
-
 .d6-icon-button {
     gap: 10px;
     display: flex;
@@ -117,22 +113,4 @@ a:hover {
 
 .d6-platform-selector {
     min-width: 50px;
-}
-
-.d6-account-grid {
-    gap: 1rem;
-    display: grid;
-    flex-wrap: wrap;
-    grid-template-columns: 1fr;
-}
-
-.overlay-avatar {
-    height: 75px;
-    width: 75px;
-    border-radius: 50%;
-}
-
-.overlay-rank {
-    height: 60px;
-    width: 60px;
 }
