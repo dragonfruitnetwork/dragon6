@@ -6,17 +6,15 @@ using Havit.Blazor.Components.Web.Bootstrap;
 
 namespace DragonFruit.Six.Client.Overlays.Recents
 {
-    public class RecentsOverlayInfo : IDragon6OverlayInfo
+    public class RecentsOverlayInfo : IOverlayInfo
     {
         internal const int MaxAccounts = 50;
 
         public int Order => 2;
-
-        public string Name => "Recents";
-        public string FullName => "Recent Players";
-
         public string Icon => "clock-rotate-left";
+        public string Name => "Recents";
 
+        public string FullName => "Recent Players";
         public OffcanvasSize Size => OffcanvasSize.Large;
         public Type OverlayContent => typeof(RecentsOverlay);
     }
