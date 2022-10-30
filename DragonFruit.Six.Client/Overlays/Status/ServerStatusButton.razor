@@ -1,0 +1,51 @@
+﻿@using DragonFruit.Six.Api
+@using DragonFruit.Six.Api.Services.Status
+@using System.Threading
+@using Humanizer
+@implements IDisposable
+
+@{
+    var iconColour = Status switch
+    {
+        ServerStatus.Online => "#4caf50",
+        ServerStatus.Interrupted => "#ffc107",
+        ServerStatus.Degraded => "#f44336",
+        ServerStatus.Maintenance => "#607d8b",
+
+        _ => "royalblue"
+    };
+}
+
+@* todo add device-specific launcher *@
+<Dragon6HeaderButton Icon="globe"
+                     CssClass="@($"color: {iconColour}")"
+                     Name="@($"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
+
+@code {
+
+    private Timer _timer;
+
+    [Inject]
+    private Dragon6Client Client { get; set; }
+
+    private ServerStatus? Status { get; set; }
+
+    protected override void OnInitialized()
+    {
+        _timer = new Timer(UpdateStatus, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+    }
+
+    private async void UpdateStatus(object state)
+    {
+        var serverStatus = await Client.GetServerStatusAsync().ConfigureAwait(false);
+        Status = serverStatus.Max(x => x.Status);
+
+        _ = InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        _timer?.Dispose();
+    }
+
+}
