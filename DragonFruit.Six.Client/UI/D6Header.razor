@@ -3,13 +3,49 @@
         <img src="_content/DragonFruit.Six.Client/assets/dragon6.svg" alt="" class="d6-logo">
         <span class="ms-4 text-truncate d6-logo-subtitle">@Title</span>
     </a>
-    
-    <D6Overlays/>
+
+    <div class="d6-header-footer--container">
+        <div class="d6-header--links">
+            @foreach (var button in DiscoveredButtons)
+            {
+                switch (button)
+                {
+                    case IOverlayInfo overlay:
+                        <Dragon6Overlay Info="overlay"/>
+                        break;
+
+                    case INavigationButton navigation:
+                        <Dragon6HeaderButton Name="@button.Name" Icon="@button.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
+                        break;
+
+                    case ICustomButton custom:
+                        <DynamicComponent Type="custom.ButtonComponentType"/>
+                        break;
+                }
+            }
+        </div>
+    </div>
 </nav>
 
 @code {
 
     [Parameter]
     public string Title { get; set; }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    private IEnumerable<IHeaderButton> DiscoveredButtons { get; set; }
+
+    protected override void OnInitialized()
+    {
+        DiscoveredButtons = GetType().Assembly
+                                     .GetTypes()
+                                     .Where(x => !x.IsInterface && !x.IsAbstract && x.IsAssignableTo(typeof(IHeaderButton)))
+                                     .Select(Activator.CreateInstance)
+                                     .Cast<IHeaderButton>()
+                                     .OrderBy(x => x.Order)
+                                     .ToList();
+    }
 
 }
