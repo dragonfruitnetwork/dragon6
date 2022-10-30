@@ -8,15 +8,15 @@
     <div class="d6-account-grid">
         @foreach (var account in Accounts.Freeze().OrderBy(x => x.SavedAt))
         {
-            <p>@account.UbisoftId</p>
+            <SavedAccountCard Account="account"/>
         }
     </div>
 }
 else
 {
     <div class="d6-overlay-center-content">
-        <span class="material-icons-round text-warning fa-2x">star</span>
-        
+        <i class="fa-solid fa-star text-warning fa-2x"></i>
+
         <div>
             <h4>Save a user for future access.</h4>
             <p>Pressing the star on the right hand side of the account info will save an account to this area so that you can find them easily. It also shows you their best rank in the current season!</p>
