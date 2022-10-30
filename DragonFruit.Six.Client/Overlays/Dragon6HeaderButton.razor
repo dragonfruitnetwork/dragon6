@@ -1,6 +1,6 @@
 ﻿<div role="button" @onclick="Clicked">
     <HxTooltip Text="@Name" Placement="TooltipPlacement.Bottom">
-        <i role="button" class="fa-solid fa-@Icon"></i>
+        <i role="button" class="fa-solid fa-@Icon" style="@CssClass"></i>
     </HxTooltip>
 </div>
 
@@ -11,6 +11,9 @@
 
     [Parameter]
     public string Icon { get; set; }
+
+    [Parameter]
+    public string CssClass { get; set; }
 
     [Parameter]
     public EventCallback Clicked { get; set; }
