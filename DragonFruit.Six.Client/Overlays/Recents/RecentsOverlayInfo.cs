@@ -11,6 +11,8 @@ namespace DragonFruit.Six.Client.Overlays.Recents
         internal const int MaxAccounts = 50;
 
         public int Order => 2;
+        public int ColumnSize => 6;
+
         public string Icon => "clock-rotate-left";
         public string Name => "Recents";
 

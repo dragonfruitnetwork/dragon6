@@ -8,6 +8,8 @@ namespace DragonFruit.Six.Client.Overlays.Buttons
     public class HomeButton : INavigationButton
     {
         public int Order => 0;
+        public int ColumnSize => 12;
+
         public string Icon => "home";
         public string Name => "Home";
 

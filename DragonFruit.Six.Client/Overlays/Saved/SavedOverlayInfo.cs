@@ -9,6 +9,8 @@ namespace DragonFruit.Six.Client.Overlays.Saved
     public class SavedOverlayInfo : IOverlayInfo
     {
         public int Order => 1;
+        public int ColumnSize => 6;
+
         public string Icon => "star";
         public string Name => "Saved";
 
