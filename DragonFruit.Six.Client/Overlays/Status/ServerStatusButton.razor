@@ -18,6 +18,7 @@
 }
 
 <Dragon6HeaderButton Icon="globe"
+                     IsMobileLayout="IsMobileLayout"
                      CssClass="@($"color: {iconColour}")"
                      Clicked="() => Platform.OpenUrl(StatusUrl)"
                      Name="@($"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
@@ -26,6 +27,9 @@
 
     private Timer _timer;
     private const string StatusUrl = "https://www.ubisoft.com/en-us/game/rainbow-six/siege/status";
+
+    [Parameter]
+    public bool IsMobileLayout { get; set; }
 
     [Inject]
     private Dragon6Client Client { get; set; }

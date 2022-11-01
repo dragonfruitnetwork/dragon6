@@ -1,4 +1,7 @@
-<Dragon6HeaderButton Name="@Info.Name" Icon="@Info.Icon" Clicked="() => _offcanvas?.ShowAsync()"/>
+<Dragon6HeaderButton Name="@Info.Name"
+                     Icon="@Info.Icon"
+                     IsMobileLayout="IsMobileLayout"
+                     Clicked="() => _offcanvas?.ShowAsync()"/>
 
 <HxOffcanvas @ref="_offcanvas"
              Size="@Info.Size"
@@ -39,6 +42,9 @@
 
     [Parameter]
     public IOverlayInfo Info { get; set; }
+
+    [Parameter]
+    public bool IsMobileLayout { get; set; }
 
     [Parameter]
     public RenderFragment ChildContent { get; set; }

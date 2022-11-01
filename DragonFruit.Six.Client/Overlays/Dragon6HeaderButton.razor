@@ -1,7 +1,19 @@
 ﻿<div role="button" @onclick="Clicked">
-    <HxTooltip Text="@Name" Placement="TooltipPlacement.Bottom">
-        <i role="button" class="fa-solid fa-@Icon" style="@CssClass"></i>
-    </HxTooltip>
+    @if (IsMobileLayout)
+    {
+        <div class="card bg-transparent">
+            <div class="card-body d-flex flex-column gap-2 align-items-center">
+                <i class="fa-solid fa-@Icon" style="@CssClass"></i>
+                <span class="text-center">@Name</span>
+            </div>
+        </div>
+    }
+    else
+    {
+        <HxTooltip Text="@Name" Placement="TooltipPlacement.Bottom">
+            <i class="fa-solid fa-@Icon" style="@CssClass"></i>
+        </HxTooltip>
+    }
 </div>
 
 @code {
@@ -14,6 +26,9 @@
 
     [Parameter]
     public string CssClass { get; set; }
+
+    [Parameter]
+    public bool IsMobileLayout { get; set; }
 
     [Parameter]
     public EventCallback Clicked { get; set; }

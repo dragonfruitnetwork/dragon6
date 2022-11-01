@@ -1,25 +1,35 @@
 ﻿@switch (Button)
 {
     case IOverlayInfo overlay:
-        <Dragon6Overlay Info="overlay"/>
+        <Dragon6Overlay Info="overlay" IsMobileLayout="IsMobileLayout"/>
         break;
 
     case INavigationButton navigation:
-        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
+        <Dragon6HeaderButton Name="@navigation.Name"
+                             Icon="@navigation.Icon"
+                             IsMobileLayout="IsMobileLayout"
+                             Clicked="() => navigation.OnClick(Navigation)"/>
         break;
 
     case ICustomButton custom:
-        <DynamicComponent Type="custom.ButtonComponentType"/>
+        <DynamicComponent Type="custom.ButtonComponentType" Parameters="@(IsMobileLayout ? MobileComponentParams : null)"/>
         break;
 }
 
-
 @code {
+
+    private static readonly IDictionary<string, object> MobileComponentParams = new Dictionary<string, object>
+    {
+        [nameof(IsMobileLayout)] = true
+    };
+
+    [Parameter]
+    public bool IsMobileLayout { get; set; }
 
     [Parameter]
     public IHeaderButton Button { get; set; }
 
     [Inject]
-    public NavigationManager Navigation { get; set; }
+    private NavigationManager Navigation { get; set; }
 
 }
