@@ -4,8 +4,8 @@
         <Dragon6Overlay Info="overlay"/>
         break;
 
-    case INavigationButton navigation:
-        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
+    case IServiceButton navigation:
+        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Services)"/>
         break;
 
     case ICustomButton custom:
@@ -20,6 +20,6 @@
     public IHeaderButton Button { get; set; }
 
     [Inject]
-    public NavigationManager Navigation { get; set; }
+    public IServiceProvider Services { get; set; }
 
 }
