@@ -8,20 +8,7 @@
         <div class="d6-header--links">
             @foreach (var button in DiscoveredButtons)
             {
-                switch (button)
-                {
-                    case IOverlayInfo overlay:
-                        <Dragon6Overlay Info="overlay"/>
-                        break;
-
-                    case INavigationButton navigation:
-                        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
-                        break;
-
-                    case ICustomButton custom:
-                        <DynamicComponent Type="custom.ButtonComponentType"/>
-                        break;
-                }
+                <D6HeaderButton Button="button"/>
             }
         </div>
     </div>

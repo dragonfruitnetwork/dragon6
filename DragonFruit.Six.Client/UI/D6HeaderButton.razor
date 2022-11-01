@@ -1,0 +1,25 @@
+﻿@switch (Button)
+{
+    case IOverlayInfo overlay:
+        <Dragon6Overlay Info="overlay"/>
+        break;
+
+    case INavigationButton navigation:
+        <Dragon6HeaderButton Name="@navigation.Name" Icon="@navigation.Icon" Clicked="() => navigation.OnClick(Navigation)"/>
+        break;
+
+    case ICustomButton custom:
+        <DynamicComponent Type="custom.ButtonComponentType"/>
+        break;
+}
+
+
+@code {
+
+    [Parameter]
+    public IHeaderButton Button { get; set; }
+
+    [Inject]
+    public NavigationManager Navigation { get; set; }
+
+}
