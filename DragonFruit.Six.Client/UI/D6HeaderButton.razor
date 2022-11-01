@@ -4,11 +4,11 @@
         <Dragon6Overlay Info="overlay" IsMobileLayout="IsMobileLayout"/>
         break;
 
-    case INavigationButton navigation:
+    case IServiceButton navigation:
         <Dragon6HeaderButton Name="@navigation.Name"
                              Icon="@navigation.Icon"
                              IsMobileLayout="IsMobileLayout"
-                             Clicked="() => navigation.OnClick(Navigation)"/>
+                             Clicked="() => navigation.OnClick(Services)"/>
         break;
 
     case ICustomButton custom:
@@ -30,6 +30,6 @@
     public IHeaderButton Button { get; set; }
 
     [Inject]
-    private NavigationManager Navigation { get; set; }
+    private IServiceProvider Services { get; set; }
 
 }
