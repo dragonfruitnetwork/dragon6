@@ -1,6 +1,6 @@
 ﻿<div role="button" @onclick="Clicked">
     <HxTooltip Text="@Name" Placement="TooltipPlacement.Bottom">
-        <i role="button" class="fa-solid fa-@Icon" style="@CssClass"></i>
+        <i role="button" class="@(Icon.StartsWith("fa") ? Icon : $"fa-solid fa-{Icon}")" style="@CssClass"></i>
     </HxTooltip>
 </div>
 
