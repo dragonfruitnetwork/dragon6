@@ -1,11 +1,10 @@
 <HxOffcanvas @ref="_offcanvas"
              Size="@Info.Size"
              Title="@Info.FullName"
-             ShowCloseButton="false"
              BodyCssClass="bg-dark"
+             HeaderCssClass="d6-overlay-header"
              CssClass="bg-dark text-light mx-0"
-             RenderMode="OffcanvasRenderMode.Always"
-             HeaderCssClass="d-flex justify-content-center">
+             RenderMode="OffcanvasRenderMode.Always">
     <BodyTemplate>
         <ErrorBoundary @ref="_error">
             <ChildContent>
