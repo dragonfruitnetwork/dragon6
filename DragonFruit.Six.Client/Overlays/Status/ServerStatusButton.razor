@@ -21,7 +21,7 @@
                      CardLayout="IsMenuButton"
                      CssClass="@($"color: {iconColour}")"
                      Clicked="() => Platform.OpenUrl(StatusUrl)"
-                     Name="@($"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
+                     Name="@(IsMenuButton ? "Servers" : $"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
 
 @code {
 
