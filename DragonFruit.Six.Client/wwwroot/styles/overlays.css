@@ -2,6 +2,14 @@
     margin: 0 !important;
 }
 
+.d6-menu-overlay {
+    margin-left: 0;
+    margin-right: 0;
+    color: var(--bs-light);
+    height: max(65vh, 100%);
+    background-color: var(--bs-dark);
+}
+
 .d6-account-grid {
     gap: 1rem;
     display: grid;
