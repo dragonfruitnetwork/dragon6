@@ -15,7 +15,7 @@
         break;
 
     case ICustomButton custom:
-        <DynamicComponent Type="custom.ButtonComponentType" Parameters="MobileComponentParams"/>
+        <DynamicComponent Type="custom.ButtonComponentType" Parameters="@(IsMenuButton ? MobileComponentParams : null)"/>
         break;
 }
 
