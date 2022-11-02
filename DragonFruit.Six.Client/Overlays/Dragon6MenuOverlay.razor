@@ -3,15 +3,15 @@
 <HxOffcanvas @ref="_offcanvas"
              BodyCssClass="bg-dark"
              HeaderCssClass="d-none"
+             CssClass="d6-menu-overlay"
              Size="OffcanvasSize.Large"
-             CssClass="bg-dark text-light mx-0"
              Placement="OffcanvasPlacement.Bottom">
     <BodyTemplate>
         <div class="row g-2">
             @foreach (var button in Buttons)
             {
                 <div class="col-@button.ColumnSize">
-                    <D6HeaderButton Button="button" IsMobileLayout="true"/>
+                    <D6HeaderButton Button="button" IsMenuButton="true"/>
                 </div>
             }
         </div>

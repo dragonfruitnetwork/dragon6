@@ -1,18 +1,21 @@
 ﻿@switch (Button)
 {
     case IOverlayInfo overlay:
-        <Dragon6Overlay Info="overlay" IsMobileLayout="IsMobileLayout"/>
+        <Dragon6HeaderButton Name="@overlay.Name"
+                             Icon="@overlay.Icon"
+                             CardLayout="IsMenuButton"
+                             Clicked="() => Overlays[overlay].Toggle()"/>
         break;
 
     case IServiceButton navigation:
         <Dragon6HeaderButton Name="@navigation.Name"
                              Icon="@navigation.Icon"
-                             IsMobileLayout="IsMobileLayout"
+                             CardLayout="IsMenuButton"
                              Clicked="() => navigation.OnClick(Services)"/>
         break;
 
     case ICustomButton custom:
-        <DynamicComponent Type="custom.ButtonComponentType" Parameters="@(IsMobileLayout ? MobileComponentParams : null)"/>
+        <DynamicComponent Type="custom.ButtonComponentType" Parameters="MobileComponentParams"/>
         break;
 }
 
@@ -20,16 +23,19 @@
 
     private static readonly IDictionary<string, object> MobileComponentParams = new Dictionary<string, object>
     {
-        [nameof(IsMobileLayout)] = true
+        [nameof(IsMenuButton)] = true
     };
 
     [Parameter]
-    public bool IsMobileLayout { get; set; }
+    public bool IsMenuButton { get; set; }
 
     [Parameter]
     public IHeaderButton Button { get; set; }
 
     [Inject]
-    private IServiceProvider Services { get; set; }
+    public IServiceProvider Services { get; set; }
+
+    [CascadingParameter]
+    public IDictionary<IOverlayInfo, Dragon6Overlay> Overlays { get; set; }
 
 }
