@@ -10,11 +10,17 @@
     </a>
 
     <div class="d6-header-footer--container">
-        <div class="d6-header--links">
-            <CascadingValue Value="Overlays">
+        <CascadingValue Value="Overlays">
+            <div class="d6-header--links d-md-flex d-none">
+                @foreach (var button in DiscoveredButtons)
+                {
+                    <D6HeaderButton Button="button" IsMenuButton="false"/>
+                }
+            </div>
+            <div class="d-md-none">
                 <Dragon6MenuOverlay Buttons="DiscoveredButtons"/>
-            </CascadingValue>
-        </div>
+            </div>
+        </CascadingValue>
     </div>
 </nav>
 
