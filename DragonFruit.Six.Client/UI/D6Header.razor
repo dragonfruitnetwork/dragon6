@@ -1,4 +1,9 @@
-﻿<nav class="d6-header-footer">
+﻿@foreach (var overlay in DiscoveredButtons.OfType<IOverlayInfo>())
+{
+    <Dragon6Overlay @ref="Overlays[overlay]" Info="overlay"/>
+}
+
+<nav class="d6-header-footer">
     <a href="/home" class="d6-header-footer--container text-decoration-none">
         <img src="_content/DragonFruit.Six.Client/assets/dragon6.svg" alt="" class="d6-logo">
         <span class="ms-4 text-truncate d6-logo-subtitle">@Title</span>
@@ -6,10 +11,9 @@
 
     <div class="d6-header-footer--container">
         <div class="d6-header--links">
-            @foreach (var button in DiscoveredButtons)
-            {
-                <D6HeaderButton Button="button"/>
-            }
+            <CascadingValue Value="Overlays">
+                <Dragon6MenuOverlay Buttons="DiscoveredButtons"/>
+            </CascadingValue>
         </div>
     </div>
 </nav>
@@ -20,9 +24,10 @@
     public string Title { get; set; }
 
     [Inject]
-    private NavigationManager Navigation { get; set; }
+    private IServiceProvider Services { get; set; }
 
     private IEnumerable<IHeaderButton> DiscoveredButtons { get; set; }
+    private IDictionary<IOverlayInfo, Dragon6Overlay> Overlays { get; set; } = new Dictionary<IOverlayInfo, Dragon6Overlay>();
 
     protected override void OnInitialized()
     {

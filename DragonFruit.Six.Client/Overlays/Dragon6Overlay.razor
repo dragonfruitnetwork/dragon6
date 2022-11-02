@@ -1,8 +1,3 @@
-<Dragon6HeaderButton Name="@Info.Name"
-                     Icon="@Info.Icon"
-                     IsMobileLayout="IsMobileLayout"
-                     Clicked="() => _offcanvas?.ShowAsync()"/>
-
 <HxOffcanvas @ref="_offcanvas"
              Size="@Info.Size"
              Title="@Info.FullName"
@@ -43,7 +38,6 @@
     [Parameter]
     public IOverlayInfo Info { get; set; }
 
-    [Parameter]
-    public bool IsMobileLayout { get; set; }
+    public Task Toggle() => _offcanvas.ShowAsync();
 
 }
