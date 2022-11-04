@@ -24,6 +24,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
         /// </summary>
         public void TriggerSearch(string identifier, Platform platform, IdentifierType? type = null)
         {
+            if (string.IsNullOrWhiteSpace(identifier))
+                return;
+
             AccountSearchRequested?.Invoke(identifier, platform, type);
         }
     }
