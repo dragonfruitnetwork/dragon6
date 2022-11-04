@@ -1,0 +1,39 @@
+@page "/news"
+@using DragonFruit.Six.Client.Network.News
+@using DragonFruit.Six.Api
+
+@if (Entries == null)
+{
+    <div class="d-flex align-items-center justify-content-center gap-3 mb-5">
+        <HxSpinner Color="ThemeColor.Info"/>
+        <span>Loading News...</span>
+    </div>
+}
+
+@code {
+
+    [Inject]
+    private Dragon6Client Client { get; set; }
+
+    [CascadingParameter]
+    private DefaultLayout Layout { get; set; }
+
+    private IReadOnlyCollection<UbisoftNewsItem> Entries { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.Title = "News";
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new UbisoftNewsRequest
+        {
+            Limit = 20
+        };
+
+        var newsResponse = await Client.PerformAsync<UbisoftNewsResponse>(request).ConfigureAwait(false);
+        Entries = newsResponse.Items;
+    }
+
+}
