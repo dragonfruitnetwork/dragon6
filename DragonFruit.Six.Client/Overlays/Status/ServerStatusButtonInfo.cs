@@ -7,7 +7,7 @@ namespace DragonFruit.Six.Client.Overlays.Status
 {
     public class ServerStatusButtonInfo : ICustomButton
     {
-        public int Order => 3;
+        public int Order => 4;
         public int ColumnSize => 4;
 
         public Type ButtonComponentType => typeof(ServerStatusButton);
