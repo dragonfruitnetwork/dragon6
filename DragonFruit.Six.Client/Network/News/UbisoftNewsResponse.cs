@@ -27,6 +27,6 @@ namespace DragonFruit.Six.Client.Network.News
         public IReadOnlyList<string> Tags { get; set; }
 
         [JsonProperty("items")]
-        public IReadOnlyList<UbisoftNewsItem> Items { get; set; }
+        public IReadOnlyCollection<UbisoftNewsItem> Items { get; set; }
     }
 }

@@ -35,10 +35,10 @@ namespace DragonFruit.Six.Client.Network.News
         public string[] Categories { get; set; }
 
         /// <summary>
-        /// Article publish date
+        /// Article publish date (currently in 'R' format, with extra stuff that JSON.NET can't handle)
         /// </summary>
         [JsonProperty("date")]
-        public DateTimeOffset Date { get; set; }
+        public string Date { get; set; }
 
         /// <summary>
         /// Article title
