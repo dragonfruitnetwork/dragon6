@@ -1,6 +1,11 @@
 @page "/news"
 @using DragonFruit.Six.Client.Network.News
 @using DragonFruit.Six.Api
+@using DragonFruit.Six.Client.Database
+
+<HeadContent>
+    <link rel="stylesheet" href="_content/DragonFruit.Six.Client/styles/news.css"/>
+</HeadContent>
 
 @if (Entries == null)
 {
@@ -9,11 +14,31 @@
         <span>Loading News...</span>
     </div>
 }
+else
+{
+    <div class="container my-4">
+        <div class="d6-news-grid">
+            @foreach (var item in Entries.OrderByDescending(x => x.Date))
+            {
+                <NewsCard Item="item"/>
+            }
+        </div>
+        <div class="d6-news-navigation">
+            <button @onclick="OpenOfficialNews" class="btn btn-text text-info d-flex align-items-center gap-2">
+                <span>View More</span>
+                <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </button>
+        </div>
+    </div>
+}
 
 @code {
 
     [Inject]
     private Dragon6Client Client { get; set; }
+
+    [Inject]
+    private IDragon6Platform Platform { get; set; }
 
     [CascadingParameter]
     private DefaultLayout Layout { get; set; }
@@ -27,13 +52,12 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var request = new UbisoftNewsRequest
-        {
-            Limit = 20
-        };
-
+        var request = new UbisoftNewsRequest { Limit = 10 };
         var newsResponse = await Client.PerformAsync<UbisoftNewsResponse>(request).ConfigureAwait(false);
+
         Entries = newsResponse.Items;
     }
+
+    private void OpenOfficialNews() => Platform.OpenUrl("https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates");
 
 }

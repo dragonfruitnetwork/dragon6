@@ -1,0 +1,38 @@
+﻿@using DragonFruit.Six.Client.Network.News
+@using DragonFruit.Six.Client.Database
+@using Humanizer
+@using Humanizer.Localisation
+
+<div class="d6-news-card">
+    <img alt=""
+         role="button"
+         @onclick="OpenArticle"
+         class="rounded d6-news-image"
+         src="@Item.ImageThumbnail.Url"/>
+
+    <div class="w-100 ms-4">
+        <div role="button" @onclick="OpenArticle">
+            <span class="user-select-none">
+                @TimeSpan.FromMinutes(Item.ReadTime).Humanize(minUnit: TimeUnit.Second) to read
+            </span>
+            <h4 class="mt-2">@Item.Title</h4>
+        </div>
+        <hr class="w-100 text-secondary"/>
+        <span>@Item.Abstract</span>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public UbisoftNewsItem Item { get; set; }
+
+    [Inject]
+    private IDragon6Platform Platform { get; set; }
+
+    private void OpenArticle()
+    {
+        Platform.OpenUrl($"https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates/{Item.Link.Stub.TrimStart('/')}");
+    }
+
+}
