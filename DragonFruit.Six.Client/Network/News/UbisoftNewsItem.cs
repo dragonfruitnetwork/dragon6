@@ -65,6 +65,12 @@ namespace DragonFruit.Six.Client.Network.News
         public float ReadTime { get; set; }
 
         /// <summary>
+        /// Article url-related information.
+        /// </summary>
+        [JsonProperty("button")]
+        public UbisoftNewsItemButton Link { get; set; }
+
+        /// <summary>
         /// Associated image displayed on the with the article
         /// </summary>
         [JsonProperty("thumbnail")]
