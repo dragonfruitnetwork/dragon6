@@ -10,6 +10,8 @@ namespace DragonFruit.Six.Client.Network.News
     [JsonObject(MemberSerialization.OptIn)]
     public class UbisoftNewsItem
     {
+        private DateTime? _date;
+
         /// <summary>
         /// Alphanumeric identifier for the post.
         /// </summary>
@@ -35,10 +37,15 @@ namespace DragonFruit.Six.Client.Network.News
         public string[] Categories { get; set; }
 
         /// <summary>
-        /// Article publish date (currently in 'R' format, with extra stuff that JSON.NET can't handle)
+        /// Article publish date
+        /// </summary>
+        public DateTime Date => _date ??= DateTime.Parse(DateString[..24]);
+
+        /// <summary>
+        /// Article publish date (in strftime format)
         /// </summary>
         [JsonProperty("date")]
-        public string Date { get; set; }
+        private string DateString { get; set; }
 
         /// <summary>
         /// Article title
