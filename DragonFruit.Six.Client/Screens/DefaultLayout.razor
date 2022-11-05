@@ -10,6 +10,15 @@
 
 @code {
 
-    public string Title { get; set; }
+    public string Title
+    {
+        get => _title;
+        set
+        {
+            _title = value;
+            StateHasChanged();
+        }
+    }
 
+    private string _title;
 }
