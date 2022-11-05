@@ -1,0 +1,28 @@
+﻿.d6-news-grid {
+    gap: 2rem;
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.d6-news-card {
+    gap: 2rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.d6-news-image {
+    height: auto;
+    width: 350px;
+
+    min-height: 190px;
+
+    user-select: none;
+    object-fit: cover;
+}
+
+.d6-news-navigation {
+    margin: 1rem 0;
+    display: flex;
+    justify-content: center;
+}
