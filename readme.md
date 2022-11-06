@@ -10,7 +10,7 @@ The app will first be developed to have feature parity with the desktop version 
 ## Development
 Dragon6 is built using Blazor Hybrid (`DragonFruit.Six.Client`) and .NET MAUI (`DragonFruit.Six.Client.Maui`) to allow features to be developed for all platforms at the same time, bringing the end to the mobile being neglected and receiving quality updates inline with other versions.
 
-To build/test/develop a copy of Sakura make sure you have the following prerequisites:
+To build/test/develop a copy of Dragon6 make sure you have the following prerequisites:
 
 - A desktop with [.NET 6 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/6.0) and **ASP.NET and web development** and **.NET Multi-platform App UI development** workloads installed
 - An IDE you're comfortable with. We recommend using [JetBrains Rider](https://www.jetbrains.com/rider/) or [ReSharper](https://www.jetbrains.com/resharper/) and Visual Studio to access improved code formatting and styling suggestions.
