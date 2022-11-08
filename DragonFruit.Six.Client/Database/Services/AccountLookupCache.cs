@@ -12,86 +12,47 @@ using DragonFruit.Six.Api.Accounts;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
 using DragonFruit.Six.Client.Database.Entities;
-using Realms;
 
 namespace DragonFruit.Six.Client.Database.Services
 {
-    public class AccountLookupCache
+    public class AccountLookupCache : RealmLookupCache<UbisoftAccount, CachedUbisoftAccount>
     {
-        private readonly IMapper _mapper;
         private readonly Dragon6Client _client;
 
         public AccountLookupCache(Dragon6Client client, IMapper mapper)
+            : base(mapper)
         {
             _client = client;
-            _mapper = mapper;
         }
 
-        /// <summary>
-        /// Performs an account lookup for profiles on matching platforms. Writes accounts to a cache to reduce network requests for duplicate data
-        /// </summary>
-        /// <param name="ids">A collection of identifiers to lookup</param>
-        /// <param name="platform">The <see cref="Platform"/> the users are on</param>
-        /// <param name="type">The <see cref="IdentifierType"/> to <see cref="ids"/> represent</param>
-        public async Task<IReadOnlyList<UbisoftAccount>> LookupAsync(IReadOnlyCollection<string> ids, Platform platform, IdentifierType type)
+        protected override IEnumerable<CachedUbisoftAccount> LookupCached(IQueryable<CachedUbisoftAccount> collection, string id, Platform platform, IdentifierType identifierType)
         {
-            var missingIds = new List<string>(ids);
-            var resultantAccounts = new List<UbisoftAccount>(ids.Count);
-
-            // check realm first
-            using (var readRealm = await Realm.GetInstanceAsync())
+            return identifierType switch
             {
-                var table = readRealm.All<CachedUbisoftAccount>().Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform);
+                IdentifierType.Name => collection.Where(x => x.Expires > DateTimeOffset.Now && x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.UserId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.PlatformId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
 
-                foreach (var id in ids)
-                {
-                    var cachedAccounts = type switch
-                    {
-                        IdentifierType.Name => table.Where(x => x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                        IdentifierType.UserId => table.Where(x => x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                        IdentifierType.PlatformId => table.Where(x => x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                _ => throw new ArgumentOutOfRangeException(nameof(identifierType), identifierType, null)
+            };
+        }
 
-                        _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
-                    };
-
-                    if (cachedAccounts.Any())
-                    {
-                        missingIds.Remove(id);
-                        resultantAccounts.AddRange(cachedAccounts.AsEnumerable().Select(_mapper.Map<UbisoftAccount>));
-                    }
-                }
-            }
-
-            if (!missingIds.Any())
-            {
-                return resultantAccounts;
-            }
-
+        protected override async Task<IEnumerable<UbisoftAccount>> LookupOnline(IReadOnlyCollection<string> ids, Platform platform, IdentifierType identifierType)
+        {
             IEnumerable<UbisoftAccount> discoveredAccounts;
 
             try
             {
-                discoveredAccounts = await _client.GetAccountsAsync(missingIds, platform, type).ConfigureAwait(false);
+                discoveredAccounts = await _client.GetAccountsAsync(ids, platform, identifierType).ConfigureAwait(false);
             }
-            catch (HttpRequestException) when (missingIds.Count > 1)
+            catch (HttpRequestException) when (ids.Count > 1)
             {
                 // one or more accounts may be invalid, split into separate lookups
-                var lookupTasks = missingIds.Select(x => _client.GetAccountAsync(x, platform, type));
+                var lookupTasks = ids.Select(x => _client.GetAccountAsync(x, platform, identifierType));
                 discoveredAccounts = await Task.WhenAll(lookupTasks).ConfigureAwait(false);
             }
 
-            using var writeRealm = await Realm.GetInstanceAsync();
-            using var transaction = await writeRealm.BeginWriteAsync();
-
-            foreach (var account in discoveredAccounts)
-            {
-                writeRealm.Add(_mapper.Map<CachedUbisoftAccount>(account), true);
-                resultantAccounts.Add(account);
-            }
-
-            await transaction.CommitAsync().ConfigureAwait(false);
-
-            return resultantAccounts;
+            return discoveredAccounts;
         }
     }
 }
