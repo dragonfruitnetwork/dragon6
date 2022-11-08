@@ -29,9 +29,9 @@ namespace DragonFruit.Six.Client.Database.Services
         {
             return identifierType switch
             {
-                IdentifierType.Name => collection.Where(x => x.Expires > DateTimeOffset.Now && x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                IdentifierType.UserId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                IdentifierType.PlatformId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.Name => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.UserId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.PlatformId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
 
                 _ => throw new ArgumentOutOfRangeException(nameof(identifierType), identifierType, null)
             };
