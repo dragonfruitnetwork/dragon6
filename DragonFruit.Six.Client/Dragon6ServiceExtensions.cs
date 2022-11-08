@@ -26,6 +26,7 @@ namespace DragonFruit.Six.Client
             services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
 
             // account caches and database services
+            services.AddScoped<UserLookupCache>();
             services.AddScoped<AccountLookupCache>();
             services.AddSingleton<SavedPlayerRankService>();
         }
