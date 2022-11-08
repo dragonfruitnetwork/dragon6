@@ -48,5 +48,8 @@ namespace DragonFruit.Six.Client.Network.User
         [MapTo("title_colour")]
         [JsonProperty("title_colour")]
         public string TitleColour { get; set; }
+
+        [MapTo("expiry")]
+        public DateTimeOffset Expires { get; set; }
     }
 }
