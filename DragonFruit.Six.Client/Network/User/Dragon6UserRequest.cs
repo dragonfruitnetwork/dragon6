@@ -1,19 +1,22 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using System.Collections.Generic;
 using DragonFruit.Data;
+using DragonFruit.Data.Parameters;
 
 namespace DragonFruit.Six.Client.Network.User
 {
     public class Dragon6UserRequest : ApiRequest
     {
-        public override string Path => $"https://dragon6.dragonfruit.network/api/v2/users/{ProfileId}";
+        public override string Path => $"https://dragon6.dragonfruit.network/api/v2/users";
 
-        public Dragon6UserRequest(string profileId)
+        public Dragon6UserRequest(IEnumerable<string> profileIds)
         {
-            ProfileId = profileId;
+            ProfileIds = profileIds;
         }
 
-        public string ProfileId { get; }
+        [QueryParameter("ids", CollectionConversionMode.Unordered)]
+        public IEnumerable<string> ProfileIds { get; }
     }
 }
