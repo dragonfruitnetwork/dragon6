@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Network.User;
 
