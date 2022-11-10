@@ -78,7 +78,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private LegacyPlaylistStats Ranked { get; set; }
         private LegacyPlaylistStats Deathmatch { get; set; }
 
-        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0;
+        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0 && User?.Role >= AccountRole.Normal;
 
         /// <summary>
         /// Seasonal stats for the provided <see cref="Account"/> after the legacy stats were frozen.
