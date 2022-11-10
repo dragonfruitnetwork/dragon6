@@ -16,7 +16,7 @@ namespace DragonFruit.Six.Client.Network.User
             ProfileIds = profileIds;
         }
 
-        [QueryParameter("ids", CollectionConversionMode.Unordered)]
+        [QueryParameter("ids", CollectionConversionMode.Recursive)]
         public IEnumerable<string> ProfileIds { get; }
     }
 }
