@@ -15,16 +15,20 @@ using DragonFruit.Six.Api.Legacy.Entities;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
+using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
+using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Overlays.Search;
 using Microsoft.AspNetCore.Components;
 using Realms;
+using Dragon6User = DragonFruit.Six.Client.Network.User.Dragon6User;
 using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
 
 namespace DragonFruit.Six.Client.Screens.Stats
 {
     public partial class Stats
     {
+        private UbisoftAccount _account;
         private const byte ModernSeasonStart = 23;
         internal const int ModernStatsRange = 60;
 
@@ -41,12 +45,33 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private Dragon6Client Client { get; set; }
 
         [Inject]
+        private UserLookupCache UserCache { get; set; }
+
+        [Inject]
+        private AccountLookupCache AccountCache { get; set; }
+
+        [Inject]
         private IMapper EntityMapper { get; set; }
 
         [Inject]
         private NavigationManager Navigation { get; set; }
 
-        private UbisoftAccount Account { get; set; }
+        private Dragon6User User { get; set; }
+
+        private UbisoftAccount Account
+        {
+            get => _account;
+            set
+            {
+                _account = value;
+
+                if (User?.ProfileId != Account?.ProfileId)
+                {
+                    User = null;
+                }
+            }
+        }
+
         private UbisoftAccountActivity AccountActivity { get; set; }
 
         private LegacyPlaylistStats Casual { get; set; }
@@ -81,14 +106,17 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
             else
             {
-                Account = await Client.GetAccountAsync(Identifier, Platform, Guid.TryParse(Identifier, out _) ? IdentifierType.UserId : IdentifierType.Name).ConfigureAwait(false);
+                Account = await AccountCache.LookupAsync(Identifier, Platform, Guid.TryParse(Identifier, out _) ? IdentifierType.UserId : IdentifierType.Name).ConfigureAwait(false);
             }
 
             if (Account == null)
             {
                 Navigation.NavigateTo("/home");
+                return;
             }
 
+            // do user lookup - may return either 0 or 1 results
+            User = await UserCache.LookupAsync(Account.ProfileId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { ProfileId = Account.ProfileId, Role = AccountRole.Normal };
             AccountActivity = await Client.GetAccountActivityAsync(Account).ConfigureAwait(false);
 
             if (!AccountHasPlayedGame)
