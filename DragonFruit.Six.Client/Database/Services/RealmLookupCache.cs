@@ -20,6 +20,18 @@ namespace DragonFruit.Six.Client.Database.Services
         }
 
         /// <summary>
+        /// Performs an account lookup for a profile on a specific platform. Writes results to a cache to reduce network requests in the future
+        /// </summary>
+        /// <param name="id">A the entity identifier</param>
+        /// <param name="platform">The <see cref="Platform"/> the users are on</param>
+        /// <param name="type">The <see cref="IdentifierType"/> to <see cref="id"/> represents</param>
+        public async Task<T> LookupAsync(string id, Platform platform, IdentifierType type)
+        {
+            var results = await LookupAsync(new[] { id }, platform, type).ConfigureAwait(false);
+            return results.SingleOrDefault();
+        }
+
+        /// <summary>
         /// Performs an account lookup for profiles on matching platforms. Writes accounts to a cache to reduce network requests for duplicate data
         /// </summary>
         /// <param name="ids">A collection of identifiers to lookup</param>
