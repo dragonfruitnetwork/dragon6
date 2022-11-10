@@ -1,0 +1,12 @@
+.d6-account-cover {
+    height: calc(100vh - 150px) !important;
+}
+
+.d6-search {
+    opacity: 10%;
+    -webkit-transition: opacity 0.3s;
+}
+
+.d6-search:hover {
+    opacity: 100%;
+}
