@@ -40,6 +40,7 @@
 
     display: flex;
     flex-direction: column;
+    transition: height .25s linear;
 }
 
 .d6-account-cover {
