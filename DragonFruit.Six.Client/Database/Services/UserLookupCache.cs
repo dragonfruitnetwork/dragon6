@@ -33,7 +33,7 @@ namespace DragonFruit.Six.Client.Database.Services
             try
             {
                 var request = new Dragon6UserRequest(ids);
-                return await _client.PerformAsync<IReadOnlyCollection<Dragon6User>>(request);
+                return await _client.PerformAsync<IReadOnlyCollection<Dragon6User>>(request).ConfigureAwait(false);
             }
             catch (HttpRequestException)
             {
