@@ -2,10 +2,25 @@
 @page "/stats/{platform}/{identifier}"
 @layout CoreLayout
 @using DragonFruit.Six.Api.Seasonal.Enums
+@using DragonFruit.Six.Api.Services.Verification
 @using Humanizer
 
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
+
+    @if (!string.IsNullOrWhiteSpace(User?.Image))
+    {
+        @if (!User.Image.StartsWith("/"))
+        {
+            <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/user-cover-full.css"/>
+        }
+
+        <style>
+            .d6-account-cover {
+                background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(@User.Image) !important;
+            }
+        </style>
+    }
 </HeadContent>
 
 <div class="d6-account-cover">
@@ -17,10 +32,19 @@
 
 <div class="d6-account-container">
     <img src="@(Account?.Image ?? "/_content/DragonFruit.Six.Client/assets/generic-avatar.png")" alt="player image" class="d6-account-avatar"/>
-    <div class="d-flex align-items-center align-items-md-baseline ms-md-3 mb-md-4 mb-2">
+    <div class="d-flex align-items-center align-items-md-baseline ms-md-3 mb-md-4 mb-2 gap-3">
         @if (Account != null)
         {
-            <h1 class="mb-0 mb-md-2">@Account.Username</h1>
+            <h1 class="m-0">@Account.Username</h1>
+            @if (User?.AccountRole > AccountRole.Normal)
+            {
+                <HxTooltip Html="true"
+                           Sanitize="false"
+                           Placement="TooltipPlacement.Right"
+                           Text="@($"<span style=\"color: {User.GetColor()}\">{User.GetName()}</span>")">
+                    <span class="material-icons-round" style="color: @User.GetColor()">@User.GetIcon()</span>
+                </HxTooltip>
+            }
         }
         else
         {

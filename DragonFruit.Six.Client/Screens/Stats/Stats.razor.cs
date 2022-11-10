@@ -21,7 +21,6 @@ using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Overlays.Search;
 using Microsoft.AspNetCore.Components;
 using Realms;
-using Dragon6User = DragonFruit.Six.Client.Network.User.Dragon6User;
 using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
 
 namespace DragonFruit.Six.Client.Screens.Stats
@@ -78,7 +77,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private LegacyPlaylistStats Ranked { get; set; }
         private LegacyPlaylistStats Deathmatch { get; set; }
 
-        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0 && User?.Role >= AccountRole.Normal;
+        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0 && User?.AccountRole >= AccountRole.Normal;
 
         /// <summary>
         /// Seasonal stats for the provided <see cref="Account"/> after the legacy stats were frozen.
@@ -116,8 +115,11 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             // do user lookup - may return either 0 or 1 results
-            User = await UserCache.LookupAsync(Account.ProfileId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { ProfileId = Account.ProfileId, Role = AccountRole.Normal };
+            User = await UserCache.LookupAsync(Account.ProfileId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { ProfileId = Account.ProfileId, AccountRole = AccountRole.Normal };
             AccountActivity = await Client.GetAccountActivityAsync(Account).ConfigureAwait(false);
+
+            // force rerender after fetching all account info
+            await InvokeAsync(StateHasChanged).ConfigureAwait(false);
 
             if (!AccountHasPlayedGame)
             {
