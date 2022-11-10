@@ -22,13 +22,11 @@
 
     public bool IsSaved { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        _realm = await Realm.GetInstanceAsync();
-    }
-
     protected override void OnParametersSet()
     {
+        Dispose();
+        _realm = Realm.GetInstance();
+
         _notificationListener?.Dispose();
         _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
         {

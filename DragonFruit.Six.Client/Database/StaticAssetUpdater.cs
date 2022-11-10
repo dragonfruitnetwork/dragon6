@@ -24,16 +24,15 @@ namespace DragonFruit.Six.Client.Database
             var request = requestFactory.Invoke();
             var emptyCollection = true;
 
-            // ReSharper disable once MethodHasAsyncOverload
-            // using async overload breaks the write() call at the bottom - todo consider using two realms to complete this task
-            using var realm = Realm.GetInstance();
-
-            if (realm.All<T>().Any())
+            using (var realm = await Realm.GetInstanceAsync())
             {
-                emptyCollection = false;
+                if (realm.All<T>().Any())
+                {
+                    emptyCollection = false;
 
-                var latestUpdate = realm.All<T>().First().LastUpdated;
-                request.WithHeader("If-Modified-Since", latestUpdate.ToString("R"));
+                    var latestUpdate = realm.All<T>().First().LastUpdated;
+                    request.WithHeader("If-Modified-Since", latestUpdate.ToString("R"));
+                }
             }
 
             using var response = await client.PerformAsync(request);
@@ -49,6 +48,7 @@ namespace DragonFruit.Six.Client.Database
                     element.LastUpdated = date;
                 }
 
+                using var realm = await Realm.GetInstanceAsync();
                 await realm.WriteAsync(() =>
                 {
                     realm.Add(elements, true);
