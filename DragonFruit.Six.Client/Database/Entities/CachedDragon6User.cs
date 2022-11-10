@@ -11,11 +11,12 @@ namespace DragonFruit.Six.Client.Database.Entities
     [MapTo("cached_users")]
     public class CachedDragon6User : RealmObject
     {
+        [PrimaryKey]
         [MapTo("profile_id")]
         public string ProfileId { get; set; }
 
         [Ignored]
-        public AccountRole Role
+        public AccountRole AccountRole
         {
             get => (AccountRole)RoleValue;
             set => RoleValue = (byte)value;
@@ -26,7 +27,7 @@ namespace DragonFruit.Six.Client.Database.Entities
 
         [CanBeNull]
         [MapTo("cover")]
-        public string CoverImg { get; set; }
+        public string Image { get; set; }
 
         [CanBeNull]
         [MapTo("title")]

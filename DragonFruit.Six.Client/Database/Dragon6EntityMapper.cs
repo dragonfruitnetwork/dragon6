@@ -3,8 +3,8 @@
 
 using AutoMapper;
 using DragonFruit.Six.Api.Accounts.Entities;
+using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
-using DragonFruit.Six.Client.Network.User;
 
 namespace DragonFruit.Six.Client.Database
 {
