@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Network.User;
 
 namespace DragonFruit.Six.Client.Database.Services
 {
-    public class UserLookupCache : RealmLookupCache<Dragon6User, Dragon6User>
+    public class UserLookupCache : RealmLookupCache<Dragon6User, CachedDragon6User>
     {
         private readonly Dragon6Client _client;
 
@@ -23,7 +24,7 @@ namespace DragonFruit.Six.Client.Database.Services
             _client = client;
         }
 
-        protected override IEnumerable<Dragon6User> LookupCached(IQueryable<Dragon6User> collection, string id, Platform platform, IdentifierType identifierType)
+        protected override IEnumerable<CachedDragon6User> LookupCached(IQueryable<CachedDragon6User> collection, string id, Platform platform, IdentifierType identifierType)
         {
             return collection.Where(x => x.Expires > DateTimeOffset.Now && x.ProfileId.Equals(id, StringComparison.OrdinalIgnoreCase));
         }

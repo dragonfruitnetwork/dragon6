@@ -4,6 +4,7 @@
 using AutoMapper;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Client.Database.Entities;
+using DragonFruit.Six.Client.Network.User;
 
 namespace DragonFruit.Six.Client.Database
 {
@@ -11,6 +12,8 @@ namespace DragonFruit.Six.Client.Database
     {
         public static void ConfigureMapper(IMapperConfigurationExpression cfg)
         {
+            cfg.CreateMap<Dragon6User, CachedDragon6User>().ReverseMap();
+
             cfg.CreateMap<UbisoftAccount, CachedUbisoftAccount>().ReverseMap();
             cfg.CreateMap<UbisoftAccount, SavedAccount>().ForMember(x => x.SavedAt, x => x.UseDestinationValue()).ReverseMap();
             cfg.CreateMap<UbisoftAccount, RecentAccount>().ForMember(x => x.LastSearched, x => x.UseDestinationValue());
