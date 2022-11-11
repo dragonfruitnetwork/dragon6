@@ -1,6 +1,7 @@
 @using DragonFruit.Six.Api.Accounts.Entities
 @using DragonFruit.Six.Api.Accounts.Enums
 @using DragonFruit.Six.Api.Seasonal
+@using DragonFruit.Six.Api.Services.Verification
 @using DragonFruit.Six.Client.Database.Entities
 @using DragonFruit.Six.Client.Database.Services
 @using DragonFruit.Six.Client.Overlays.Search
@@ -17,11 +18,15 @@
         {
             <img class="overlay-avatar" src="@Info.Image" alt=""/>
 
-            <div>
+            <div class="d-flex flex-column gap-1">
                 <div class="d-flex align-items-center">
                     <h4 class="m-0 text-truncate">@Info.Username</h4>
                     <D6PlatformBadge Platform="Info.Platform"/>
                 </div>
+                @if (User?.AccountRole > AccountRole.Normal)
+                {
+                    <D6UserRoleBadge User="User"/>
+                }
             </div>
 
             <img class="overlay-rank ms-auto" alt="" src="@RankIconUtils.FormatRankIconUrl(Ranks.GetFromId(Account.SeasonMaxRank).IconUrl)"/>
@@ -37,10 +42,14 @@
     [Inject]
     private AccountLookupCache Accounts { get; set; }
 
+    [Inject]
+    private UserLookupCache UserLookup { get; set; }
+
     [CascadingParameter]
     private SearchProviderState SearchProviderState { get; set; }
 
     private UbisoftAccount Info { get; set; }
+    private Dragon6User User { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
@@ -49,8 +58,8 @@
             return;
         }
 
-        var matchingAccounts = await Accounts.LookupAsync(new[] { Account.UbisoftId }, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
-        Info = matchingAccounts.SingleOrDefault(x => x.ProfileId == Account.ProfileId);
+        Info = await Accounts.LookupAsync(Account.UbisoftId, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
+        User = await UserLookup.LookupAsync(Info.ProfileId, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
     }
 
 }

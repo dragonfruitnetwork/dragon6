@@ -1,0 +1,13 @@
+@using DragonFruit.Six.Api.Services.Verification
+
+<div class="d-flex align-items-center gap-2" style="color: @User.GetColor()">
+    <span style="color: inherit">@User.GetName()</span>
+    <span class="material-icons-round" style="font-size: 20px; color: inherit">@User.GetIcon()</span>
+</div>
+
+@code {
+
+    [Parameter]
+    public Dragon6User User { get; set; }
+
+}
