@@ -5,11 +5,11 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using DragonFruit.Data.Basic;
+using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Overlays.Recents;
 using Microsoft.AspNetCore.Components;
-using Microsoft.Extensions.DependencyInjection;
 using Realms;
 
 namespace DragonFruit.Six.Client.Screens.Splash
@@ -17,16 +17,25 @@ namespace DragonFruit.Six.Client.Screens.Splash
     public partial class Splash
     {
         [Inject]
+        private IDragon6Platform Platform { get; set; }
+
+        [Inject]
         private IServiceProvider Services { get; set; }
 
         [Inject]
         private NavigationManager Navigation { get; set; }
 
+        [Inject]
+        private Dragon6Configuration Configuration { get; set; }
+
         private string CurrentStatus { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
-            RealmConfigurator.Initialise(Services.GetRequiredService<IDragon6Platform>());
+            CurrentStatus = "Loading Configuration...";
+            Configuration.SetDefaults();
+
+            RealmConfigurator.Initialise(Platform);
 
             CurrentStatus = "Preparing database...";
             await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);
