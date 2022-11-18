@@ -5,7 +5,7 @@
 
 <div class="d-flex align-items-center justify-content-between">
     <span>@GetSettingDisplayName()</span>
-    <HxSwitch ValueChanged="c => Configuration.Set(Setting, c)"/>
+    <HxSwitch @bind-Value="Checked"/>
 </div>
 
 @code {
@@ -15,6 +15,12 @@
 
     [Inject]
     private Dragon6Configuration Configuration { get; set; }
+
+    private bool Checked
+    {
+        get => Configuration.Get<bool>(Setting);
+        set => Configuration.Set(Setting, value);
+    }
 
     private string GetSettingDisplayName()
     {
