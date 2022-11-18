@@ -1,0 +1,34 @@
+﻿@using DragonFruit.Six.Client.Configuration
+@using System.Reflection
+@using System.ComponentModel
+@using Humanizer
+@typeparam T where T : struct, Enum
+
+<HxSelect TItem="T"
+          TValue="T"
+          Nullable="false"
+          Label="@GetSettingDisplayName()"
+          TextSelector="GetValueDisplayName"
+          Data="Enum.GetValues(ValueSource)"
+          ValueChanged="t => Configuration.Set(Setting, t)"/>
+
+@code {
+
+    [Parameter]
+    public Dragon6Setting Setting { get; set; }
+
+    [Parameter]
+    public Type ValueSource { get; set; }
+
+    [Inject]
+    private Dragon6Configuration Configuration { get; set; }
+
+    private string GetSettingDisplayName()
+    {
+        var name = Setting.ToString();
+        return typeof(Dragon6Setting).GetField(name).GetCustomAttribute<DescriptionAttribute>()?.Description ?? name.Humanize();
+    }
+
+    private string GetValueDisplayName(T value) => value.Humanize();
+
+}

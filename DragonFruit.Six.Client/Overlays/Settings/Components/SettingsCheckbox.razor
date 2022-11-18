@@ -1,0 +1,25 @@
+﻿@using DragonFruit.Six.Client.Configuration
+@using System.Reflection
+@using System.ComponentModel
+@using Humanizer
+
+<div class="d-flex align-items-center justify-content-between">
+    <span>@GetSettingDisplayName()</span>
+    <HxSwitch ValueChanged="c => Configuration.Set(Setting, c)"/>
+</div>
+
+@code {
+
+    [Parameter]
+    public Dragon6Setting Setting { get; set; }
+
+    [Inject]
+    private Dragon6Configuration Configuration { get; set; }
+
+    private string GetSettingDisplayName()
+    {
+        var name = Setting.ToString();
+        return typeof(Dragon6Setting).GetField(name).GetCustomAttribute<DescriptionAttribute>()?.Description ?? name.Humanize();
+    }
+
+}
