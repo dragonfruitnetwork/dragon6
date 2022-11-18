@@ -10,6 +10,7 @@ using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
+using DragonFruit.Six.Client.Configuration;
 using Microsoft.AspNetCore.Components;
 using Realms;
 using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
@@ -23,6 +24,9 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
         [Inject]
         public Dragon6Client Client { get; set; }
+
+        [Inject]
+        public Dragon6Configuration Configuration { get; set; }
 
         [Parameter]
         public UbisoftAccount Account { get; set; }
@@ -58,10 +62,11 @@ namespace DragonFruit.Six.Client.Screens.Stats
                                          .Select(x => x.Freeze())
                                          .ToList();
 
-            var missingSeasonStats = await Client.GetSeasonalStatsRecordsAsync(Account, missingSeasonInfo.Select(x => (int)x.SeasonId), BoardType.Ranked | BoardType.Casual, Region.EMEA).ConfigureAwait(false);
+            var missingSeasonStats = await Client.GetSeasonalStatsRecordsAsync(Account, missingSeasonInfo.Select(x => (int)x.SeasonId), BoardType.Ranked | BoardType.Casual, Configuration.Get<Region>(Dragon6Setting.LegacyStatsRegion)).ConfigureAwait(false);
             var additionalSeasons = missingSeasonStats.Join(missingSeasonInfo, x => x.SeasonId, x => x.SeasonId, (s, i) => new SeasonalStatsContainer(i, s));
 
             Boards = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToLookup(x => x.Stats.Board);
+            SelectedBoard = Configuration.Get<BoardType>(Dragon6Setting.DefaultSeasonalType);
         }
 
         private void ChangePage(int pageDelta)
@@ -76,21 +81,6 @@ namespace DragonFruit.Six.Client.Screens.Stats
         {
             // unselect if the user re-selects the card
             SelectedSeason = ReferenceEquals(stats, SelectedSeason) ? null : stats;
-            InvokeAsync(StateHasChanged);
-        }
-
-        private void SwapDisplayedBoard()
-        {
-            Page = 1;
-            SelectedSeason = null;
-            SelectedBoard = SelectedBoard switch
-            {
-                BoardType.Casual => BoardType.Ranked,
-                BoardType.Ranked => BoardType.Casual,
-
-                _ => SelectedBoard
-            };
-
             InvokeAsync(StateHasChanged);
         }
     }
