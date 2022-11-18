@@ -14,18 +14,23 @@ namespace DragonFruit.Six.Client.Configuration
     public class Dragon6Configuration
     {
         private const string FileName = "config.ini";
+        private const string Category = "Dragon6";
 
         private int _changeCount;
+
+        private readonly string _storagePath;
         private readonly SharpConfig.Configuration _configuration;
-        private readonly IDragon6Platform _platform;
 
         public Dragon6Configuration(IDragon6Platform platform)
         {
-            _platform = platform;
-            _configuration = SharpConfig.Configuration.LoadFromFile(Path.Combine(_platform.AppData, FileName));
-
-            Task.Run(SetDefaults);
+            _storagePath = Path.Combine(platform.AppData, FileName);
+            _configuration = File.Exists(_storagePath) ? SharpConfig.Configuration.LoadFromFile(_storagePath) : new SharpConfig.Configuration();
         }
+
+        /// <summary>
+        /// Event fired when a <see cref="Dragon6Setting"/> has been changed
+        /// </summary>
+        public event Action<Dragon6Setting, object> SettingUpdated;
 
         /// <summary>
         /// Gets a <see cref="Dragon6Setting"/> from the configuration container
@@ -35,7 +40,7 @@ namespace DragonFruit.Six.Client.Configuration
         public T Get<T>(Dragon6Setting setting) where T : notnull, new()
         {
             var settingName = setting.ToString();
-            return _configuration.DefaultSection[settingName].GetValue<T>();
+            return _configuration[Category][settingName].GetValue<T>();
         }
 
         /// <summary>
@@ -45,19 +50,21 @@ namespace DragonFruit.Six.Client.Configuration
         /// <param name="value">The value to apply to the setting</param>
         public void Set(Dragon6Setting setting, object value)
         {
-            _configuration[setting.ToString()].SetValuesTo(value);
+            SettingUpdated?.Invoke(setting, value);
+            _configuration[Category][setting.ToString()].SetValue(value);
+
             var changeCount = Interlocked.Increment(ref _changeCount);
 
-            Task.Delay(100).ContinueWith(_ =>
+            Task.Delay(500).ContinueWith(_ =>
             {
                 if (changeCount == _changeCount)
                 {
-                    _configuration.SaveToFile(Path.Combine(_platform.AppData, FileName));
+                    _configuration.SaveToFile(_storagePath);
                 }
             });
         }
 
-        private void SetDefaults()
+        internal void SetDefaults()
         {
             foreach (var setting in Enum.GetValues<Dragon6Setting>())
             {
