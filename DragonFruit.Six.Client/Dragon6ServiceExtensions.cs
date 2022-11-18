@@ -2,6 +2,7 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using DragonFruit.Six.Api;
+using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Network;
@@ -20,6 +21,7 @@ namespace DragonFruit.Six.Client
         {
             // core services
             services.AddHxServices();
+            services.AddSingleton<Dragon6Configuration>();
             services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
 
             // todo load in DragonFruit.Six.Services.dll and register services
