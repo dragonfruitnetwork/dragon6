@@ -43,3 +43,20 @@
     height: 60px;
     width: 60px;
 }
+
+.d6-settings-container, .d6-settings-category {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.d6-settings-container {
+    gap: 1.5rem;
+}
+
+.d6-settings-category {
+    gap: 0.75rem;
+}
+
+.d6-settings-category > *:not(:first-child) {
+    padding-left: 1rem;
+}
