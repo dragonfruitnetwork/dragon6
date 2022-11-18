@@ -1,6 +1,8 @@
 // Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using DragonFruit.Six.Client.Configuration;
+
 namespace DragonFruit.Six.Client.Database
 {
     /// <summary>
@@ -10,6 +12,8 @@ namespace DragonFruit.Six.Client.Database
     {
         public string Cache { get; }
         public string AppData { get; }
+
+        public HostPlatform CurrentPlatform { get; }
 
         public void OpenUrl(string url);
     }

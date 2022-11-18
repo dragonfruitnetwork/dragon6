@@ -4,6 +4,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 
 namespace DragonFruit.Six.Client.WebServer
@@ -18,6 +19,8 @@ namespace DragonFruit.Six.Client.WebServer
 
         public string Cache => Path.Combine(Path.GetTempPath(), "dragon6");
         public string AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Client");
+
+        public HostPlatform CurrentPlatform => HostPlatform.Desktop;
 
         public void OpenUrl(string url)
         {
