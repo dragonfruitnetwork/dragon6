@@ -23,7 +23,6 @@ namespace DragonFruit.Six.Client.Configuration
         // ReSharper disable once InconsistentNaming
         [DefaultValue(true)]
         [Description("Enable Discord Status")]
-        [Dragon6PlatformSpecificSetting(HostPlatform.Desktop)]
         EnableDiscordRPC
     }
 }
