@@ -9,6 +9,9 @@ namespace DragonFruit.Six.Client.Configuration
 {
     public enum Dragon6Setting
     {
+        [DefaultValue(Region.EMEA)]
+        LegacyStatsRegion,
+
         [DefaultValue(Platform.PC)]
         [Description("Default Platform")]
         DefaultPlatform,
