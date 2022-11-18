@@ -10,12 +10,16 @@
           Nullable="false"
           Data="@GetValues()"
           Label="@GetSettingDisplayName()"
-          TextSelector="GetValueDisplayName"/>
+          TextSelector="GetValueDisplayName"
+          InputCssClass="bg-dark text-light"/>
 
 @code {
 
     [Parameter]
     public Dragon6Setting Setting { get; set; }
+
+    [Parameter]
+    public bool HumanizeValues { get; set; } = true;
 
     [Inject]
     private Dragon6Configuration Configuration { get; set; }
@@ -32,6 +36,6 @@
         return typeof(Dragon6Setting).GetField(name).GetCustomAttribute<DescriptionAttribute>()?.Description ?? name.Humanize();
     }
 
-    private string GetValueDisplayName(T value) => value.Humanize();
     private IEnumerable<T> GetValues() => Enum.GetValues<T>();
+    private string GetValueDisplayName(T value) => HumanizeValues ? value.Humanize() : value.ToString();
 }
