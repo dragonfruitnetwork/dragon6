@@ -2,6 +2,7 @@
 @using DragonFruit.Six.Api.Seasonal.Enums
 @using DragonFruit.Six.Client.Configuration
 @using DragonFruit.Six.Api.Accounts.Enums
+@using DragonFruit.Six.Client.Database
 
 <div class="d6-settings-container">
     <SettingsCategory Title="Defaults">
@@ -10,7 +11,17 @@
         <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType"/>
     </SettingsCategory>
 
-    <SettingsCategory Title="Misc">
-        <SettingsCheckbox Setting="Dragon6Setting.EnableDiscordRPC"/>
-    </SettingsCategory>
+    @if ((Platform.CurrentPlatform & HostPlatform.Desktop) != 0)
+    {
+        <SettingsCategory Title="Misc">
+            <SettingsCheckbox Setting="Dragon6Setting.EnableDiscordRPC"/>
+        </SettingsCategory>
+    }
 </div>
+
+@code {
+
+    [Inject]
+    private IDragon6Platform Platform { get; set; }
+
+}
