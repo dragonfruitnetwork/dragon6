@@ -1,4 +1,6 @@
 ﻿@using DragonFruit.Six.Api.Accounts.Enums
+@using DragonFruit.Six.Client.Configuration
+
 <form class="d6-search" @onsubmit="() => OnUserSubmit.InvokeAsync((Username, Platform))">
     <div class="input-group">
         <D6PlatformSelector @bind-Platform="Platform"/>
@@ -9,10 +11,18 @@
 
 @code {
 
-    private Platform Platform { get; set; } = Platform.PC;
     private string Username { get; set; }
+    private Platform Platform { get; set; }
 
     [Parameter]
     public EventCallback<(string username, Platform platform)> OnUserSubmit { get; set; }
+
+    [Inject]
+    private Dragon6Configuration Config { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Platform = Config.Get<Platform>(Dragon6Setting.DefaultPlatform);
+    }
 
 }
