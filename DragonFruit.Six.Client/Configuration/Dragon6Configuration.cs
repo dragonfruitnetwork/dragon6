@@ -70,7 +70,7 @@ namespace DragonFruit.Six.Client.Configuration
             {
                 var settingName = setting.ToString();
 
-                if (!_configuration.DefaultSection.Contains(settingName))
+                if (!_configuration[Category].Contains(settingName))
                 {
                     Set(setting, typeof(Dragon6Setting).GetField(settingName).GetCustomAttribute<DefaultValueAttribute>()?.Value);
                 }
