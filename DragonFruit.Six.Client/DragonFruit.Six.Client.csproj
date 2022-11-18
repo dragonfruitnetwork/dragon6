@@ -16,18 +16,4 @@
         <PackageReference Include="sharpconfig" Version="3.2.9.1" />
     </ItemGroup>
 
-    <ItemGroup>
-        <None Include="wwwroot/**" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\assets\dragon6.svg" />
-      <_ContentIncludedByDefault Remove="wwwroot\assets\generic-avatar.png" />
-      <_ContentIncludedByDefault Remove="wwwroot\scripts\util.js" />
-      <_ContentIncludedByDefault Remove="wwwroot\styles\avatar.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\styles\blazor.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\styles\global.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\styles\stats.css" />
-    </ItemGroup>
-
 </Project>
