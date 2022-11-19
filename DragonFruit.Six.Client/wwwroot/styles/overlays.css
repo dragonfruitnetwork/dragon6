@@ -6,6 +6,10 @@
     filter: invert(1);
 }
 
+.d6-home-menu-overlay {
+    height: unset !important;
+}
+
 .d6-overlay-header {    
     box-sizing: border-box;
     border-bottom: 1px solid var(--bs-secondary);

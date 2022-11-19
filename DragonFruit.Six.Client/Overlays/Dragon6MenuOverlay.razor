@@ -1,10 +1,10 @@
 ﻿<Dragon6HeaderButton Name="Menu" Icon="bars" Clicked="() => _offcanvas?.ShowAsync()"/>
 
 <HxOffcanvas @ref="_offcanvas"
-             BodyCssClass="bg-dark"
              HeaderCssClass="d-none"
-             CssClass="d6-menu-overlay"
-             Placement="OffcanvasPlacement.Bottom">
+             CssClass="d6-home-menu-overlay"
+             Placement="OffcanvasPlacement.Bottom"
+             BodyCssClass="bg-dark d6-header-overlay">
     <BodyTemplate>
         <div class="row g-2">
             @foreach (var button in Buttons)
