@@ -7,7 +7,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using DragonFruit.Six.Api;
-using DragonFruit.Six.Api.Accounts;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Accounts.Enums;
 using DragonFruit.Six.Api.Legacy;
@@ -30,6 +29,11 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private UbisoftAccount _account;
         private const byte ModernSeasonStart = 23;
         internal const int ModernStatsRange = 60;
+
+        /// <summary>
+        /// The date the modern stats were introduced. Used as a reference for last seen "a long time ago"
+        /// </summary>
+        internal static DateTime ModernSeasonStartDate => new(2021, 09, 14);
 
         [Parameter]
         public string Identifier { get; set; }
@@ -67,29 +71,27 @@ namespace DragonFruit.Six.Client.Screens.Stats
                 if (User?.ProfileId != Account?.ProfileId)
                 {
                     User = null;
+                    LastUpdated = null;
                 }
             }
         }
 
-        private UbisoftAccountActivity AccountActivity { get; set; }
+        private DateTime? LastUpdated { get; set; }
 
         private LegacyPlaylistStats Casual { get; set; }
         private LegacyPlaylistStats Ranked { get; set; }
         private LegacyPlaylistStats Deathmatch { get; set; }
 
-        private bool AccountHasPlayedGame => AccountActivity?.SessionCount > 0 && User?.AccountRole >= AccountRole.Normal;
-
         /// <summary>
         /// Seasonal stats for the provided <see cref="Account"/> after the legacy stats were frozen.
         /// Used to recalculate all-time stats and quickly load in data to the season selector.
         /// </summary>
-        private IEnumerable<SeasonalStats> PostFreezeSeasons { get; set; }
+        private IReadOnlyCollection<SeasonalStats> PostFreezeSeasons { get; set; }
 
         protected override void OnParametersSet()
         {
             // reset all stats properties
             Account = null;
-            AccountActivity = null;
 
             Casual = null;
             Ranked = null;
@@ -116,12 +118,9 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             // do user lookup - may return either 0 or 1 results
             User = await UserCache.LookupAsync(Account.ProfileId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { ProfileId = Account.ProfileId, AccountRole = AccountRole.Normal };
-            AccountActivity = await Client.GetAccountActivityAsync(Account).ConfigureAwait(false);
-
-            // force rerender after fetching all account info
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
 
-            if (!AccountHasPlayedGame)
+            if (User.AccountRole < AccountRole.Normal)
             {
                 return;
             }
@@ -135,8 +134,14 @@ namespace DragonFruit.Six.Client.Screens.Stats
                 var latestSeason = Math.Max(ModernSeasonStart, realm.All<SeasonInfo>().OrderByDescending(x => x.SeasonId).First().SeasonId);
                 var range = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
 
-                PostFreezeSeasons = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Deathmatch, Region.EMEA).ConfigureAwait(false);
+                var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Deathmatch, Region.EMEA).ConfigureAwait(false);
+                PostFreezeSeasons = postFreezeSeasonsEnumerable.ToList();
             }
+
+            // the ubisoft activity api has been frozen so use leaderboards to work out the last time the user played a game.
+            // in some respect, this is actually more accurate because it updates each game, not each session...
+            var lastLeaderboardUpdate = PostFreezeSeasons.Max(x => x.TimeUpdated);
+            LastUpdated = lastLeaderboardUpdate > ModernSeasonStartDate ? lastLeaderboardUpdate : null;
 
             // take all post-freeze seasons and add the stats together
             // all deathmatch stats will always be included in post-freeze, because deathmatch was introduced in season 25

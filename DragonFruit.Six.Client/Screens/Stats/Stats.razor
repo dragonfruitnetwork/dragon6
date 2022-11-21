@@ -53,15 +53,10 @@
             </HxPlaceholderContainer>
         }
     </div>
-    @if (AccountActivity != null)
-    {
-        <div class="mx-auto ms-md-auto me-md-0 mb-md-4 d-flex align-items-center">
-            <HxTooltip Text="@AccountActivity.LastSession.ToString("f")" Placement="TooltipPlacement.Left">
-                <h5 class="m-0">Last seen @AccountActivity.LastSession.Humanize()</h5>
-            </HxTooltip>
-            <AccountSaveControl Account="Account"/>
-        </div>
-    }
+    <div class="mx-auto ms-md-auto me-md-0 mb-md-4 d-flex align-items-center gap-2">
+        <h5 class="m-0">Last updated @(LastUpdated.HasValue ? LastUpdated.Humanize() : "a long time ago")</h5>
+        <AccountSaveControl Account="Account"/>
+    </div>
 </div>
 
 <div class="d6-stats">
@@ -74,7 +69,7 @@
     </div>
 
     <div class="d6-modern-stats">
-        @if (AccountHasPlayedGame && DateTime.UtcNow.Subtract(AccountActivity.LastSession).TotalDays < ModernStatsRange)
+        @if (DateTime.UtcNow.Subtract(LastUpdated ?? ModernSeasonStartDate).TotalDays < ModernStatsRange)
         {
             <div>
                 <h3>Recent Activity Overview</h3>
