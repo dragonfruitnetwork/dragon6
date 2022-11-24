@@ -13,7 +13,7 @@
     <div class="w-100 ms-4">
         <div role="button" @onclick="OpenArticle">
             <span class="user-select-none">
-                @Item.Date.Humanize() &middot; @TimeSpan.FromMinutes(Item.ReadTime).Humanize(minUnit: TimeUnit.Second) to read
+                Published @Item.Date.Humanize() &middot; @TimeSpan.FromMinutes(Item.ReadTime).Humanize(minUnit: TimeUnit.Second) to read
             </span>
             <h4 class="mt-2">@Item.Title</h4>
         </div>
