@@ -33,7 +33,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         /// <summary>
         /// The date the modern stats were introduced. Used as a reference for last seen "a long time ago"
         /// </summary>
-        internal static DateTime ModernSeasonStartDate => new(2021, 09, 14);
+        private static DateTime ModernSeasonStartDate => new(2021, 09, 14);
 
         [Parameter]
         public string Identifier { get; set; }
@@ -76,6 +76,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
         }
 
+        private bool? UserPlayedGame { get; set; }
         private DateTime? LastUpdated { get; set; }
 
         private LegacyPlaylistStats Casual { get; set; }
@@ -92,6 +93,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         {
             // reset all stats properties
             Account = null;
+            UserPlayedGame = null;
 
             Casual = null;
             Ranked = null;
@@ -122,11 +124,20 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             if (User.AccountRole < AccountRole.Normal)
             {
+                UserPlayedGame = false;
                 return;
             }
 
             var legacyStats = await Client.GetLegacyStatsAsync(Account).ConfigureAwait(false);
             var deathmatch = new LegacyPlaylistStats();
+
+            if (legacyStats == null)
+            {
+                UserPlayedGame = false;
+                return;
+            }
+
+            UserPlayedGame = true;
 
             // get latest season id and create range to collect from the server
             using (var realm = await Realm.GetInstanceAsync().ConfigureAwait(true))
@@ -139,7 +150,6 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             // the ubisoft activity api has been frozen so use leaderboards to work out the last time the user played a game.
-            // in some respect, this is actually more accurate because it updates each game, not each session...
             var lastLeaderboardUpdate = PostFreezeSeasons.Max(x => x.TimeUpdated);
             LastUpdated = lastLeaderboardUpdate > ModernSeasonStartDate ? lastLeaderboardUpdate : null;
 

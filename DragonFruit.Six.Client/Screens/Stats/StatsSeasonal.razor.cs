@@ -41,6 +41,11 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private int Page { get; set; }
         private int MaxPage => (Boards[SelectedBoard].Count() - 1) / EntriesPerPage + 1;
 
+        protected override void OnParametersSet()
+        {
+            Boards = null;
+        }
+
         protected override async Task OnParametersSetAsync()
         {
             if (PreloadedStats?.Any() != true)
@@ -65,8 +70,8 @@ namespace DragonFruit.Six.Client.Screens.Stats
             var missingSeasonStats = await Client.GetSeasonalStatsRecordsAsync(Account, missingSeasonInfo.Select(x => (int)x.SeasonId), BoardType.Ranked | BoardType.Casual, Configuration.Get<Region>(Dragon6Setting.LegacyStatsRegion)).ConfigureAwait(false);
             var additionalSeasons = missingSeasonStats.Join(missingSeasonInfo, x => x.SeasonId, x => x.SeasonId, (s, i) => new SeasonalStatsContainer(i, s));
 
-            Boards = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToLookup(x => x.Stats.Board);
             SelectedBoard = Configuration.Get<BoardType>(Dragon6Setting.DefaultSeasonalType);
+            Boards = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToLookup(x => x.Stats.Board);
         }
 
         private void ChangePage(int pageDelta)
