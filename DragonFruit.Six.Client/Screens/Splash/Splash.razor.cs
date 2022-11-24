@@ -43,9 +43,13 @@ namespace DragonFruit.Six.Client.Screens.Splash
 
             using (var realm = await Realm.GetInstanceAsync())
             {
+                // remove expired Dragon6Users
+                // currently, realm is unable to handle accessing properties through interfaces, so this cannot work properly
+                await realm.WriteAsync(() => realm.RemoveRange(realm.All<CachedDragon6User>().Where(x => x.Expires < DateTimeOffset.Now)));
+                await realm.WriteAsync(() => realm.RemoveRange(realm.All<CachedUbisoftAccount>().Where(x => x.Expires < DateTimeOffset.Now)));
+
                 if (realm.All<RecentAccount>().Count() > RecentsOverlayInfo.MaxAccounts)
                 {
-                    // todo move purge logic to reflection-based system
                     // because realm can't do Skip() inside a queryable, get the first expired account search date and use that to determine which ones need removing.
                     var recentAccountMinSearchDate = realm.All<RecentAccount>().OrderByDescending(x => x.LastSearched).AsEnumerable().Skip(RecentsOverlayInfo.MaxAccounts).FirstOrDefault()?.LastSearched;
                     await realm.WriteAsync(() => realm.RemoveRange(realm.All<RecentAccount>().Where(x => x.LastSearched < recentAccountMinSearchDate)));
