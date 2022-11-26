@@ -8,6 +8,9 @@ using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Network;
 using Havit.Blazor.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
+using Serilog;
+using Serilog.Core;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace DragonFruit.Six.Client
 {
@@ -19,6 +22,8 @@ namespace DragonFruit.Six.Client
         /// <param name="services">The DI container to configure</param>
         public static void AddDragon6Services(this IServiceCollection services)
         {
+            services.AddLogging(log => log.AddSerilog(CreateLogger()));
+
             // core services
             services.AddHxServices();
             services.AddSingleton<Dragon6Configuration>();
@@ -31,6 +36,16 @@ namespace DragonFruit.Six.Client
             services.AddScoped<UserLookupCache>();
             services.AddScoped<AccountLookupCache>();
             services.AddSingleton<SavedPlayerRankService>();
+        }
+
+        private static Logger CreateLogger()
+        {
+            var config = new LoggerConfiguration().MinimumLevel.Debug();
+
+            // todo configure files and sentry sinks
+            config.WriteTo.Console(theme: AnsiConsoleTheme.Literate);
+
+            return config.CreateLogger();
         }
     }
 }
