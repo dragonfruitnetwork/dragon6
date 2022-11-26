@@ -22,7 +22,7 @@ namespace DragonFruit.Six.Client
         /// <param name="services">The DI container to configure</param>
         public static void AddDragon6Services(this IServiceCollection services)
         {
-            services.AddLogging(log => log.AddSerilog(CreateLogger()));
+            services.AddLogging(log => log.AddSerilog(CreateLogger(), true));
 
             // core services
             services.AddHxServices();

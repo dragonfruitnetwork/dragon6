@@ -8,4 +8,8 @@
       <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
+    </ItemGroup>
+
 </Project>
