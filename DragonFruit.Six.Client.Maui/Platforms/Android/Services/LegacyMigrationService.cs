@@ -9,6 +9,7 @@ using Dapper;
 using DragonFruit.Six.Api.Accounts.Enums;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Logging;
 using Microsoft.Maui.Storage;
 using Realms;
 
@@ -32,6 +33,8 @@ namespace DragonFruit.Six.Client.Maui.Services
 
             if (File.Exists(Database))
             {
+                _logger.LogInformation("Beginning database migration...");
+
                 using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 using var connection = new SqliteConnection($"Data Source={Database};Mode=ReadOnly");
 
@@ -42,6 +45,8 @@ namespace DragonFruit.Six.Client.Maui.Services
 
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
+
+                    _logger.LogInformation("Database migration ended, deleting database...");
 
                     File.Delete(Database);
                 };

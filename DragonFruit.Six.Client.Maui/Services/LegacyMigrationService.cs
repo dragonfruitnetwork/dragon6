@@ -9,6 +9,7 @@ using DragonFruit.Six.Api.Accounts.Enums;
 using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 
 namespace DragonFruit.Six.Client.Maui.Services
@@ -16,10 +17,12 @@ namespace DragonFruit.Six.Client.Maui.Services
     public partial class LegacyMigrationService : ILegacyVersionMigrator
     {
         private readonly IServiceProvider _services;
+        private readonly ILogger<ILegacyVersionMigrator> _logger;
 
-        public LegacyMigrationService(IServiceProvider services)
+        public LegacyMigrationService(IServiceProvider services, ILogger<ILegacyVersionMigrator> logger)
         {
             _services = services;
+            _logger = logger;
         }
 
         public partial bool CanRun();
