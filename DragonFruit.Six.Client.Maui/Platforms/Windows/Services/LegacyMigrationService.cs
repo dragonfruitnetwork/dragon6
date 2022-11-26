@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
-using DragonFruit.Data.Serializers.Newtonsoft;
 using DragonFruit.Six.Api.Accounts.Enums;
 using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Configuration;
@@ -14,7 +13,6 @@ using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using Realms;
 
 // ReSharper disable once CheckNamespace
@@ -22,16 +20,9 @@ namespace DragonFruit.Six.Client.Maui.Services
 {
     public partial class LegacyMigrationService
     {
-        private readonly IServiceProvider _services;
-
         private static string BasePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Electron");
         private static string Preferences => Path.Combine(BasePath, "preferences.ini");
         private static string Database => Path.Combine(BasePath, "master.db");
-
-        public LegacyMigrationService(IServiceProvider services)
-        {
-            _services = services;
-        }
 
         public partial bool CanRun() => File.Exists(Database);
 
@@ -40,16 +31,10 @@ namespace DragonFruit.Six.Client.Maui.Services
             // migrate preferences
             if (File.Exists(Preferences))
             {
-                var preferences = FileServices.ReadFile<JObject>(Preferences);
-                var config = _services.GetRequiredService<Dragon6Configuration>();
-
-                config.Set(Dragon6Setting.LegacyStatsRegion, preferences["region"]!.ToObject<Region>());
-                config.Set(Dragon6Setting.DefaultPlatform, preferences["platform"]!.ToObject<Platform>());
+                MigrateCommonPreferences(Preferences, out var config, out var preferences);
 
                 config.Set(Dragon6Setting.EnableDiscordRPC, preferences["discord_rpc"]!.ToObject<bool>());
                 config.Set(Dragon6Setting.DefaultSeasonalType, preferences["casual_ranked"]!.ToObject<bool>() ? BoardType.Casual : BoardType.Ranked);
-
-                File.Delete(Preferences);
             }
 
             if (File.Exists(Database))
@@ -62,9 +47,11 @@ namespace DragonFruit.Six.Client.Maui.Services
                 {
                     ((SqliteConnection)sender!).Close();
 
-                    // todo this doesn't actually do any deleting...
-                    // ReSharper disable twice MethodSupportsCancellation
-                    Task.Delay(500).ContinueWith(_ => Directory.Delete(BasePath, true));
+                    // RCWs need to be collected to fully close the file - see https://stackoverflow.com/a/8513453
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    Directory.Delete(BasePath, true);
                 };
 
                 var databaseVersionSupported = await connection.QuerySingleAsync<int>("SELECT COUNT(1) FROM __EFMigrationsHistory WHERE MigrationId = '20211229181818_RenameTables'").ConfigureAwait(false);
