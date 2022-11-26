@@ -40,7 +40,7 @@ namespace DragonFruit.Six.Client.Maui.Services
             if (File.Exists(Database))
             {
                 using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
-                using var connection = new SqliteConnection($"Data Source={Database}");
+                using var connection = new SqliteConnection($"Data Source={Database};Mode=ReadOnly");
 
                 await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
                 connection.Disposed += (sender, _) =>
@@ -69,34 +69,35 @@ namespace DragonFruit.Six.Client.Maui.Services
                 var legacyRecentPlayers = await connection.QueryAsync("SELECT * FROM accs_recent").ConfigureAwait(false);
 
                 using var realm = await Realm.GetInstanceAsync(cancellationToken: cancellation.Token);
-                await realm.WriteAsync(() =>
+                using var transaction = await realm.BeginWriteAsync(cancellation.Token);
+
+                foreach (var player in legacySavedPlayers)
                 {
-                    foreach (var player in legacySavedPlayers)
+                    realm.Add(new SavedAccount
                     {
-                        realm.Add(new SavedAccount
-                        {
-                            ProfileId = player.profile_id,
-                            UbisoftId = player.ubisoft_id,
-                            Platform = (Platform)player.platform,
+                        ProfileId = player.profile_id,
+                        UbisoftId = player.ubisoft_id,
+                        Platform = (Platform)player.platform,
 
-                            SavedAt = DateTimeOffset.Parse(player.account_added),
-                            LastStatsUpdate = DateTimeOffset.MinValue
-                        });
-                    }
+                        SavedAt = DateTimeOffset.Parse(player.account_added),
+                        LastStatsUpdate = DateTimeOffset.MinValue
+                    });
+                }
 
-                    foreach (var player in legacyRecentPlayers)
+                foreach (var player in legacyRecentPlayers)
+                {
+                    realm.Add(new RecentAccount
                     {
-                        realm.Add(new RecentAccount
-                        {
-                            ProfileId = player.profile_id,
-                            UbisoftId = player.ubisoft_id,
-                            Platform = (Platform)player.platform,
+                        ProfileId = player.profile_id,
+                        UbisoftId = player.ubisoft_id,
+                        Platform = (Platform)player.platform,
 
-                            Username = player.account_name,
-                            LastSearched = DateTimeOffset.Parse(player.last_searched_at)
-                        });
-                    }
-                }, cancellation.Token);
+                        Username = player.account_name,
+                        LastSearched = DateTimeOffset.Parse(player.last_searched_at)
+                    });
+                }
+
+                await transaction.CommitAsync(cancellation.Token);
             }
 
             return true;
