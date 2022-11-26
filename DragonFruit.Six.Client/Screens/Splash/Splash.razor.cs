@@ -38,10 +38,6 @@ namespace DragonFruit.Six.Client.Screens.Splash
 
             RealmConfigurator.Initialise(Platform);
 
-            CurrentStatus = "Preparing database...";
-            await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);
-            await StaticAssetUpdater.UpdateTable<OperatorInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/operators-v2.json")).ConfigureAwait(false);
-
             var legacyMigrator = Services.GetService<ILegacyVersionMigrator>();
 
             if (legacyMigrator?.CanRun() == true)
@@ -49,6 +45,10 @@ namespace DragonFruit.Six.Client.Screens.Splash
                 CurrentStatus = "Migrating old user data...";
                 await legacyMigrator.Migrate().ConfigureAwait(false);
             }
+
+            CurrentStatus = "Preparing database...";
+            await StaticAssetUpdater.UpdateTable<SeasonInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/seasons.json")).ConfigureAwait(false);
+            await StaticAssetUpdater.UpdateTable<OperatorInfo>(Services, () => new BasicApiRequest("https://d6static.dragonfruit.network/data/operators-v2.json")).ConfigureAwait(false);
 
             using (var realm = await Realm.GetInstanceAsync())
             {
