@@ -1,9 +1,16 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using Dapper;
+using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Client.Database.Entities;
+using Microsoft.Data.Sqlite;
 using Microsoft.Maui.Storage;
+using Realms;
 
 // ReSharper disable once CheckNamespace
 namespace DragonFruit.Six.Client.Maui.Services
@@ -15,15 +22,67 @@ namespace DragonFruit.Six.Client.Maui.Services
 
         public partial bool CanRun() => false;
 
-        public partial Task<bool> Migrate()
+        public async partial Task<bool> Migrate()
         {
             if (File.Exists(Preferences))
             {
-                MigrateCommonPreferences(Preferences, out _, out _);
                 // dragon6 mobile has no additional preferences
+                MigrateCommonPreferences(Preferences, out _, out _);
             }
 
-            return Task.FromResult(true);
+            if (File.Exists(Database))
+            {
+                using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+                using var connection = new SqliteConnection($"Data Source={Database};Mode=ReadOnly");
+
+                await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
+                connection.Disposed += (sender, _) =>
+                {
+                    ((SqliteConnection)sender!).Close();
+
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+
+                    File.Delete(Database);
+                };
+
+                // migrate accounts
+                var legacySavedPlayers = await connection.QueryAsync("SELECT rowid, * FROM saved_players").ConfigureAwait(false);
+                var legacyRecentPlayers = await connection.QueryAsync("SELECT rowid, * FROM recent_players").ConfigureAwait(false);
+
+                using var realm = await Realm.GetInstanceAsync(cancellationToken: cancellation.Token);
+                using var transaction = await realm.BeginWriteAsync(cancellation.Token);
+
+                foreach (var player in legacySavedPlayers)
+                {
+                    realm.Add(new SavedAccount
+                    {
+                        ProfileId = player.profile_id,
+                        UbisoftId = player.ubisoft_id,
+                        Platform = (Platform)player.platform,
+
+                        LastStatsUpdate = DateTimeOffset.MinValue,
+                        SavedAt = new DateTimeOffset(new DateTime(2021, 01, 01).AddDays(player.rowid), TimeSpan.Zero)
+                    });
+                }
+
+                foreach (var player in legacyRecentPlayers)
+                {
+                    realm.Add(new RecentAccount
+                    {
+                        ProfileId = player.profile_id,
+                        UbisoftId = player.ubisoft_id,
+                        Platform = (Platform)player.platform,
+
+                        Username = player.username,
+                        LastSearched = new DateTimeOffset(DateTime.Parse(player.last_searched), TimeSpan.Zero)
+                    });
+                }
+
+                await transaction.CommitAsync(cancellation.Token);
+            }
+
+            return true;
         }
     }
 }
