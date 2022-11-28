@@ -10,6 +10,7 @@ using Havit.Blazor.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Serilog.Core;
+using Serilog.Events;
 using Serilog.Sinks.SystemConsole.Themes;
 
 namespace DragonFruit.Six.Client
@@ -40,7 +41,10 @@ namespace DragonFruit.Six.Client
 
         private static Logger CreateLogger()
         {
-            var config = new LoggerConfiguration().MinimumLevel.Debug();
+            var config = new LoggerConfiguration()
+                         .MinimumLevel.Debug()
+                         .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+                         .MinimumLevel.Override("Microsoft.Extensions.Localization", LogEventLevel.Warning);
 
             // todo configure files and sentry sinks
             config.WriteTo.Console(theme: AnsiConsoleTheme.Literate);
