@@ -12,6 +12,7 @@ using DragonFruit.Data.Serializers;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Realms;
 
 namespace DragonFruit.Six.Client.Database
@@ -21,8 +22,12 @@ namespace DragonFruit.Six.Client.Database
         public static async Task UpdateTable<T>(IServiceProvider services, Func<ApiRequest> requestFactory) where T : RealmObject, IUpdatableEntity
         {
             var client = services.GetRequiredService<Dragon6Client>();
+            var logger = services.GetRequiredService<ILogger<T>>();
+
             var request = requestFactory.Invoke();
             var emptyCollection = true;
+
+            logger.LogInformation("Starting {table} dataset update...", typeof(T).Name);
 
             using (var realm = await Realm.GetInstanceAsync())
             {
@@ -32,10 +37,13 @@ namespace DragonFruit.Six.Client.Database
 
                     var latestUpdate = realm.All<T>().First().LastUpdated;
                     request.WithHeader("If-Modified-Since", latestUpdate.ToString("R"));
+
+                    logger.LogInformation("Previous data found in database, setting last-modified to {date}", latestUpdate);
                 }
             }
 
             using var response = await client.PerformAsync(request);
+            logger.LogInformation("{table} data request responded with {status}", typeof(T).Name, response.StatusCode);
 
             if (response.StatusCode is HttpStatusCode.OK)
             {
