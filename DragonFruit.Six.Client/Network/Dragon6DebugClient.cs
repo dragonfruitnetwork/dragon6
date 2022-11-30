@@ -35,7 +35,7 @@ namespace DragonFruit.Six.Client.Network
 
             if (token != null && token.SessionId != sessionId)
             {
-                _logger.LogDebug("Token loaded: {session} (Expires {exp}", token.SessionId, token.Expiry);
+                _logger.LogDebug("Token loaded: {session} (Expires {exp})", token.SessionId, token.Expiry);
                 return token;
             }
 
