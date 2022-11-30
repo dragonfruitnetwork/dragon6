@@ -13,6 +13,7 @@ using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Realms;
 
 // ReSharper disable once CheckNamespace
@@ -39,12 +40,16 @@ namespace DragonFruit.Six.Client.Maui.Services
 
             if (File.Exists(Database))
             {
+                _logger.LogInformation("Beginning database migration...");
+
                 using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 using var connection = new SqliteConnection($"Data Source={Database};Mode=ReadOnly");
 
                 await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
                 connection.Disposed += (sender, _) =>
                 {
+                    _logger.LogInformation("Database migration ended, deleting database...");
+
                     ((SqliteConnection)sender!).Close();
 
                     // RCWs need to be collected to fully close the file - see https://stackoverflow.com/a/8513453
@@ -59,8 +64,11 @@ namespace DragonFruit.Six.Client.Maui.Services
                 if (databaseVersionSupported == 0)
                 {
                     // database was too old, create a copy and then let it get deleted...
-                    // todo log failure
-                    File.Copy(Database, Path.Combine(_services.GetRequiredService<IDragon6Platform>().AppData, "dragon6.master.old.db"));
+                    var newDir = Path.Combine(_services.GetRequiredService<IDragon6Platform>().AppData, "dragon6.master.old.db");
+
+                    File.Copy(Database, newDir);
+                    _logger.LogWarning("Database version is too old to migrate. File has been moved to {dir}", newDir);
+
                     return false;
                 }
 

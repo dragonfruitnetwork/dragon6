@@ -41,12 +41,12 @@ namespace DragonFruit.Six.Client.Maui.Services
                 await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
                 connection.Disposed += (sender, _) =>
                 {
+                    _logger.LogInformation("Database migration ended, deleting database...");
+
                     ((SqliteConnection)sender!).Close();
 
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
-
-                    _logger.LogInformation("Database migration ended, deleting database...");
 
                     File.Delete(Database);
                 };

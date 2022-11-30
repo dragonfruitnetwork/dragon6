@@ -30,6 +30,8 @@ namespace DragonFruit.Six.Client.Maui.Services
 
         private void MigrateCommonPreferences(string path, out Dragon6Configuration config, out JObject preferences)
         {
+            _logger.LogInformation("Migrating preferences...");
+
             preferences = FileServices.ReadFile<JObject>(path);
             config = _services.GetRequiredService<Dragon6Configuration>();
 
