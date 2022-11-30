@@ -22,7 +22,7 @@ namespace DragonFruit.Six.Client.Database
         public static async Task UpdateTable<T>(IServiceProvider services, Func<ApiRequest> requestFactory) where T : RealmObject, IUpdatableEntity
         {
             var client = services.GetRequiredService<Dragon6Client>();
-            var logger = services.GetRequiredService<ILogger<T>>();
+            var logger = services.GetRequiredService<ILogger<Realm>>();
 
             var request = requestFactory.Invoke();
             var emptyCollection = true;
