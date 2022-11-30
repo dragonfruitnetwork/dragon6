@@ -16,11 +16,11 @@
         }
         else
         {
-            <img class="overlay-avatar" src="@Info.Image" alt=""/>
+            <img class="overlay-avatar" src="@Account.Image" alt=""/>
 
             <div class="d-flex flex-column gap-1">
                 <div class="d-flex align-items-center">
-                    <h4 class="m-0 text-truncate">@Info.Username</h4>
+                    <h4 class="m-0 text-truncate">@Account.Username</h4>
                     <D6PlatformBadge Platform="Info.Platform"/>
                 </div>
                 @if (User?.AccountRole > AccountRole.Normal)
@@ -29,7 +29,7 @@
                 }
             </div>
 
-            <img class="overlay-rank ms-auto" alt="" src="@RankIconUtils.FormatRankIconUrl(Ranks.GetFromId(Account.SeasonMaxRank).IconUrl)"/>
+            <img class="overlay-rank ms-auto" alt="" src="@RankIconUtils.FormatRankIconUrl(Ranks.GetFromId(Info.SeasonMaxRank).IconUrl)"/>
         }
     </div>
 </div>
@@ -37,29 +37,15 @@
 @code {
 
     [Parameter]
-    public SavedAccount Account { get; set; }
+    public SavedAccount Info { get; set; }
 
-    [Inject]
-    private AccountLookupCache Accounts { get; set; }
+    [Parameter]
+    public UbisoftAccount Account { get; set; }
 
-    [Inject]
-    private UserLookupCache UserLookup { get; set; }
+    [Parameter]
+    public Dragon6User User { get; set; }
 
     [CascadingParameter]
     private SearchProviderState SearchProviderState { get; set; }
-
-    private UbisoftAccount Info { get; set; }
-    private Dragon6User User { get; set; }
-
-    protected override async Task OnParametersSetAsync()
-    {
-        if (Account.ProfileId == Info?.ProfileId)
-        {
-            return;
-        }
-
-        Info = await Accounts.LookupAsync(Account.UbisoftId, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
-        User = await UserLookup.LookupAsync(Info.ProfileId, Account.Platform, IdentifierType.UserId).ConfigureAwait(false);
-    }
 
 }
