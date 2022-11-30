@@ -2,6 +2,8 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System.IO;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using DragonFruit.Data.Serializers.Newtonsoft;
 using DragonFruit.Six.Api;
@@ -40,9 +42,15 @@ namespace DragonFruit.Six.Client.Network
             token = await base.GetToken(sessionId).ConfigureAwait(false);
             FileServices.WriteFile(tokenFile, token);
 
-            _logger.LogDebug("New token fetched: {session} (Expires {exp}", token.SessionId, token.Expiry);
+            _logger.LogDebug("New token fetched: {session} (Expires {exp})", token.SessionId, token.Expiry);
 
             return token;
+        }
+
+        protected sealed override HttpMessageHandler CreateHandler()
+        {
+            var handler = base.CreateHandler() ?? new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All };
+            return new ClientLoggingHandler(_logger, handler);
         }
     }
 }
