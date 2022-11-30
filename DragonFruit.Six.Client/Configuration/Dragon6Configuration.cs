@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using DragonFruit.Six.Client.Database;
+using Microsoft.Extensions.Logging;
 
 namespace DragonFruit.Six.Client.Configuration
 {
@@ -19,10 +20,12 @@ namespace DragonFruit.Six.Client.Configuration
         private int _changeCount;
 
         private readonly string _storagePath;
+        private readonly ILogger<Dragon6Configuration> _logger;
         private readonly SharpConfig.Configuration _configuration;
 
-        public Dragon6Configuration(IDragon6Platform platform)
+        public Dragon6Configuration(IDragon6Platform platform, ILogger<Dragon6Configuration> logger)
         {
+            _logger = logger;
             _storagePath = Path.Combine(platform.AppData, FileName);
             _configuration = File.Exists(_storagePath) ? SharpConfig.Configuration.LoadFromFile(_storagePath) : new SharpConfig.Configuration();
         }
@@ -51,7 +54,9 @@ namespace DragonFruit.Six.Client.Configuration
         public void Set(Dragon6Setting setting, object value)
         {
             SettingUpdated?.Invoke(setting, value);
+
             _configuration[Category][setting.ToString()].SetValue(value);
+            _logger.LogInformation("{setting} changed to {value}", setting, value);
 
             var changeCount = Interlocked.Increment(ref _changeCount);
 
