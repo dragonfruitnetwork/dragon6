@@ -1,7 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
+        <IsPackable>true</IsPackable>
         <TargetFramework>net7.0</TargetFramework>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <Title>Dragon6 Client</Title>
+        <Authors>DragonFruit Network</Authors>
+
+        <PackageIcon>icon.png</PackageIcon>
+        <PackageId>DragonFruit.Six.Client</PackageId>
+        <PackageLicenseExpression>AGPL-3.0-or-later</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>
