@@ -1,6 +1,10 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using System;
+using System.IO;
+using System.Linq;
+using System.Reflection;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
@@ -17,6 +21,8 @@ namespace DragonFruit.Six.Client
 {
     public static class Dragon6ServiceExtensions
     {
+        private const string ExternalServicesLocation = "DragonFruit.Six.Client.Services.dll";
+
         /// <summary>
         /// Registers core Dragon6 services with the <see cref="IServiceCollection"/>
         /// </summary>
@@ -30,8 +36,17 @@ namespace DragonFruit.Six.Client
             services.AddSingleton<Dragon6Configuration>();
             services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
 
-            // todo load in DragonFruit.Six.Services.dll and register services
-            services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
+            if (File.Exists(ExternalServicesLocation))
+            {
+                var targetType = Assembly.LoadFrom(ExternalServicesLocation).ExportedTypes.Single(x => !x.IsAbstract && !x.IsInterface && x.IsAssignableFrom(typeof(IDragon6ServiceInjector)));
+                var injector = (IDragon6ServiceInjector)Activator.CreateInstance(targetType);
+
+                injector.InitialiseServices(services);
+            }
+            else
+            {
+                services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
+            }
 
             // account caches and database services
             services.AddScoped<UserLookupCache>();

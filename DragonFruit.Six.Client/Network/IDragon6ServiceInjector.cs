@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DragonFruit.Six.Client.Network
 {
-    public interface IDragon6Services
+    public interface IDragon6ServiceInjector
     {
         /// <summary>
         /// Component responsible for injecting a set of services into the DI container
