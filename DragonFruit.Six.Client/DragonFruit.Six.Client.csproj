@@ -29,5 +29,9 @@
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
         <PackageReference Include="sharpconfig" Version="3.2.9.1" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\icon.png" Pack="true" PackagePath="." />
+    </ItemGroup>
 
 </Project>
