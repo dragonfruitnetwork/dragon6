@@ -36,9 +36,11 @@ namespace DragonFruit.Six.Client
             services.AddSingleton<Dragon6Configuration>();
             services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
 
-            if (File.Exists(ExternalServicesLocation))
+            var servicesLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ExternalServicesLocation);
+
+            if (File.Exists(servicesLocation))
             {
-                var targetType = Assembly.LoadFrom(ExternalServicesLocation).ExportedTypes.Single(x => !x.IsAbstract && !x.IsInterface && x.IsAssignableFrom(typeof(IDragon6ServiceInjector)));
+                var targetType = Assembly.LoadFrom(servicesLocation).ExportedTypes.Single(x => !x.IsAbstract && !x.IsInterface && x.IsAssignableTo(typeof(IDragon6ServiceInjector)));
                 var injector = (IDragon6ServiceInjector)Activator.CreateInstance(targetType);
 
                 injector.InitialiseServices(services);
