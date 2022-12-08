@@ -57,15 +57,20 @@ namespace DragonFruit.Six.Client.Database
                 }
 
                 using var realm = await Realm.GetInstanceAsync();
-                await realm.WriteAsync(() =>
-                {
-                    realm.Add(elements, true);
+                using var transaction = await realm.BeginWriteAsync();
 
-                    if (!emptyCollection)
+                realm.Add(elements, true);
+
+                if (!emptyCollection)
+                {
+                    foreach (var entry in realm.All<T>())
                     {
-                        realm.RemoveRange(realm.All<T>().Where(x => x.LastUpdated < date));
+                        if (entry.LastUpdated < date)
+                        {
+                            realm.Remove(entry);
+                        }
                     }
-                });
+                }
             }
         }
     }
