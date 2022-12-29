@@ -50,7 +50,7 @@
 
     <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
         <PackageReference Include="Dapper" Version="2.0.123" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
     </ItemGroup>
 
     <ItemGroup Label="Desktop Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
