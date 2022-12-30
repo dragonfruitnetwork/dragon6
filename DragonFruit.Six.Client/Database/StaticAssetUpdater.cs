@@ -71,6 +71,8 @@ namespace DragonFruit.Six.Client.Database
                         }
                     }
                 }
+
+                await transaction.CommitAsync().ConfigureAwait(false);
             }
         }
     }
