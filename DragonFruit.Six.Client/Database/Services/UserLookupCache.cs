@@ -35,7 +35,15 @@ namespace DragonFruit.Six.Client.Database.Services
             try
             {
                 var request = new Dragon6UserRequest(ids);
-                return await _client.PerformAsync<IReadOnlyCollection<Dragon6User>>(request).ConfigureAwait(false);
+                var response = await _client.PerformAsync<IReadOnlyCollection<Dragon6User>>(request).ConfigureAwait(false);
+
+                var missingUsers = response.Select(x => x.ProfileId).Except(ids).Select(x => new Dragon6User
+                {
+                    ProfileId = x,
+                    AccountRole = AccountRole.Normal
+                });
+
+                return response.Concat(missingUsers);
             }
             catch (HttpRequestException)
             {
