@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DragonFruit.Data.Serializers.Newtonsoft;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Authentication.Entities;
+using DragonFruit.Six.Api.Enums;
 using DragonFruit.Six.Api.Services.Developer;
 using DragonFruit.Six.Client.Database;
 using Microsoft.Extensions.Logging;
@@ -16,8 +17,6 @@ namespace DragonFruit.Six.Client.Network
 {
     public class Dragon6DebugClient : Dragon6DeveloperClient
     {
-        private const string TokenFileName = "ubi.token";
-
         private readonly IDragon6Platform _fileSystem;
         private readonly ILogger<Dragon6Client> _logger;
 
@@ -28,9 +27,9 @@ namespace DragonFruit.Six.Client.Network
             _logger = logger;
         }
 
-        protected override async Task<IUbisoftToken> GetToken(string sessionId)
+        protected override async Task<IUbisoftToken> GetToken(UbisoftService service, string sessionId)
         {
-            var tokenFile = Path.Combine(_fileSystem.Cache, TokenFileName);
+            var tokenFile = Path.Combine(_fileSystem.Cache, $"{service.AppId()}.rtoken");
             IUbisoftToken token = FileServices.ReadFileOrDefault<Dragon6Token>(tokenFile);
 
             if (token != null && token.SessionId != sessionId)
@@ -39,7 +38,7 @@ namespace DragonFruit.Six.Client.Network
                 return token;
             }
 
-            token = await base.GetToken(sessionId).ConfigureAwait(false);
+            token = await base.GetToken(service, sessionId).ConfigureAwait(false);
             FileServices.WriteFile(tokenFile, token);
 
             _logger.LogDebug("New token fetched: {session} (Expires {exp})", token.SessionId, token.Expiry);
