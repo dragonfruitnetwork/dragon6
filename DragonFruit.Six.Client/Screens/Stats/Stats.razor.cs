@@ -81,7 +81,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
         private LegacyPlaylistStats Casual { get; set; }
         private LegacyPlaylistStats Ranked { get; set; }
-        private LegacyPlaylistStats Deathmatch { get; set; }
+        private LegacyPlaylistStats Warmup { get; set; }
 
         /// <summary>
         /// Seasonal stats for the provided <see cref="Account"/> after the legacy stats were frozen.
@@ -97,7 +97,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             Casual = null;
             Ranked = null;
-            Deathmatch = null;
+            Warmup = null;
         }
 
         protected override async Task OnParametersSetAsync()
@@ -129,7 +129,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             var legacyStats = await Client.GetLegacyStatsAsync(Account).ConfigureAwait(false);
-            var deathmatch = new LegacyPlaylistStats();
+            var warmup = new LegacyPlaylistStats();
 
             if (legacyStats == null)
             {
@@ -145,7 +145,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
                 var latestSeason = Math.Max(ModernSeasonStart, realm.All<SeasonInfo>().OrderByDescending(x => x.SeasonId).First().SeasonId);
                 var range = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
 
-                var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Deathmatch, Region.EMEA).ConfigureAwait(false);
+                var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Warmup, Region.EMEA).ConfigureAwait(false);
                 PostFreezeSeasons = postFreezeSeasonsEnumerable.ToList();
             }
 
@@ -161,7 +161,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
                 {
                     BoardType.Ranked => legacyStats.Ranked,
                     BoardType.Casual => legacyStats.Casual,
-                    BoardType.Deathmatch => deathmatch,
+                    BoardType.Warmup => warmup,
 
                     _ => throw new ArgumentOutOfRangeException()
                 };
@@ -171,7 +171,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             Casual = legacyStats.Casual;
             Ranked = legacyStats.Ranked;
-            Deathmatch = deathmatch;
+            Warmup = warmup;
 
             // add/update user recent profiles
             using (var realm = await Realm.GetInstanceAsync())
