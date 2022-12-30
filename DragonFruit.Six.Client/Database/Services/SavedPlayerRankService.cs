@@ -8,6 +8,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Entities;
+using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Api.Enums;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Database.Entities;
@@ -51,14 +53,17 @@ namespace DragonFruit.Six.Client.Database.Services
 
         private async Task UpdateAccounts(IEnumerable<SavedAccount> accounts)
         {
-            var mappedAccounts = accounts.Select(x => _mapper.Map<UbisoftAccount>(x));
-            var seasonalStats = await _client.GetSeasonalStatsAsync(mappedAccounts).ConfigureAwait(false);
             var statsDownloadDate = DateTimeOffset.UtcNow;
+            var seasonalStatsTasks = accounts.Select(x => _mapper.Map<UbisoftAccount>(x))
+                                             .GroupBy(x => x.Platform == Platform.PC)
+                                             .Select(x => _client.GetSeasonalStatsAsync(x, x.Key ? PlatformGroup.PC : PlatformGroup.Console));
+
+            var seasonalStats = await Task.WhenAll(seasonalStatsTasks).ConfigureAwait(false);
 
             using var realm = await Realm.GetInstanceAsync();
             using var transaction = await realm.BeginWriteAsync();
 
-            foreach (var profile in seasonalStats.Where(x => x.Board == BoardType.Ranked).GroupBy(x => x.ProfileId))
+            foreach (var profile in seasonalStats.SelectMany(x => x).Where(x => x.Board == BoardType.Ranked).GroupBy(x => x.ProfileId))
             {
                 var targetAccount = realm.Find<SavedAccount>(profile.Key);
 
