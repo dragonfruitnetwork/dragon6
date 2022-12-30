@@ -23,7 +23,16 @@ namespace DragonFruit.Six.Client.Network
             _logger.LogInformation("Starting HTTP request to {url}", request.RequestUri.Host);
             var result = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
-            _logger.LogInformation("Request to {url} returned {status}", result.RequestMessage.RequestUri.Host, result.StatusCode);
+            if (result.IsSuccessStatusCode)
+            {
+                _logger.LogInformation("Request to {url} returned {status}", result.RequestMessage.RequestUri.Host, result.StatusCode);
+            }
+            else
+            {
+                var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                _logger.LogWarning("Request to {url} returned {status}: {message}", result.RequestMessage.RequestUri.Host, result.StatusCode, content);
+            }
+
             return result;
         }
     }
