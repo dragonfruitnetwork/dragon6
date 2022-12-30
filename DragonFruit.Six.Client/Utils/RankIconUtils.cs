@@ -7,7 +7,7 @@ namespace DragonFruit.Six.Client.Utils
     {
         public static string FormatRankIconUrl(string url)
         {
-            return "https://d6static.dragonfruit.network/" + url.TrimStart('/').Replace("-png", string.Empty).Replace(".png", ".svg");
+            return "https://d6static.dragonfruit.network/" + url.TrimStart('/');
         }
     }
 }
