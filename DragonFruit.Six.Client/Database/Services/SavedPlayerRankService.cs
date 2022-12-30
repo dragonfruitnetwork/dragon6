@@ -53,18 +53,20 @@ namespace DragonFruit.Six.Client.Database.Services
         {
             var mappedAccounts = accounts.Select(x => _mapper.Map<UbisoftAccount>(x));
             var seasonalStats = await _client.GetSeasonalStatsAsync(mappedAccounts).ConfigureAwait(false);
+            var statsDownloadDate = DateTimeOffset.UtcNow;
 
             using var realm = await Realm.GetInstanceAsync();
+            using var transaction = await realm.BeginWriteAsync();
 
-            // ReSharper disable once MethodHasAsyncOverload
-            realm.Write(() =>
+            foreach (var profile in seasonalStats.Where(x => x.Board == BoardType.Ranked).GroupBy(x => x.ProfileId))
             {
-                foreach (var stats in seasonalStats.Where(x => x.Board == BoardType.Ranked))
-                {
-                    var targetAccount = realm.Find<SavedAccount>(stats.ProfileId);
-                    targetAccount.SeasonMaxRank = stats.MaxRank;
-                }
-            });
+                var targetAccount = realm.Find<SavedAccount>(profile.Key);
+
+                targetAccount.SeasonMaxRank = profile.Max(x => x.MaxRank);
+                targetAccount.LastStatsUpdate = statsDownloadDate;
+            }
+
+            await transaction.CommitAsync().ConfigureAwait(false);
         }
 
         public void Dispose()
