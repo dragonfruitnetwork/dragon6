@@ -9,6 +9,7 @@ using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Entities;
 using DragonFruit.Six.Api.Seasonal;
+using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Database.Entities;
 using Realms;
 
@@ -58,9 +59,9 @@ namespace DragonFruit.Six.Client.Database.Services
             // ReSharper disable once MethodHasAsyncOverload
             realm.Write(() =>
             {
-                foreach (var (profileId, stats) in seasonalStats.Stats)
+                foreach (var stats in seasonalStats.Where(x => x.Board == BoardType.Ranked))
                 {
-                    var targetAccount = realm.Find<SavedAccount>(profileId);
+                    var targetAccount = realm.Find<SavedAccount>(stats.ProfileId);
                     targetAccount.SeasonMaxRank = stats.MaxRank;
                 }
             });
