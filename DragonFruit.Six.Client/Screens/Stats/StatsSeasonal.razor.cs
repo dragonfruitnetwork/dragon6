@@ -7,10 +7,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Entities;
+using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Api.Enums;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Configuration;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Components;
 using Realms;
 using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
@@ -59,6 +62,8 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Page = 1;
             Boards = preloadedSeasons.ToLookup(x => x.Stats.Board);
 
+            _ = InvokeAsync(StateHasChanged);
+
             // because realm can't process Contains(), we need to use the smallest season id we retrieved and go backwards from there.
             var lastPrefetchedSeason = PreloadedStats.Min(y => y.SeasonId);
             var missingSeasonInfo = realm.All<SeasonInfo>()
@@ -69,9 +74,17 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
             var missingSeasonStats = await Client.GetSeasonalStatsRecordsAsync(Account, missingSeasonInfo.Select(x => (int)x.SeasonId), BoardType.Ranked | BoardType.Casual, Configuration.Get<Region>(Dragon6Setting.LegacyStatsRegion)).ConfigureAwait(false);
             var additionalSeasons = missingSeasonStats.Join(missingSeasonInfo, x => x.SeasonId, x => x.SeasonId, (s, i) => new SeasonalStatsContainer(i, s));
+            var combinedSeasons = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToList();
 
+            var ranked2Stats = await Client.GetSeasonalStatsAsync(Account, Account.Platform == Platform.PC ? PlatformGroup.PC : PlatformGroup.Console).ConfigureAwait(false);
+
+            foreach (var targetSeason in combinedSeasons.Where(x => x.Stats.SeasonId == ranked2Stats.First().SeasonId))
+            {
+                targetSeason.Ranked2Stats = ranked2Stats.SingleOrDefault(x => x.SeasonId == targetSeason.Stats.SeasonId && x.Board == targetSeason.Stats.Board);
+            }
+
+            Boards = combinedSeasons.ToLookup(x => x.Stats.Board);
             SelectedBoard = Configuration.Get<BoardType>(Dragon6Setting.DefaultSeasonalType);
-            Boards = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToLookup(x => x.Stats.Board);
         }
 
         private void ChangePage(int pageDelta)
@@ -98,7 +111,13 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Stats = stats;
         }
 
-        public SeasonInfo Info { get; set; }
-        public SeasonalStats Stats { get; set; }
+        public SeasonInfo Info { get; }
+        public SeasonalStats Stats { get; }
+
+        /// <summary>
+        /// Ranked 2.0 stats for the season, if available
+        /// </summary>
+        [CanBeNull]
+        public Ranked2SeasonStats Ranked2Stats { get; set; }
     }
 }
