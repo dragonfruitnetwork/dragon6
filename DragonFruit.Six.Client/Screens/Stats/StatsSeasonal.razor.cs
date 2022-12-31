@@ -76,6 +76,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             var additionalSeasons = missingSeasonStats.Join(missingSeasonInfo, x => x.SeasonId, x => x.SeasonId, (s, i) => new SeasonalStatsContainer(i, s));
             var combinedSeasons = preloadedSeasons.Concat(additionalSeasons).OrderByDescending(x => x.Info.SeasonId).ToList();
 
+            // todo add a utility that evaluates the enumerable and returns a collection-based result
             var ranked2Stats = await Client.GetSeasonalStatsAsync(Account, Account.Platform == Platform.PC ? PlatformGroup.PC : PlatformGroup.Console).ConfigureAwait(false);
 
             foreach (var targetSeason in combinedSeasons.Where(x => x.Stats.SeasonId == ranked2Stats.First().SeasonId))
