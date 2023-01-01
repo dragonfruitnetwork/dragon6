@@ -59,17 +59,6 @@ img.d6-season-rank-mmr {
     opacity: 0.5;
 }
 
-.d6-stats-list {
-    display: grid;
-    gap: 4px 20px;
-    align-self: center;
-    grid-template-columns: repeat(2, 1fr);
-}
-
-.d6-stats-list > dl {
-    display: contents;
-}
-
 .d6-season-rank-type-container {
     gap: 20px;
     display: grid;
@@ -78,9 +67,28 @@ img.d6-season-rank-mmr {
 }
 
 .d6-season-rank-type-card {
-    display: flex;
+    gap: 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+
     align-items: center;
     justify-content: space-between;
+}
+
+.d6-stats-list {
+    display: grid;
+    gap: 10px 20px;
+    align-self: center;
+    align-items: center;
+    grid-template-columns: repeat(2, auto);
+}
+
+.d6-stats-list > dl {
+    display: contents;
+}
+
+.d6-stats-list dd {
+    margin: 0;
 }
 
 .d6-progress {
