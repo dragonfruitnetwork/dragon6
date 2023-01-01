@@ -119,5 +119,28 @@ namespace DragonFruit.Six.Client.Screens.Stats
         /// </summary>
         [CanBeNull]
         public Ranked2SeasonStats Ranked2Stats { get; set; }
+
+        /// <summary>
+        /// Gets whether the player's real rank is available in this container
+        /// </summary>
+        public bool IsObtainedRankAvailable => Stats.Board == BoardType.Ranked && (Ranked2Stats != null || Stats.SeasonId < 28);
+
+        public RankInfo GetDisplayRank()
+        {
+            var totalMatchesPlayed = Stats.Wins + Stats.Losses + Stats.Abandons;
+
+            if (Stats.Board != BoardType.Ranked && totalMatchesPlayed > 0)
+            {
+                return Stats.MMRRankInfo;
+            }
+
+            // use mmr for ranks for placement matches pre-ranked 2.0
+            if (Stats.Board == BoardType.Ranked && Stats.SeasonId < 28 && totalMatchesPlayed is > 0 and < 10)
+            {
+                return Stats.MMRRankInfo;
+            }
+
+            return Ranked2Stats?.Board == BoardType.Ranked ? Ranked2Stats.MaxRankInfo : Stats.MaxRankInfo;
+        }
     }
 }

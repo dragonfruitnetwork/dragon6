@@ -7,7 +7,10 @@
             <div class="d6-season-cards d-md-grid">
                 @foreach (var season in Boards[SelectedBoard].Skip((Page - 1) * 4).Take(EntriesPerPage))
                 {
-                    <StatsSeasonCard Season="@season" DisplayMaxRank="true" OnSeasonSelected="SetSelectedSeason"/>
+                    <StatsSeasonCard SeasonInfo="season.Info"
+                                     Rank="season.GetDisplayRank()"
+                                     Clicked="() => SetSelectedSeason(season)"
+                                     Provisional="!season.IsObtainedRankAvailable"/>
                 }
             </div>
 
