@@ -11,24 +11,29 @@
             <SeasonalRankTypeDisplay Info="Season.Info" Title="Progression" Rank="Season.Ranked2Stats.MaxRankInfo">
                 <dl>
                     <dt>Rank Poins</dt>
-                    <dd>@Season.Ranked2Stats.RankPoints RP</dd>
+                    <dd>@Season.Ranked2Stats.RankPoints.ToString("N0")</dd>
                 </dl>
                 <dl>
                     <dt>Max Rank Points</dt>
-                    <dd>@Season.Ranked2Stats.MaxRankPoints RP</dd>
+                    <dd>@Season.Ranked2Stats.MaxRankPoints.ToString("N0")</dd>
                 </dl>
             </SeasonalRankTypeDisplay>
         }
 
-        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="Season.Stats.MaxRankInfo">
+        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@(Season.Stats.Board == BoardType.Ranked ? Season.Stats.MaxRankInfo : Season.Stats.MMRRankInfo)">
             <dl>
                 <dt>MMR</dt>
-                <dd>@Season.Stats.MMR.ToString("N0") (@Season.Stats.MMRRankInfo.Name)</dd>
+                <dd>@Season.Stats.MMR.ToString("N0")</dd>
             </dl>
-            <dl>
-                <dt>Max MMR</dt>
-                <dd>@Season.Stats.MaxMMR.ToString("N0")</dd>
-            </dl>
+            
+            @if (Season.Stats.Board == BoardType.Ranked)
+            {
+                <dl>
+                    <dt>Max MMR</dt>
+                    <dd>@Season.Stats.MaxMMR.ToString("N0")</dd>
+                </dl>
+            }
+
             <dl>
                 <dt>Uncertainty</dt>
                 <dd>&plusmn; @((Season.Stats.SkillUncertainty * 100).ToString("N0"))</dd>
