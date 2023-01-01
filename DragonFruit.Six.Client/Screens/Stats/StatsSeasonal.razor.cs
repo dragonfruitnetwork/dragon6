@@ -22,7 +22,6 @@ namespace DragonFruit.Six.Client.Screens.Stats
 {
     public partial class StatsSeasonal
     {
-        private const bool DisplayMaxRank = true;
         private const int EntriesPerPage = 4;
 
         [Inject]
