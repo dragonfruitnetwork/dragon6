@@ -42,6 +42,10 @@
     user-select: none;
 }
 
+.d6-season-rank-type-card .d6-season-card {
+    width: unset !important;
+}
+
 .d6-season-board-selector::after {
     display: none !important;
 }
@@ -55,23 +59,28 @@ img.d6-season-rank-mmr {
     opacity: 0.5;
 }
 
-.d6-season-stats {
-    display: flex;
-    align-items: center;
-    margin: 0 .5rem;
-}
-
-.d6-seasonal-stats-detail {
-    display: flex;
-    gap: 20px;
-}
-
-.d6-seasonal-stats-detail > div {
+.d6-stats-list {
     display: grid;
-    column-gap: 15px;
-    grid-template-columns: 30px 1fr;
+    gap: 4px 20px;
+    align-self: center;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.d6-stats-list > dl {
+    display: contents;
+}
+
+.d6-season-rank-type-container {
+    gap: 20px;
+    display: grid;
     align-items: center;
-    justify-content: center;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+}
+
+.d6-season-rank-type-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .d6-progress {

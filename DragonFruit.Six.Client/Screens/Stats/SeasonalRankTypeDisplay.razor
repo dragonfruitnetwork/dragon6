@@ -1,0 +1,25 @@
+﻿@using DragonFruit.Six.Client.Database.Entities
+@using DragonFruit.Six.Api.Seasonal.Entities
+
+<div class="d6-season-rank-type-card">
+    <StatsSeasonCard SeasonInfo="Info" TitleOverride="@Title" Rank="Rank"/>
+    <div class="d6-stats-list">
+        @ChildContent
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public SeasonInfo Info { get; set; }
+
+    [Parameter]
+    public RankInfo Rank { get; set; }
+
+    [Parameter]
+    public string Title { get; set; }
+
+    [Parameter]
+    public RenderFragment ChildContent { get; set; }
+
+}
