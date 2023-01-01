@@ -31,6 +31,8 @@
         {
             IsRankReal = false;
             RankInfo = Season.Stats.MMRRankInfo;
+
+            return;
         }
 
         switch (Season.Ranked2Stats?.Board)
@@ -52,9 +54,9 @@
                 break;
         }
 
-        // board is real rank if it's ranked and either:
-        // 1) the season is pre ranked2 (less than 28)
-        // 2) there are ranked2 stats
+    // board is real rank if it's ranked and either:
+    // 1) the season is pre ranked2 (less than 28)
+    // 2) there are ranked2 stats
         IsRankReal = Season.Stats.Board == BoardType.Ranked && (Season.Ranked2Stats != null || Season.Stats.SeasonId < 28);
     }
 
