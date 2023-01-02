@@ -25,6 +25,12 @@
     protected override void OnParametersSet()
     {
         Dispose();
+
+        if (Account == null)
+        {
+            return;
+        }
+
         _notificationRealm = Realm.GetInstance();
 
         _notificationListener?.Dispose();
@@ -61,6 +67,9 @@
     {
         _notificationListener?.Dispose();
         _notificationRealm?.Dispose();
+
+        _notificationListener = null;
+        _notificationRealm = null;
     }
 
 }
