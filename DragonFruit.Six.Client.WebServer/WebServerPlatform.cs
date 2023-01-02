@@ -17,7 +17,7 @@ namespace DragonFruit.Six.Client.WebServer
             Directory.CreateDirectory(AppData);
         }
 
-        public string Cache => Path.Combine(Path.GetTempPath(), "dragon6");
+        public string Cache => Path.Combine(AppData, "cache");
         public string AppData => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Client");
 
         public HostPlatform CurrentPlatform => HostPlatform.Desktop;
