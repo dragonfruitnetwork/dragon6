@@ -5,6 +5,42 @@
 @using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
 
 <div>
+    <div class="d6-season-rank-type-container">
+        @if (Season.Ranked2Stats?.Board == BoardType.Ranked)
+        {
+            <SeasonalRankTypeDisplay Info="Season.Info" Title="Progression" Rank="Season.Ranked2Stats.MaxRankInfo">
+                <dl>
+                    <dt>Rank Poins</dt>
+                    <dd>@Season.Ranked2Stats.RankPoints.ToString("N0")</dd>
+                </dl>
+                <dl>
+                    <dt>Max Rank Points</dt>
+                    <dd>@Season.Ranked2Stats.MaxRankPoints.ToString("N0")</dd>
+                </dl>
+            </SeasonalRankTypeDisplay>
+        }
+
+        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@(Season.Stats.Board == BoardType.Ranked ? Season.Stats.MaxRankInfo : Season.Stats.MMRRankInfo)">
+            <dl>
+                <dt>MMR</dt>
+                <dd>@Season.Stats.MMR.ToString("N0")</dd>
+            </dl>
+            
+            @if (Season.Stats.Board == BoardType.Ranked)
+            {
+                <dl>
+                    <dt>Max MMR</dt>
+                    <dd>@Season.Stats.MaxMMR.ToString("N0")</dd>
+                </dl>
+            }
+
+            <dl>
+                <dt>Uncertainty</dt>
+                <dd>&plusmn; @((Season.Stats.SkillUncertainty * 100).ToString("N0"))</dd>
+            </dl>
+        </SeasonalRankTypeDisplay>
+    </div>
+
     <div class="d6-stat-container mt-4">
         <StatsAggregationCard Title="@($"{Season.Info.SeasonName} K/D")" Progress="Season.Stats.Kd / 0.02f">
             <StatsAggregationCardDescriptor>@Season.Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
@@ -19,42 +55,9 @@
             <StatsAggregationCardDescriptor CssClass="text-secondary">@Season.Stats.Abandons.ToString("N0") Abandons</StatsAggregationCardDescriptor>
         </StatsAggregationCard>
     </div>
-    <div class="d6-icon-stats mt-4">
-        @if (Season.Stats.Board == BoardType.Ranked)
-        {
-            <div>
-                <img src="@RankIconUtils.FormatRankIconUrl(Season.Stats.MaxRankInfo.IconUrl)" alt="final rank" height="48" class="mb-3"/>
-                <h5>@Season.Stats.MaxRankInfo.Name</h5>
-                <p class="text-secondary">Final Rank</p>
-            </div>
-        }
-
-        <div>
-            <i class="fa-solid fa-chart-line fa-3x mb-3"></i>
-            <h5>@Season.Stats.MMR.ToString("N0") MMR</h5>
-            <p class="text-secondary">&PlusMinus; @((Season.Stats.SkillUncertainty * 100).ToString("N0")) Skill Uncertainty</p>
-        </div>
-
-        @if (Season.Stats.Board == BoardType.Ranked && Season.Stats.MaxRank > 0)
-        {
-            <div>
-                <i class="fa-solid fa-trophy fa-3x mb-3"></i>
-                <h5>@Season.Stats.MaxMMR.ToString("N0") Max MMR</h5>
-            </div>
-        }
-
-        <div>
-            <i class="fa-solid fa-clock-rotate-left fa-3x mb-3"></i>
-            <h5>Last Match @Season.Stats.LastMatchResult.Humanize()</h5>
-            <p class="text-secondary">@((Season.Stats.LastMatchSkillChange * 100).ToString("N0")) MMR Change</p>
-        </div>
-    </div>
 </div>
 
 @code {
-
-    [Parameter]
-    public bool DisplayMaxRank { get; set; }
 
     [Parameter]
     public SeasonalStatsContainer Season { get; set; }

@@ -11,7 +11,7 @@
 
 @code {
 
-    private Realm _realm;
+    private Realm _notificationRealm;
     private IDisposable _notificationListener;
 
     [Parameter]
@@ -20,45 +20,47 @@
     [Inject]
     public IMapper Mapper { get; set; }
 
-    public bool IsSaved { get; set; }
+    private bool IsSaved { get; set; }
 
     protected override void OnParametersSet()
     {
         Dispose();
-        _realm = Realm.GetInstance();
+        _notificationRealm = Realm.GetInstance();
 
         _notificationListener?.Dispose();
-        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
+        _notificationListener = _notificationRealm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
         {
             IsSaved = sender.Any(x => x.ProfileId == Account.ProfileId);
             InvokeAsync(StateHasChanged);
         });
     }
 
-    private void ToggleSave()
+    private async Task ToggleSave()
     {
+        using var realm = await Realm.GetInstanceAsync();
+        using var transaction = await realm.BeginWriteAsync();
+
         if (IsSaved)
         {
-            _realm.Write(() =>
+            var account = realm.Find<SavedAccount>(Account.ProfileId);
+            if (account != null)
             {
-                var account = _realm.Find<SavedAccount>(Account.ProfileId);
-                if (account != null)
-                {
-                    _realm.Remove(account);
-                }
-            });
+                realm.Remove(account);
+            }
         }
         else
         {
             var savedAccount = Mapper.Map<SavedAccount>(Account);
-            _realm.Write(() => _realm.Add(savedAccount));
+            realm.Write(() => _notificationRealm.Add(savedAccount));
         }
+
+        await transaction.CommitAsync().ConfigureAwait(false);
     }
 
     public void Dispose()
     {
         _notificationListener?.Dispose();
-        _realm?.Dispose();
+        _notificationRealm?.Dispose();
     }
 
 }
