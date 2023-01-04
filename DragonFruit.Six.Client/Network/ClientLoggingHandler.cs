@@ -29,7 +29,7 @@ namespace DragonFruit.Six.Client.Network
             }
             else
             {
-                var content = await result.Content.ReadAsStringAsync().ConfigureAwait(false);
+                var content = await result.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
                 _logger.LogWarning("Request to {url} returned {status}: {message}", result.RequestMessage.RequestUri.Host, result.StatusCode, content);
             }
 
