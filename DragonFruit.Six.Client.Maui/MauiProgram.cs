@@ -4,6 +4,7 @@
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Maui.Services;
+using DragonFruit.Six.Client.Presence;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
@@ -23,9 +24,18 @@ namespace DragonFruit.Six.Client.Maui
             builder.Services.AddBlazorWebViewDeveloperTools();
 #endif
 
-            builder.Services.AddTransient<IDragon6Platform, MauiPlatform>();
+            var platformInfo = new MauiPlatform();
+
+            builder.Services.AddSingleton<IDragon6Platform>(platformInfo);
             builder.Services.AddScoped<ILegacyVersionMigrator, LegacyMigrationService>();
+
             builder.Services.AddDragon6Services();
+
+            // desktop-specific services
+            if ((platformInfo.CurrentPlatform & HostPlatform.Desktop) != 0)
+            {
+                builder.Services.AddSingleton<IPresenceClient, DiscordPresenceClient>();
+            }
 
             return builder.Build();
         }
