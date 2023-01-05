@@ -18,7 +18,9 @@ using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Overlays.Search;
+using DragonFruit.Six.Client.Presence;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Realms;
 using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
 
@@ -54,10 +56,10 @@ namespace DragonFruit.Six.Client.Screens.Stats
         private AccountLookupCache AccountCache { get; set; }
 
         [Inject]
-        private IMapper EntityMapper { get; set; }
+        private NavigationManager Navigation { get; set; }
 
         [Inject]
-        private NavigationManager Navigation { get; set; }
+        private IServiceProvider Services { get; set; }
 
         private Dragon6User User { get; set; }
 
@@ -98,6 +100,8 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Casual = null;
             Ranked = null;
             Warmup = null;
+
+            Services.GetService<IPresenceClient>()?.PushUpdate(new PresenceStatus("Stats"));
         }
 
         protected override async Task OnParametersSetAsync()
@@ -176,7 +180,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             // add/update user recent profiles
             using (var realm = await Realm.GetInstanceAsync())
             {
-                var recentAccount = EntityMapper.Map<RecentAccount>(Account);
+                var recentAccount = Services.GetRequiredService<IMapper>().Map<RecentAccount>(Account);
                 await realm.WriteAsync(() => realm.Add(recentAccount, true)).ConfigureAwait(false);
             }
         }

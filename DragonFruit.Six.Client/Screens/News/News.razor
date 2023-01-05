@@ -2,6 +2,8 @@
 @using DragonFruit.Six.Client.Network.News
 @using DragonFruit.Six.Api
 @using DragonFruit.Six.Client.Database
+@using DragonFruit.Six.Client.Presence
+@using Microsoft.Extensions.DependencyInjection
 
 <HeadContent>
     <link rel="stylesheet" href="_content/DragonFruit.Six.Client/styles/news.css"/>
@@ -40,6 +42,9 @@ else
     [Inject]
     private IDragon6Platform Platform { get; set; }
 
+    [Inject]
+    private IServiceProvider Services { get; set; }
+
     [CascadingParameter]
     private DefaultLayout Layout { get; set; }
 
@@ -48,6 +53,7 @@ else
     protected override void OnInitialized()
     {
         Layout.Title = "News";
+        Services.GetService<IPresenceClient>()?.PushUpdate(new PresenceStatus("News"));
     }
 
     protected override async Task OnInitializedAsync()
