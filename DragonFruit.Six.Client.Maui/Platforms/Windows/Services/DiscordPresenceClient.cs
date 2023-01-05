@@ -14,17 +14,14 @@ namespace DragonFruit.Six.Client.Maui.Services
         private const ulong AppId = 679701260177244163;
 
         private readonly Dragon6Configuration _config;
-        private readonly DiscordRpcClient _discord;
+        private DiscordRpcClient _discord;
 
         public DiscordPresenceClient(Dragon6Configuration config)
         {
             _config = config;
             _config.SettingUpdated += OnSettingsChanged;
 
-            _discord = new DiscordRpcClient(AppId.ToString())
-            {
-                SkipIdenticalPresence = true
-            };
+            _discord = CreateClient();
 
             if (_config.Get<bool>(Dragon6Setting.EnableDiscordRPC))
             {
@@ -42,6 +39,11 @@ namespace DragonFruit.Six.Client.Maui.Services
                 LargeImageText = "Dragon6"
             }
         });
+
+        private static DiscordRpcClient CreateClient() => new DiscordRpcClient(AppId.ToString())
+        {
+            SkipIdenticalPresence = true
+        };
 
         private void OnSettingsChanged(Dragon6Setting setting, object value)
         {
@@ -63,6 +65,9 @@ namespace DragonFruit.Six.Client.Maui.Services
             }
             else
             {
+                _discord?.Dispose();
+
+                _discord = CreateClient();
                 _discord.Initialize();
             }
         }
