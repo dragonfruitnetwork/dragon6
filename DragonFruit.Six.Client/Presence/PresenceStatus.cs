@@ -5,6 +5,11 @@ namespace DragonFruit.Six.Client.Presence
 {
     public class PresenceStatus
     {
+        public PresenceStatus(string title)
+        {
+            Title = title;
+        }
+
         public PresenceStatus(string title, string subtitle)
         {
             Title = title;
