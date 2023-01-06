@@ -19,7 +19,7 @@
         <UseMaui>true</UseMaui>
         <OutputType>Exe</OutputType>
         <SingleProject>true</SingleProject>
-        <WindowsPackageType>none</WindowsPackageType>
+        <WindowsPackageType>None</WindowsPackageType>
         <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
 
         <ApplicationTitle>Dragon6</ApplicationTitle>
@@ -36,7 +36,7 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release'">
-        <WindowsPackageType>appx</WindowsPackageType>
+        <WindowsPackageType>MSIX</WindowsPackageType>
         <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
         <PackageCertificateThumbprint>93382446B7F3F80DAF1BAEBE33D4283D7CF778F8</PackageCertificateThumbprint>
     </PropertyGroup>
