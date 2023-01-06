@@ -45,7 +45,16 @@ namespace DragonFruit.Six.Client.Maui.Services
                 using var cancellation = new CancellationTokenSource(TimeSpan.FromSeconds(30));
                 using var connection = new SqliteConnection($"Data Source={Database};Mode=ReadOnly");
 
-                await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
+                try
+                {
+                    await connection.OpenAsync(cancellation.Token).ConfigureAwait(false);
+                }
+                catch (IOException e)
+                {
+                    _logger.LogInformation("Database connection failed: {message}", e.Message);
+                    return false;
+                }
+
                 connection.Disposed += (sender, _) =>
                 {
                     _logger.LogInformation("Database migration ended, deleting database...");
