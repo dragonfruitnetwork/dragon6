@@ -13,10 +13,9 @@
         <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 
         <UseMaui>true</UseMaui>
-        <TrimMode>partial</TrimMode>
         <OutputType>Exe</OutputType>
         <SingleProject>true</SingleProject>
-        <PublishTrimmed>true</PublishTrimmed>
+        <PublishTrimmed>false</PublishTrimmed>
         <WindowsPackageType>None</WindowsPackageType>
         <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
         <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
