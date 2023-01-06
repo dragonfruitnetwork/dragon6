@@ -6,10 +6,6 @@
         <Company>DragonFruit Network</Company>
         <Authors>DragonFruit Network</Authors>
         <Copyright>Copyright 2022 (C) DragonFruit Network</Copyright>
-
-        <!-- Versions -->
-        <ApplicationVersion>1</ApplicationVersion>
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -17,17 +13,18 @@
         <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
 
         <UseMaui>true</UseMaui>
+        <TrimMode>partial</TrimMode>
         <OutputType>Exe</OutputType>
         <SingleProject>true</SingleProject>
+        <PublishTrimmed>true</PublishTrimmed>
         <WindowsPackageType>None</WindowsPackageType>
         <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
+        <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
 
         <ApplicationTitle>Dragon6</ApplicationTitle>
         <ApplicationId>com.dragon.six</ApplicationId>
         <ApplicationIdGuid>349E072E-41F9-48A5-B44E-623EE8251551</ApplicationIdGuid>
-    </PropertyGroup>
 
-    <PropertyGroup Label="OS Versioning">
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
@@ -35,28 +32,32 @@
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
     </PropertyGroup>
 
-    <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release'">
+    <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
         <WindowsPackageType>MSIX</WindowsPackageType>
+        <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
         <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
         <PackageCertificateThumbprint>93382446B7F3F80DAF1BAEBE33D4283D7CF778F8</PackageCertificateThumbprint>
     </PropertyGroup>
-    
-    <ItemGroup Label="MAUI Icons">        
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
-        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392" />
+
+    <ItemGroup Label="MAUI Icons">
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818"/>
+        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392"/>
     </ItemGroup>
 
     <ItemGroup Label="Desktop Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
+        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18"/>
     </ItemGroup>
-    
+
     <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-        <PackageReference Include="Dapper" Version="2.0.123" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
+        <PackageReference Include="Dapper" Version="2.0.123"/>
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
+        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj"/>
+
+        <TrimmerRootAssembly Include="DragonFruit.Six.Client"/>
+        <!-- <TrimmerRootAssembly Include="DragonFruit.Six.Client.Services" />-->
     </ItemGroup>
-    
+
 </Project>
