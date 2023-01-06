@@ -3,14 +3,15 @@
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
-  IgnorableNamespaces="uap rescap">
+  IgnorableNamespaces="uap rescap build">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=User Name" Version="0.0.0.0" />
+  <Identity Name="54417AlbionSpriddell.Dragon6" Publisher="CN=349E072E-41F9-48A5-B44E-623EE8251551" Version="0.0.0.0" />
 
   <Properties>
-    <DisplayName>Dragon6</DisplayName>
-    <PublisherDisplayName>DragonFruit Network</PublisherDisplayName>
     <Logo>$placeholder$.png</Logo>
+    <DisplayName>Dragon6</DisplayName>
+    <Description>Rainbow Six Stats and News</Description>
+    <PublisherDisplayName>DragonFruit Network</PublisherDisplayName>
   </Properties>
 
   <Dependencies>

@@ -6,6 +6,10 @@
         <Company>DragonFruit Network</Company>
         <Authors>DragonFruit Network</Authors>
         <Copyright>Copyright 2022 (C) DragonFruit Network</Copyright>
+
+        <!-- Versions -->
+        <ApplicationVersion>1</ApplicationVersion>
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
     </PropertyGroup>
 
     <PropertyGroup>
@@ -15,19 +19,15 @@
         <UseMaui>true</UseMaui>
         <OutputType>Exe</OutputType>
         <SingleProject>true</SingleProject>
-        <WindowsPackageType>None</WindowsPackageType>
+        <WindowsPackageType>none</WindowsPackageType>
         <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
 
         <ApplicationTitle>Dragon6</ApplicationTitle>
         <ApplicationId>com.dragon.six</ApplicationId>
-        <ApplicationIdGuid>83F46F5A-3967-4453-B5AD-00902361F7C1</ApplicationIdGuid>
-
-        <!-- Versions -->
-        <ApplicationVersion>1</ApplicationVersion>
-        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationIdGuid>349E072E-41F9-48A5-B44E-623EE8251551</ApplicationIdGuid>
     </PropertyGroup>
 
-    <PropertyGroup>
+    <PropertyGroup Label="OS Versioning">
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
         <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">24.0</SupportedOSPlatformVersion>
@@ -35,28 +35,26 @@
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
     </PropertyGroup>
 
-    <ItemGroup>
+    <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release'">
+        <WindowsPackageType>appx</WindowsPackageType>
+    </PropertyGroup>
+    
+    <ItemGroup Label="MAUI Icons">        
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
         <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392" />
-    </ItemGroup>
-
-    <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-        <PackageReference Include="Dapper" Version="2.0.123" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
     </ItemGroup>
 
     <ItemGroup Label="Desktop Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
         <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
     </ItemGroup>
-
+    
+    <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Update="Platforms\Android\Services\DiscordPresenceClient.cs">
-        <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
-      </Compile>
     </ItemGroup>
     
 </Project>
