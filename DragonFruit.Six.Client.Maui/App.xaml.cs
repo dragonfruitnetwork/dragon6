@@ -17,6 +17,9 @@ namespace DragonFruit.Six.Client.Maui
         protected override Window CreateWindow(IActivationState activationState)
         {
             var window = base.CreateWindow(activationState);
+
+            window.Width = 1200;
+            window.Height = 900;
             window.Title = "Dragon6";
 
             return window;
