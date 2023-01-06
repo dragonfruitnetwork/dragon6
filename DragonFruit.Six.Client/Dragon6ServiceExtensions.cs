@@ -63,7 +63,26 @@ namespace DragonFruit.Six.Client
                          .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
                          .MinimumLevel.Override("Microsoft.Extensions.Localization", LogEventLevel.Warning);
 
-            // todo configure files and sentry sinks
+            config.WriteTo.Sentry(s =>
+            {
+                s.Dsn = "https://29ba62eac6314a3f8591a03785ca3403@o97031.ingest.sentry.io/6542292";
+                s.Release = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
+
+                s.BeforeSend = e =>
+                {
+                    if (Assembly.GetExecutingAssembly().GetName().Version > new Version(1, 0, 0))
+                    {
+                        return e;
+                    }
+
+                    return null;
+                };
+
+                s.MaxBreadcrumbs = 50;
+                s.MinimumEventLevel = LogEventLevel.Error;
+                s.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+            });
+
             config.WriteTo.Console(theme: AnsiConsoleTheme.Literate);
 
             return config.CreateLogger();
