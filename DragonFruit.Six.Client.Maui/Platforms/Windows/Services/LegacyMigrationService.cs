@@ -22,13 +22,21 @@ namespace DragonFruit.Six.Client.Maui.Services
     public partial class LegacyMigrationService
     {
         private static string BasePath => Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Electron");
-        private static string Preferences => Path.Combine(BasePath, "preferences.ini");
-        private static string Database => Path.Combine(BasePath, "master.db");
 
-        public partial bool CanRun() => File.Exists(Database);
+        private static string Database => Path.Combine(BasePath, "master.db");
+        private static string Preferences => Path.Combine(BasePath, "preferences.ini");
+        private static string DeletionMarker => Path.Combine(BasePath, ".marked-for-deletion");
+
+        public partial bool CanRun() => Directory.Exists(BasePath);
 
         public async partial Task<bool> Migrate()
         {
+            if (File.Exists(DeletionMarker))
+            {
+                Directory.Delete(BasePath, true);
+                return true;
+            }
+
             // migrate preferences
             if (File.Exists(Preferences))
             {
@@ -65,7 +73,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    Directory.Delete(BasePath, true);
+                    File.Create(DeletionMarker).DisposeAsync();
                 };
 
                 var databaseVersionSupported = await connection.QuerySingleAsync<int>("SELECT COUNT(1) FROM __EFMigrationsHistory WHERE MigrationId = '20211229181818_RenameTables'").ConfigureAwait(false);

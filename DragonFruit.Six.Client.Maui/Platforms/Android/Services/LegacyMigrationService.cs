@@ -18,13 +18,26 @@ namespace DragonFruit.Six.Client.Maui.Services
 {
     public partial class LegacyMigrationService
     {
-        private static string Preferences => Path.Combine(FileSystem.AppDataDirectory, "preferences.ini");
         private static string Database => Path.Combine(FileSystem.AppDataDirectory, "dragon6.db");
+        private static string Preferences => Path.Combine(FileSystem.AppDataDirectory, "preferences.ini");
+        private static string DeletionMarker => Path.Combine(FileSystem.AppDataDirectory, ".marked-for-deletion");
 
-        public partial bool CanRun() => false;
+        public partial bool CanRun() => File.Exists(Database) || File.Exists(DeletionMarker);
 
         public async partial Task<bool> Migrate()
         {
+            if (File.Exists(DeletionMarker))
+            {
+                File.Delete(DeletionMarker);
+
+                foreach (var file in Directory.EnumerateFiles(FileSystem.AppDataDirectory, "dragon6.db*", SearchOption.AllDirectories))
+                {
+                    File.Delete(file);
+                }
+
+                return true;
+            }
+
             if (File.Exists(Preferences))
             {
                 // dragon6 mobile has no additional preferences
@@ -57,7 +70,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                     GC.Collect();
                     GC.WaitForPendingFinalizers();
 
-                    File.Delete(Database);
+                    File.Create(DeletionMarker).DisposeAsync();
                 };
 
                 // migrate accounts
