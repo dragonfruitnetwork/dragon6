@@ -37,6 +37,8 @@
 
     <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release'">
         <WindowsPackageType>appx</WindowsPackageType>
+        <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
+        <PackageCertificateThumbprint>93382446B7F3F80DAF1BAEBE33D4283D7CF778F8</PackageCertificateThumbprint>
     </PropertyGroup>
     
     <ItemGroup Label="MAUI Icons">        
