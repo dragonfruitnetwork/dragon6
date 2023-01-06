@@ -57,7 +57,7 @@
         else
         {
             var savedAccount = Mapper.Map<SavedAccount>(Account);
-            realm.Write(() => _notificationRealm.Add(savedAccount));
+            realm.Add(savedAccount);
         }
 
         await transaction.CommitAsync().ConfigureAwait(false);
