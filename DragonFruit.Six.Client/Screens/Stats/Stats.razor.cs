@@ -144,7 +144,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             UserPlayedGame = true;
 
             // get latest season id and create range to collect from the server
-            using (var realm = await Realm.GetInstanceAsync().ConfigureAwait(true))
+            using (var realm = await Realm.GetInstanceAsync())
             {
                 var latestSeason = Math.Max(ModernSeasonStart, realm.All<SeasonInfo>().OrderByDescending(x => x.SeasonId).First().SeasonId);
                 var range = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
