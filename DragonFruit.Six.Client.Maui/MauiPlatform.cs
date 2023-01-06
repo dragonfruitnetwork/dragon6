@@ -23,9 +23,7 @@ namespace DragonFruit.Six.Client.Maui
 
         public string Cache => FileSystem.CacheDirectory;
 
-        public string AppData => CurrentPlatform == HostPlatform.Windows
-            ? Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DragonFruit Network", "Dragon6", "Client")
-            : FileSystem.AppDataDirectory;
+        public string AppData => FileSystem.AppDataDirectory;
 
         public HostPlatform CurrentPlatform
         {
