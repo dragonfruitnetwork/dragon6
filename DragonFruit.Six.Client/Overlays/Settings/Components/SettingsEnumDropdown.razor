@@ -2,6 +2,7 @@
 @using System.Reflection
 @using System.ComponentModel
 @using Humanizer
+@using JetBrains.Annotations
 @typeparam T where T : struct, Enum
 
 <HxSelect TItem="T"
@@ -21,6 +22,9 @@
     [Parameter]
     public bool HumanizeValues { get; set; } = true;
 
+    [Parameter, CanBeNull]
+    public Func<T, bool> CanDisplaySetting { get; set; }
+
     [Inject]
     private Dragon6Configuration Configuration { get; set; }
 
@@ -36,6 +40,11 @@
         return typeof(Dragon6Setting).GetField(name).GetCustomAttribute<DescriptionAttribute>()?.Description ?? name.Humanize();
     }
 
-    private IEnumerable<T> GetValues() => Enum.GetValues<T>();
+    private IEnumerable<T> GetValues()
+    {
+        var values = Enum.GetValues<T>();
+        return CanDisplaySetting != null ? values.Where(CanDisplaySetting) : values;
+    }
+
     private string GetValueDisplayName(T value) => HumanizeValues ? value.Humanize() : value.ToString();
 }

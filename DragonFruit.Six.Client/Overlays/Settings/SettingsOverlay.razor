@@ -8,7 +8,7 @@
     <SettingsCategory Title="Defaults">
         <SettingsEnumDropdown T="Platform" Setting="Dragon6Setting.DefaultPlatform" HumanizeValues="false"/>
         <SettingsEnumDropdown T="Region" Setting="Dragon6Setting.LegacyStatsRegion" HumanizeValues="false"/>
-        <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType"/>
+        <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType" CanDisplaySetting="b => b is BoardType.Casual or BoardType.Ranked"/>
     </SettingsCategory>
 
     @if ((Platform.CurrentPlatform & HostPlatform.Desktop) != 0)
