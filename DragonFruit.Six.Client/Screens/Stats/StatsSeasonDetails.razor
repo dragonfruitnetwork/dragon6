@@ -3,6 +3,7 @@
 @using Humanizer
 @using DragonFruit.Six.Api.Seasonal.Entities
 @using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
+@using DragonFruit.Six.Api.Seasonal
 
 <div>
     <div class="d6-season-rank-type-container">
@@ -20,12 +21,12 @@
             </SeasonalRankTypeDisplay>
         }
 
-        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@(Season.Stats.Board == BoardType.Ranked ? Season.Stats.MaxRankInfo : Season.Stats.MMRRankInfo)">
+        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@GetDisplayedSkillRank()">
             <dl>
                 <dt>MMR</dt>
                 <dd>@Season.Stats.MMR.ToString("N0")</dd>
             </dl>
-            
+
             @if (Season.Stats.Board == BoardType.Ranked)
             {
                 <dl>
@@ -61,5 +62,20 @@
 
     [Parameter]
     public SeasonalStatsContainer Season { get; set; }
+
+    private RankInfo GetDisplayedSkillRank()
+    {
+        if (Season.Stats.Board == BoardType.Ranked)
+        {
+            return Season.Stats.MaxRankInfo;
+        }
+
+        if (Season.Stats.Wins + Season.Stats.Losses + Season.Stats.Abandons > 0)
+        {
+            return Season.Stats.MMRRankInfo;
+        }
+
+        return Ranks.GetFromId(0);
+    }
 
 }
