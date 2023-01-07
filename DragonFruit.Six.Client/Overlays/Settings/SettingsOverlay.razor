@@ -6,7 +6,7 @@
 
 <div class="d6-settings-container">
     <SettingsCategory Title="Defaults">
-        <SettingsEnumDropdown T="Platform" Setting="Dragon6Setting.DefaultPlatform" HumanizeValues="false"/>
+        <SettingsEnumDropdown T="Platform" Setting="Dragon6Setting.DefaultPlatform" HumanizeValues="false" CanDisplaySetting="p => p is not Api.Accounts.Enums.Platform.CrossPlatform"/>
         <SettingsEnumDropdown T="Region" Setting="Dragon6Setting.LegacyStatsRegion" HumanizeValues="false"/>
         <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType" CanDisplaySetting="b => b is BoardType.Casual or BoardType.Ranked"/>
     </SettingsCategory>
