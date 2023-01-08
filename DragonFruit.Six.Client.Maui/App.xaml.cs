@@ -1,7 +1,7 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
-using DragonFruit.Data;
+using DragonFruit.Six.Client.Maui.Services;
 using DragonFruit.Six.Client.Maui.WebView;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
@@ -20,9 +20,15 @@ namespace DragonFruit.Six.Client.Maui
         {
             base.OnHandlerChanged();
 
-            
-            
-            MainPage = new WebViewInstallerPage(Handler.MauiContext!.Services.GetRequiredService<ApiClient>());
+            if (new WebViewInstallationService().IsWebViewInstalled())
+            {
+                MainPage = new MainPage();
+            }
+            else
+            {
+                var ssf = Handler.MauiContext!.Services.GetRequiredService<IServiceScopeFactory>();
+                MainPage = new WebViewInstallerPage(ssf);
+            }
         }
 
         protected override Window CreateWindow(IActivationState activationState)

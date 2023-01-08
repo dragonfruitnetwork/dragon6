@@ -1,7 +1,7 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
-using DragonFruit.Data;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DragonFruit.Six.Client.Maui.WebView
 {
@@ -9,10 +9,9 @@ namespace DragonFruit.Six.Client.Maui.WebView
     {
         public WebViewInstallerModel ViewModel { get; }
 
-        public WebViewInstallerPage(ApiClient client)
+        public WebViewInstallerPage(IServiceScopeFactory ssf)
         {
-            ViewModel = new WebViewInstallerModel(this, client);
-
+            ViewModel = new WebViewInstallerModel(this, ssf);
             InitializeComponent();
         }
 
