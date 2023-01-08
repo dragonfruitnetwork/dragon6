@@ -3,7 +3,6 @@
 
 using DragonFruit.Six.Client.Maui.Services;
 using DragonFruit.Six.Client.Maui.WebView;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui;
 using Microsoft.Maui.Controls;
 
@@ -14,21 +13,7 @@ namespace DragonFruit.Six.Client.Maui
         public App()
         {
             InitializeComponent();
-        }
-
-        protected override void OnHandlerChanged()
-        {
-            base.OnHandlerChanged();
-
-            if (new WebViewInstallationService().IsWebViewInstalled())
-            {
-                MainPage = new MainPage();
-            }
-            else
-            {
-                var ssf = Handler.MauiContext!.Services.GetRequiredService<IServiceScopeFactory>();
-                MainPage = new WebViewInstallerPage(ssf);
-            }
+            MainPage = new WebViewInstallationService().IsWebViewInstalled() ? new MainPage() : new WebViewInstallerPage();
         }
 
         protected override Window CreateWindow(IActivationState activationState)

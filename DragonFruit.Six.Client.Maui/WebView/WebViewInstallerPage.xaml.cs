@@ -9,10 +9,12 @@ namespace DragonFruit.Six.Client.Maui.WebView
     {
         public WebViewInstallerModel ViewModel { get; }
 
-        public WebViewInstallerPage(IServiceScopeFactory ssf)
+        public WebViewInstallerPage()
         {
-            ViewModel = new WebViewInstallerModel(this, ssf);
             InitializeComponent();
+
+            var ssf = Handler!.MauiContext!.Services.GetRequiredService<IServiceScopeFactory>();
+            ViewModel = new WebViewInstallerModel(this, ssf);
         }
 
         protected override void OnAppearing()
