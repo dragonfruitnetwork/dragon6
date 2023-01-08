@@ -38,26 +38,46 @@
         <PackageCertificateThumbprint>93382446B7F3F80DAF1BAEBE33D4283D7CF778F8</PackageCertificateThumbprint>
     </PropertyGroup>
 
-    <ItemGroup Label="MAUI Icons">
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818"/>
-        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392"/>
+    <ItemGroup Label="MAUI Resources">
+        <MauiImage Include="Resources\Images\*.*" />
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
+        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392" />
     </ItemGroup>
 
     <ItemGroup Label="Desktop Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18"/>
+        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
     </ItemGroup>
 
     <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-        <PackageReference Include="Dapper" Version="2.0.123"/>
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1"/>
+        <PackageReference Include="Dapper" Version="2.0.123" />
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
     </ItemGroup>
 
-    <ItemGroup Label="Windows WebView2 Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1462.37"/>
-    </ItemGroup>
-    
     <ItemGroup>
-        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj"/>
+        <PackageReference Include="ReactiveUI.Maui" Version="18.4.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <MauiXaml Update="WebView\WebViewInstallerPage.xaml">
+        <SubType>Designer</SubType>
+      </MauiXaml>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Update="WebView\WebViewInstallerPage.xaml.cs">
+        <DependentUpon>WebViewInstallerPage.xaml</DependentUpon>
+        <SubType>Code</SubType>
+      </Compile>
+      <Compile Update="Platforms\iOS\Services\WebViewInstallationService.cs">
+        <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+      </Compile>
+      <Compile Update="Platforms\Android\Services\WebViewInstallationService.cs">
+        <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+      </Compile>
     </ItemGroup>
 
 </Project>
