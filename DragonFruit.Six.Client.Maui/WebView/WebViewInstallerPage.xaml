@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DragonFruit.Six.Client.Maui.WebView.WebViewInstallerPage"
+             BackgroundColor="#212529"
+             BindingContext="{Binding ViewModel, Source={RelativeSource Self}}">
+    <ContentPage.Content>
+        <FlexLayout Direction="Column" JustifyContent="SpaceBetween" AlignContent="Center" Margin="15">
+            <!-- blank spacer to center the main content -->
+            <Border HeightRequest="0" WidthRequest="0"/>
+            
+            <VerticalStackLayout Spacing="15">
+                <Image Aspect="AspectFit" HeightRequest="250" HorizontalOptions="Center">
+                    <Image.Source>
+                        <FileImageSource File="dragonsix.png" />
+                    </Image.Source>
+                </Image>
+
+                <ActivityIndicator Color="#bd1818" IsRunning="{Binding Active}" HorizontalOptions="Center" />
+
+                <Label HorizontalOptions="Center"
+                       Text="{Binding ErrorMessage, TargetNullValue='Dragon6 is preparing for first use...'}" />
+
+                <Button Text="Retry"
+                        Padding="20, 10"
+                        BackgroundColor="#673ab7"
+                        HorizontalOptions="Center"
+                        Command="{Binding PrepareForUse}"
+                        IsVisible="{Binding RetryButtonVisible}" />
+            </VerticalStackLayout>
+            
+            <Label TextColor="#6c757d"
+                   HorizontalOptions="Center"
+                   Text="Depending on your internet connection, initial setup may take a few minutes."/>
+        </FlexLayout>
+    </ContentPage.Content>
+</ContentPage>
