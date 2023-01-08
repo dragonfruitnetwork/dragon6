@@ -52,11 +52,12 @@
         <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1"/>
     </ItemGroup>
 
+    <ItemGroup Label="Windows WebView2 Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1462.37"/>
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj"/>
-
-        <TrimmerRootAssembly Include="DragonFruit.Six.Client"/>
-        <!-- <TrimmerRootAssembly Include="DragonFruit.Six.Client.Services" />-->
     </ItemGroup>
 
 </Project>
