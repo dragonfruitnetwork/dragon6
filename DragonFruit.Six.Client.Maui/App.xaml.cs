@@ -20,9 +20,11 @@ namespace DragonFruit.Six.Client.Maui
         {
             var window = base.CreateWindow(activationState);
 
-            window.Width = 1200;
+#if WINDOWS || MACCATALYST
+            window.Width = 1300;
             window.Height = 900;
             window.Title = "Dragon6";
+#endif
 
             return window;
         }
