@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace DragonFruit.Six.Client.Maui.Services
 {
-    public partial class WebViewInstallationService
+    public static partial class WebViewInstallationService
     {
-        public partial bool IsWebViewInstalled();
+        public static partial bool IsWebViewInstalled();
 
-        public partial Task<string> InstallWebView(IServiceProvider services);
+        public static partial Task<string> InstallWebView(IServiceProvider services);
     }
 }

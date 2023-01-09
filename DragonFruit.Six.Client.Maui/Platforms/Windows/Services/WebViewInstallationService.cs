@@ -1,6 +1,8 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+// ReSharper disable CheckNamespace
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -13,24 +15,25 @@ using Microsoft.Win32;
 
 namespace DragonFruit.Six.Client.Maui.Services
 {
-    public partial class WebViewInstallationService
+    public static partial class WebViewInstallationService
     {
         private const string WebView2Url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
         private const string WebView2Installer = "MicrosoftEdgeWebview2Setup.exe";
 
-        public partial bool IsWebViewInstalled()
+        public static partial bool IsWebViewInstalled()
         {
             var locations = new[]
             {
-                (Registry.LocalMachine, @"SOFTWARE\WOW6432Node\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"),
-                (Registry.CurrentUser, @"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
+                (RegistryHive.LocalMachine, @"SOFTWARE\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}"),
+                (RegistryHive.CurrentUser, @"Software\Microsoft\EdgeUpdate\Clients\{F3017226-FE2A-4295-8BDF-00C3A9A7E4C5}")
             };
 
             foreach (var (key, path) in locations)
             {
-                using var registry = key.OpenSubKey(path, RegistryRights.ReadKey);
+                using var registry = RegistryKey.OpenBaseKey(key, Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
+                using var subkey = registry.OpenSubKey(path, RegistryRights.ReadKey);
 
-                if (!string.IsNullOrEmpty((string)registry?.GetValue("pv")))
+                if (!string.IsNullOrEmpty((string)subkey?.GetValue("pv")))
                 {
                     return true;
                 }
@@ -39,7 +42,7 @@ namespace DragonFruit.Six.Client.Maui.Services
             return false;
         }
 
-        public async partial Task<string> InstallWebView(IServiceProvider services)
+        public static async partial Task<string> InstallWebView(IServiceProvider services)
         {
             var installerLocation = Path.Combine(Path.GetTempPath(), WebView2Installer);
             await services.GetRequiredService<ApiClient>().PerformAsync(new BasicApiFileRequest(WebView2Url, installerLocation));

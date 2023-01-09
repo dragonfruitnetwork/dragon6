@@ -13,7 +13,7 @@ namespace DragonFruit.Six.Client.Maui
         public App()
         {
             InitializeComponent();
-            MainPage = new WebViewInstallationService().IsWebViewInstalled() ? new MainPage() : new WebViewInstallerPage();
+            MainPage = WebViewInstallationService.IsWebViewInstalled() ? new MainPage() : new WebViewInstallerPage();
         }
 
         protected override Window CreateWindow(IActivationState activationState)

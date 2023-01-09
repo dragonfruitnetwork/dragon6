@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace DragonFruit.Six.Client.Maui.Services
 {
-    public partial class WebViewInstallationService
+    public static partial class WebViewInstallationService
     {
-        public partial bool IsWebViewInstalled() => true;
+        public static partial bool IsWebViewInstalled() => true;
 
-        public partial Task<string> InstallWebView(IServiceProvider services)
+        public static partial Task<string> InstallWebView(IServiceProvider services)
         {
             return Task.FromResult("Install not supported on iOS");
         }

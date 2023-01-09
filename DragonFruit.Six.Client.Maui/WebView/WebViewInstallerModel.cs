@@ -52,7 +52,7 @@ namespace DragonFruit.Six.Client.Maui.WebView
             ErrorMessage = null;
 
             using var scope = _ssf.CreateScope();
-            ErrorMessage = await new WebViewInstallationService().InstallWebView(scope.ServiceProvider);
+            ErrorMessage = await WebViewInstallationService.InstallWebView(scope.ServiceProvider);
 
             if (string.IsNullOrEmpty(ErrorMessage))
             {
