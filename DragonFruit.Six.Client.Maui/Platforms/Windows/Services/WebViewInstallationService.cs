@@ -6,6 +6,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Security.AccessControl;
 using System.Threading.Tasks;
 using DragonFruit.Data;
@@ -15,6 +16,7 @@ using Microsoft.Win32;
 
 namespace DragonFruit.Six.Client.Maui.Services
 {
+    [SupportedOSPlatform("windows")]
     public static partial class WebViewInstallationService
     {
         private const string WebView2Url = "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
@@ -30,7 +32,7 @@ namespace DragonFruit.Six.Client.Maui.Services
 
             foreach (var (key, path) in locations)
             {
-                using var registry = RegistryKey.OpenBaseKey(key, Environment.Is64BitOperatingSystem ? RegistryView.Registry64 : RegistryView.Registry32);
+                using var registry = RegistryKey.OpenBaseKey(key, RegistryView.Registry32);
                 using var subkey = registry.OpenSubKey(path, RegistryRights.ReadKey);
 
                 if (!string.IsNullOrEmpty((string)subkey?.GetValue("pv")))
