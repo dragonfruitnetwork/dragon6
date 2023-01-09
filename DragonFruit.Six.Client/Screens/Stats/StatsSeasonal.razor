@@ -38,18 +38,6 @@
                 </button>
             </div>
         }
-        else
-        {
-            <div class="d6-season-cards d-md-grid justify-content-center">
-                @for (int i = 0; i < 4; i++)
-                {
-                    <HxPlaceholderContainer Animation="PlaceholderAnimation.Wave">
-                        <HxPlaceholder Columns="8" Size="PlaceholderSize.Small"/>
-                        <HxPlaceholder Columns="12" Size="PlaceholderSize.Large"/>
-                    </HxPlaceholderContainer>
-                }
-            </div>
-        }
     </div>
 
     @if (SelectedSeason != null)

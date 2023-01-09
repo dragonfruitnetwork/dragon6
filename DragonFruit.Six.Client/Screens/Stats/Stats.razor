@@ -97,6 +97,12 @@
     case false:
         <h5 class="text-center">There are no stats available for <strong>@Account.Username</strong>...</h5>
         break;
+
+    default:
+        <div class="mb-4">
+            <D6LoadingSpinner Text="Loading Stats..."/>
+        </div>
+        break;
 }
 
 <div class="mt-4">
