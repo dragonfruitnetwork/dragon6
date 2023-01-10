@@ -31,7 +31,13 @@
         <TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
     </PropertyGroup>
 
-    <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release' And $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
+    <PropertyGroup Label="Android Deployment" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-android'))">
+        <AndroidKeyStore>true</AndroidKeyStore>
+        <AndroidSigningKeyAlias>dragon6-prod</AndroidSigningKeyAlias>
+        <AndroidSigningKeyStore>dragonfruit.keystore</AndroidSigningKeyStore>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Windows Deployment" Condition="'$(Configuration)' == 'Release' And $(TargetFramework.Contains('-windows'))">
         <WindowsPackageType>MSIX</WindowsPackageType>
         <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
         <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
