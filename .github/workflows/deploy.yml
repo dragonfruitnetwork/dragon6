@@ -14,7 +14,7 @@ on:
 
 jobs:
   deploy-android:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     environment: android
 
     steps:
@@ -29,10 +29,9 @@ jobs:
           encodedString: ${{ secrets.KEYSTORE_CONTENTS }}
 
       - name: Import IAM Credentials
-        run: 'echo "$IAM_KEY" > google-play-iam.json'
-        shell: bash
+        run: $Env:IAM_KEY > google-play-iam.json
         env:
-          IAM_KEY: ${{ secrets.GCLOUD_IAM} }
+          IAM_KEY: ${{ secrets.GCLOUD_IAM }}
 
       - uses: actions/setup-java@v3
         with:
@@ -43,11 +42,14 @@ jobs:
         with:
           dotnet-version: '7.0.x'
 
+      - name: Set Build Number
+        run: echo "VERSION_NUMBER=$((500 + $Env:GITHUB_RUN_NUMBER))" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+
       - name: Install MAUI Workloads
-        run: sudo dotnet workload install maui-android
+        run: dotnet workload restore
 
       - name: Authenticate NuGet Registry
-        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --name dragonfruit-github https://nuget.pkg.github.com/dragonfruitnetwork/index.json
+        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name dragonfruit-github https://nuget.pkg.github.com/dragonfruitnetwork/index.json
 
       - name: NuGet Restore
         run: |
@@ -55,18 +57,18 @@ jobs:
           dotnet add package DragonFruit.Six.Client.Maui DragonFruit.Six.Client.Services --source dragonfruit-github
 
       - name: Publish
-        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=${{ 500 + github.run_number }} -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
 
       - name: Upload apk
         uses: actions/upload-artifact@v3
         with:
           retention-days: 7
           name: android-apk
-          path: ./DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/*.apk
+          path: .\DragonFruit.Six.Client.Maui\bin\Release\net7.0-android\publish\*.apk
 
       - name: Configure Fastlane
         run: bundle install
-      
+
       - name: Run Fastlane (Internal Deployment)
-        run: bundle exec fastlane internal version_name:${{ inputs.version }} version_code:${{ 500 + github.run_number }}
+        run: bundle exec fastlane internal version_name:${{ inputs.version }} version_code:$Env:VERSION_NUMBER
         if: ${{ github.event_name == 'workflow_dispatch' }}
