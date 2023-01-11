@@ -1,0 +1,38 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+default_platform(:android)
+
+platform :android do
+  desc "Internal App Sharing - Deployment"
+  lane :internal do
+    upload_to_play_store_internal_app_sharing(
+      aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six.aab'
+    )
+  end
+
+  desc "Beta Deployment"
+  lane :beta do |options|
+    upload_to_play_store(
+      track: 'beta',
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: true,
+      package_name: 'com.dragon.six',
+      version_name: options[:version_name],
+      version_code: options[:version_code],
+      aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab'
+    )
+  end
+end

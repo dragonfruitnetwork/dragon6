@@ -1,0 +1,6 @@
+app_identifier("com.dragon.six")
+apple_id("apple-development@dragonfruit.network")
+
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
