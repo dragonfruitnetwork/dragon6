@@ -1,0 +1,72 @@
+﻿name: Deploy
+
+permissions:
+  contents: read
+  packages: read
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'App Version'
+        required: true
+        type: string
+
+jobs:
+  deploy-android:
+    runs-on: ubuntu-latest
+    environment: android
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Import keystore
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: "dragonfruit.keystore"
+          fileDir: './DragonFruit.Six.Client.Maui'
+          encodedString: ${{ secrets.KEYSTORE_CONTENTS }}
+
+      - name: Import IAM Credentials
+        run: 'echo "$IAM_KEY" > google-play-iam.json'
+        shell: bash
+        env:
+          IAM_KEY: ${{ secrets.GCLOUD_IAM} }
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'microsoft'
+          java-version: '11'
+
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Install MAUI Workloads
+        run: sudo dotnet workload install maui-android
+
+      - name: Authenticate NuGet Registry
+        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --name dragonfruit-github https://nuget.pkg.github.com/dragonfruitnetwork/index.json
+
+      - name: NuGet Restore
+        run: |
+          dotnet restore
+          dotnet add package DragonFruit.Six.Client.Maui DragonFruit.Six.Client.Services --source dragonfruit-github
+
+      - name: Publish
+        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=${{ 500 + github.run_number }} -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
+
+      - name: Upload apk
+        uses: actions/upload-artifact@v3
+        with:
+          retention-days: 7
+          name: android-apk
+          path: ./DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/*.apk
+
+      - name: Configure Fastlane
+        run: bundle install
+      
+      - name: Run Fastlane (Internal Deployment)
+        run: bundle exec fastlane internal version_name:${{ inputs.version }} version_code:${{ 500 + github.run_number }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
