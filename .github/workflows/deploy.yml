@@ -49,12 +49,12 @@ jobs:
         run: dotnet workload restore
 
       - name: Authenticate NuGet Registry
-        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name dragonfruit-github https://nuget.pkg.github.com/dragonfruitnetwork/index.json
+        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text https://nuget.pkg.github.com/dragonfruitnetwork/index.json
 
       - name: NuGet Restore
         run: |
           dotnet restore
-          dotnet add package DragonFruit.Six.Client.Maui DragonFruit.Six.Client.Services --source dragonfruit-github
+          dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services --source https://nuget.pkg.github.com/dragonfruitnetwork/index.json
 
       - name: Publish
         run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
