@@ -54,7 +54,7 @@ jobs:
       - name: NuGet Restore
         run: |
           dotnet restore
-          dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services --source https://nuget.pkg.github.com/dragonfruitnetwork/index.json
+          dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
 
       - name: Publish
         run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
