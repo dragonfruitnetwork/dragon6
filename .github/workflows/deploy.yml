@@ -13,13 +13,13 @@ on:
         type: string
 
 jobs:
-  deploy-android:
-    runs-on: windows-latest
+  publish-android:
+    runs-on: macos-latest
     environment: android
 
     steps:
       - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" | Out-File -FilePath $Env:GITHUB_ENV -Encoding utf-8 -Append
+        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -32,7 +32,7 @@ jobs:
           encodedString: ${{ secrets.KEYSTORE_CONTENTS }}
 
       - name: Import IAM Credentials
-        run: $Env:IAM_KEY > google-play-iam.json
+        run: echo $IAM_KEY > google-play-iam.json
         env:
           IAM_KEY: ${{ secrets.GCLOUD_IAM }}
 
@@ -44,13 +44,8 @@ jobs:
       - uses: actions/setup-dotnet@v2
         with:
           dotnet-version: '7.0.x'
-          
-      - uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.1.3'
-          bundler-cache: true
 
-      - name: Install MAUI Workloads
+      - name: Install Workloads
         run: dotnet workload restore
 
       - name: Authenticate NuGet Registry
@@ -62,8 +57,8 @@ jobs:
           dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
 
       - name: Publish
-        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
 
       - name: Fastlane (Internal Deployment)
-        run: bundle exec fastlane internal version_name:${{ inputs.version }} version_code:$Env:VERSION_NUMBER
+        run: fastlane internal version_name:${{ inputs.version }} version_code:$VERSION_NUMBER
         if: ${{ github.event_name == 'workflow_dispatch' }}
