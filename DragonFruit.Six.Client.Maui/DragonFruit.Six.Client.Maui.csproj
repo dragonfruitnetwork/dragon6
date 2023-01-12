@@ -19,6 +19,7 @@
         <WindowsPackageType>None</WindowsPackageType>
         <RootNamespace>DragonFruit.Six.Client.Maui</RootNamespace>
         <SatelliteResourceLanguages>en-US</SatelliteResourceLanguages>
+        <WindowsAppSdkDeploymentManagerInitialize>false</WindowsAppSdkDeploymentManagerInitialize>
 
         <ApplicationTitle>Dragon6</ApplicationTitle>
         <ApplicationId>com.dragon.six</ApplicationId>
