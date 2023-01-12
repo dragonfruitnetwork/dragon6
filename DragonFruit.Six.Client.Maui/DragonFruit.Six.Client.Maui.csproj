@@ -67,7 +67,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <TrimmerRootDescriptor Include="..\trimmer-roots.xml"/>
         <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
     </ItemGroup>
 
