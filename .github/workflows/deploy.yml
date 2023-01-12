@@ -64,9 +64,6 @@ jobs:
       - name: Publish
         run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
 
-      - name: Configure Fastlane
-        run: bundle install
-
-      - name: Run Fastlane (Internal Deployment)
+      - name: Fastlane (Internal Deployment)
         run: bundle exec fastlane internal version_name:${{ inputs.version }} version_code:$Env:VERSION_NUMBER
         if: ${{ github.event_name == 'workflow_dispatch' }}
