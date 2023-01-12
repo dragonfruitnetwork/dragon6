@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<linker>
+    <assembly fullname="DragonFruit.Six.Client"/>
+    <assembly fullname="DragonFruit.Six.Client.Services"/>
+    <assembly fullname="Microsoft.AspNetCore.Components.Web">
+        <type fullname="HeadOutlet"/>
+    </assembly>
+</linker>
