@@ -1,7 +1,32 @@
 ﻿@using DragonFruit.Six.Client.Screens
 <Router AppAssembly="@typeof(Dragon6App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(DefaultLayout)"/>
+        <ErrorBoundary @ref="_error">
+            <ChildContent>
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(DefaultLayout)"/>
+            </ChildContent>
+            <ErrorContent>
+                <div class="h-100 d-flex flex-column justify-content-between align-items-center">
+                    <div></div>
+                    
+                    <div class="d6-overlay-center-content">
+                        <span class="material-icons-round fa-2x text-danger">report</span>
+                            
+                        <div>
+                            <h4>Well, this is unexpected...</h4>
+                            <p>Something has gone wrong with Dragon6. We've reported the error and will investigate ASAP</p>
+                        </div>
+                            
+                        <HxButton CssClass="btn-text d6-icon-button text-success" OnClick="() => _error?.Recover()">
+                            <span class="material-icons-round">refresh</span>
+                            <span>Reload</span>
+                        </HxButton>
+                    </div>
+                    
+                    <span class="text-muted text-center">@context.GetType().Name: @context.Message</span>
+                </div>
+            </ErrorContent>
+        </ErrorBoundary>
     </Found>
     <NotFound>
         <LayoutView Layout="@typeof(DefaultLayout)">
@@ -9,3 +34,9 @@
         </LayoutView>
     </NotFound>
 </Router>
+
+@code {
+
+    private ErrorBoundary _error;
+
+}
