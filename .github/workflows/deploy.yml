@@ -64,13 +64,6 @@ jobs:
       - name: Publish
         run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
 
-      - name: Upload apk
-        uses: actions/upload-artifact@v3
-        with:
-          retention-days: 7
-          name: android-apk
-          path: .\DragonFruit.Six.Client.Maui\bin\Release\net7.0-android\publish\*.apk
-
       - name: Configure Fastlane
         run: bundle install
 
