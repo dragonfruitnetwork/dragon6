@@ -44,7 +44,7 @@
         <AppxPackageSigningEnabled>true</AppxPackageSigningEnabled>
         <PackageCertificateThumbprint>93382446B7F3F80DAF1BAEBE33D4283D7CF778F8</PackageCertificateThumbprint>
     </PropertyGroup>
-    
+
     <PropertyGroup Label="Trimming" Condition="'$(Configuration)' != 'Debug'">
         <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
         <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
@@ -53,21 +53,24 @@
     </PropertyGroup>
 
     <ItemGroup Label="MAUI Icons">
-        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818" />
-        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392" />
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#BD1818"/>
+        <MauiSplashScreen Include="Resources\Splash\splashscreen.svg" Color="#BD1818" BaseSize="209,392"/>
     </ItemGroup>
 
     <ItemGroup Label="Desktop Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
-        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18" />
+        <PackageReference Include="DiscordRichPresence" Version="1.1.3.18"/>
     </ItemGroup>
 
     <ItemGroup Label="Migration-Specific Libraries" Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' Or $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">
-        <PackageReference Include="Dapper" Version="2.0.123" />
-        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1" />
+        <PackageReference Include="Dapper" Version="2.0.123"/>
+        <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.1"/>
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj" />
+        <TrimmerRootAssembly Include="DragonFruit.Six.Client"/>
+        <TrimmerRootAssembly Include="DragonFruit.Six.Api"/>
+        
+        <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj"/>
     </ItemGroup>
 
 </Project>
