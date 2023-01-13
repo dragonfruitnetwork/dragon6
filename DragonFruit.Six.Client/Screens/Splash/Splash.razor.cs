@@ -2,12 +2,14 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using DragonFruit.Data.Basic;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
+using DragonFruit.Six.Client.Overlays;
 using DragonFruit.Six.Client.Overlays.Recents;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +32,7 @@ namespace DragonFruit.Six.Client.Screens.Splash
         private Dragon6Configuration Configuration { get; set; }
 
         private string CurrentStatus { get; set; }
+        private IEnumerable<IServiceButton> Buttons { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -37,6 +40,21 @@ namespace DragonFruit.Six.Client.Screens.Splash
             Configuration.SetDefaults();
 
             RealmConfigurator.Initialise(Platform);
+
+            var hooks = Services.GetService<IStartupHook>();
+
+            if (hooks != null)
+            {
+                var result = await hooks.ValidateOnStartup(Services).ConfigureAwait(false);
+
+                if (!result.Success)
+                {
+                    Buttons = result.Buttons;
+                    CurrentStatus = result.Message;
+
+                    return;
+                }
+            }
 
             var legacyMigrator = Services.GetService<ILegacyVersionMigrator>();
 
