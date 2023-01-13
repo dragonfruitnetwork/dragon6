@@ -26,7 +26,7 @@ namespace DragonFruit.Six.Client.Network
             if ((int)result.StatusCode is >= 400 and <= 599)
             {
                 var content = await result.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                _logger.LogWarning("Request to {url} returned {status}: {message}", result.RequestMessage.RequestUri.Host, result.StatusCode, content);
+                _logger.LogWarning("Request to {url} returned {status}: {message}", result.RequestMessage.RequestUri, result.StatusCode, content);
             }
             else
             {
