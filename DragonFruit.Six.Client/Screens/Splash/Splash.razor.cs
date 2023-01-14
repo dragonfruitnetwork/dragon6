@@ -47,13 +47,16 @@ namespace DragonFruit.Six.Client.Screens.Splash
             {
                 var result = await hooks.ValidateOnStartup(Services).ConfigureAwait(false);
 
-                if (!result.Success)
-                {
-                    Buttons = result.Buttons;
+                Buttons = result.Buttons;
+
+                if (!string.IsNullOrEmpty(result.Message))
                     CurrentStatus = result.Message;
 
+                if (!result.Success)
                     return;
-                }
+
+                if (result.FlowContinuationTask != null)
+                    await result.FlowContinuationTask.ConfigureAwait(false);
             }
 
             var legacyMigrator = Services.GetService<ILegacyVersionMigrator>();
