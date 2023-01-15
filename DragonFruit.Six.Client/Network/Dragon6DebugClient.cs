@@ -10,6 +10,7 @@ using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Authentication.Entities;
 using DragonFruit.Six.Api.Enums;
 using DragonFruit.Six.Api.Services.Developer;
+using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using Microsoft.Extensions.Logging;
 
@@ -48,7 +49,12 @@ namespace DragonFruit.Six.Client.Network
 
         protected sealed override HttpMessageHandler CreateHandler()
         {
-            var handler = base.CreateHandler() ?? new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All };
+            var handler = base.CreateHandler() ?? _fileSystem.CurrentPlatform switch
+            {
+                HostPlatform.Android => new HttpClientHandler { AutomaticDecompression = DecompressionMethods.All },
+                _ => new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All }
+            };
+
             return new ClientLoggingHandler(_logger, handler);
         }
     }
