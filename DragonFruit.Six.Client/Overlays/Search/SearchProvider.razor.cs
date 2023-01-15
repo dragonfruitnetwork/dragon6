@@ -34,7 +34,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
         [Inject]
         private NavigationManager Navigation { get; set; }
-        
+
         [Inject]
         private ILogger<SearchProvider> Logger { get; set; }
 
