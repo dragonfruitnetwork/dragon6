@@ -68,8 +68,8 @@
 
     <ItemGroup>
         <TrimmerRootAssembly Include="DragonFruit.Six.Client"/>
-        <TrimmerRootAssembly Include="DragonFruit.Six.Api"/>
-        
+        <TrimmerRootAssembly Include="DragonFruit.Six.Client.Services" Condition="'$(Configuration)' == 'Release'"/>
+
         <ProjectReference Include="..\DragonFruit.Six.Client\DragonFruit.Six.Client.csproj"/>
     </ItemGroup>
 

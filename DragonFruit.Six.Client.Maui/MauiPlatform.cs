@@ -5,7 +5,6 @@ using System.IO;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using Microsoft.Maui.ApplicationModel;
-using Microsoft.Maui.Devices;
 using Microsoft.Maui.Graphics;
 using Microsoft.Maui.Storage;
 using Browser = Microsoft.Maui.ApplicationModel.Browser;
@@ -28,27 +27,17 @@ namespace DragonFruit.Six.Client.Maui
         {
             get
             {
-                if (DeviceInfo.Current.Platform == DevicePlatform.WinUI)
-                {
-                    return HostPlatform.Windows;
-                }
-
-                if (DeviceInfo.Current.Platform == DevicePlatform.Android)
-                {
-                    return HostPlatform.Android;
-                }
-
-                if (DeviceInfo.Current.Platform == DevicePlatform.iOS)
-                {
-                    return HostPlatform.iOS;
-                }
-
-                if (DeviceInfo.Current.Platform == DevicePlatform.MacCatalyst || DeviceInfo.Current.Platform == DevicePlatform.macOS)
-                {
-                    return HostPlatform.Mac;
-                }
-
+#if WINDOWS
+                return HostPlatform.Windows;
+#elif ANDROID
+                return HostPlatform.Android;
+#elif IOS
+                return HostPlatform.iOS;
+#elif MAC || MACCATALYST
+                return HostPlatform.Mac;
+#else
                 return HostPlatform.Desktop;
+#endif
             }
         }
 

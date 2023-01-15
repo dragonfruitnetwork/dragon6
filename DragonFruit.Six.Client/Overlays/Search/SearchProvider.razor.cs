@@ -13,6 +13,7 @@ using DragonFruit.Six.Api.Utils;
 using DragonFruit.Six.Client.Database.Services;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 
 #pragma warning disable CS4014
@@ -33,6 +34,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
         [Inject]
         private NavigationManager Navigation { get; set; }
+
+        [Inject]
+        private ILogger<SearchProvider> Logger { get; set; }
 
         [CascadingParameter]
         private SearchProviderState SearchProviderState { get; set; }
@@ -65,9 +69,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
                 SearchProviderState.DiscoveredAccount = matchingAccounts.FirstOrDefault();
                 CurrentState = SearchProviderState.DiscoveredAccount == null ? SearchState.NotFound : SearchState.Discovered;
             }
-            catch
+            catch (Exception e)
             {
-                // todo add logging
+                Logger.LogWarning("Error occured while searching for {user} on {platform}: {@ex}", identifier, platform, e);
                 CurrentState = SearchState.OtherError;
             }
 
