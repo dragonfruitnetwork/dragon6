@@ -42,13 +42,13 @@ namespace DragonFruit.Six.Client.Database
                 }
             }
 
-            using var response = await client.PerformAsync(request);
+            using var response = await client.PerformAsync(request).ConfigureAwait(false);
             logger.LogInformation("{table} data request responded with {status}", typeof(T).Name, response.StatusCode);
 
             if (response.StatusCode is HttpStatusCode.OK)
             {
                 var date = DateTime.UtcNow;
-                var responseStream = await response.Content.ReadAsStreamAsync();
+                var responseStream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false);
                 var elements = client.Serializer.Resolve<T>(DataDirection.In).Deserialize<IList<T>>(responseStream);
 
                 foreach (var element in elements)
