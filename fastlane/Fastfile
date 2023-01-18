@@ -36,4 +36,20 @@ platform :android do
       aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab'
     )
   end
+  
+  desc "Production Deployment"
+  lane :production do |options|
+    upload_to_play_store(
+      track: 'production',
+      skip_upload_apk: true,
+      skip_upload_images: true,
+      skip_upload_metadata: true,
+      skip_upload_changelogs: true,
+      skip_upload_screenshots: true,
+      package_name: 'com.dragon.six',
+      version_name: options[:version_name],
+      version_code: options[:version_code],
+      aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab'
+    )
+  end
 end
