@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using BlazorPro.BlazorSize;
+using DragonFruit.Data;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
@@ -50,6 +51,7 @@ namespace DragonFruit.Six.Client
             else
             {
                 services.AddSingleton<Dragon6Client, Dragon6DebugClient>();
+                services.AddSingleton<ApiClient>(s => s.GetRequiredService<Dragon6Client>());
             }
 
             // account caches and database services
