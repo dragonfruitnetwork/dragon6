@@ -1,10 +1,14 @@
 ﻿name: Deploy
+description: Deploys Dragon6 to all supported platforms
 
 permissions:
-  contents: read
   packages: read
+  contents: write
 
 on:
+  release:
+    types: [ published ]
+
   workflow_dispatch:
     inputs:
       version:
@@ -75,3 +79,64 @@ jobs:
       - name: Fastlane
         run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
         if: github.event_name == 'release' && !github.event.release.prerelease
+
+  publish-windows:
+    runs-on: windows-latest
+    environment: windows
+
+    steps:
+      - name: Set Build Number
+        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Decode Certificate
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: "dragonfruit.pfx"
+          fileDir: '.'
+          encodedString: ${{ secrets.CERTIFICATE }}
+
+      - name: Install Certificate
+        run: Import-PfxCertificate -FilePath dragonfruit.pfx -CertStoreLocation cert:\CurrentUser\My -Password $securePassword
+        env:
+          CertificatePassword: ${{ secrets.CERTIFICATE_PASSWORD }}
+
+      - uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: '7.0.x'
+
+      - name: Install Workloads
+        run: dotnet workload restore
+
+      - name: Authenticate NuGet Registry
+        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text https://nuget.pkg.github.com/dragonfruitnetwork/index.json
+
+      - name: NuGet Restore
+        run: |
+          dotnet restore
+          dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
+
+      - name: Publish
+        run: dotnet publish -f net7.0-windows10.0.19041.0 -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} DragonFruit.Six.Client.Maui
+
+      - name: Rename and Move MSIX
+        working-directory: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages'
+        run: |
+          $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
+          [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
+
+      - name: Upload MSIX to Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: DragonFruit.Six.Client.Maui_x64.msix
+
+      - name: Upload MSIX as Artifact
+        uses: actions/upload-artifact@v3
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          retention-days: 7
+          name: dragon6-msix
+          path: DragonFruit.Six.Client.Maui_x64.msix
