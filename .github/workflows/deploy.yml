@@ -57,8 +57,21 @@ jobs:
           dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
 
       - name: Publish
-        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
 
       - name: Fastlane (Internal Deployment)
-        run: fastlane internal version_name:${{ inputs.version }} version_code:$VERSION_NUMBER
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: fastlane internal version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.apk
+
+      - name: Fastlane (Beta)
+        run: fastlane beta version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: github.event_name == 'release' && github.event.release.prerelease
+
+      - name: Fastlane
+        run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: github.event_name == 'release' && !github.event.release.prerelease
