@@ -34,7 +34,8 @@
             var totalKostRounds = (int)(Summary.RoundsWithKillObjectiveSurvivalOrTrade * Summary.RoundsPlayed);
             var totalOpeningDeaths = (int)(Summary.RoundsWithFirstDeath * Summary.RoundsPlayed);
 
-            var acesIcon = totalAces switch {
+            var acesIcon = totalAces switch
+            {
                 >= 2 => "dumpster-fire",
                 1 => "dumpster",
                 _ => "trash"
@@ -59,6 +60,10 @@
                            Title="@($"{Summary.DistanceTravelled:N0}m Travelled")"
                            Subtitle="@($"{Summary.DistanceTravelledPerRound:N0} average distance per round")"/>
     </div>
+}
+else
+{
+    <p class="text-muted">There are no stats available for Casual, Ranked or Unranked to display...</p>
 }
 
 @code {
@@ -96,7 +101,7 @@
     protected override async Task OnParametersSetAsync()
     {
         var summaryContainer = await Client.GetModernStatsSummaryAsync(Account, PlaylistType.Independent, OperatorType.Independent, DateTime.UtcNow.AddDays(-Stats.ModernStatsRange)).ConfigureAwait(false);
-        Summary = summaryContainer.AllModes.AsAny.FirstOrDefault();
+        Summary = summaryContainer?.AllModes.AsAny.FirstOrDefault();
     }
 
 }
