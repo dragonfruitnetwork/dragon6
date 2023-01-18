@@ -14,16 +14,14 @@
 <div class="d6-operator-card-header flex-md-row justify-content-md-between">
     <h3 class="m-0">Operator Stats</h3>
     <div class="d6-operator-card-header-options flex-md-nowrap">
-
-        <MediaQuery Media="@Breakpoints.MediumUp">
+        <MediaQuery Media="@Breakpoints.MediumUp" @bind-Matches="SystemFilterUnplayed">
             <Matched>
                 <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" @bind="FilterUnplayed">
+                    <input class="form-check-input" type="checkbox" @bind="UserFilterUnplayed">
                     <label class="form-check-label">Filter unplayed</label>
                 </div>
             </Matched>
         </MediaQuery>
-
 
         <HxDropdownButtonGroup Direction="DropdownDirection.Down">
             <HxDropdownToggleButton CssClass="text-light border" Color="ThemeColor.None">
@@ -67,8 +65,10 @@
     [Inject]
     private Dragon6Client Client { get; set; }
 
-    private bool FilterUnplayed { get; set; }
+    private bool UserFilterUnplayed { get; set; }
+    private bool SystemFilterUnplayed { get; set; }
     private OperatorSortMode SortMode { get; set; } = OperatorSortMode.RoundsPlayed;
+
     private IReadOnlyCollection<OperatorStatsContainer> Stats { get; set; }
 
     protected override async Task OnParametersSetAsync()
@@ -84,11 +84,13 @@
 
     private IEnumerable<OperatorStatsContainer> GetDisplayableGroup(IEnumerable<OperatorStatsContainer> stats)
     {
-        // perform filtering first, then partition based on whether the operator has been played.
-        var filteredGroups = FilterUnplayed ? stats.Where(x => x.Stats?.RoundsPlayed > 0) : stats;
+        // perform filtering first, then partition based on whether the operator has been played
+        var filteredGroups = UserFilterUnplayed || SystemFilterUnplayed ? stats.Where(x => x.Stats?.RoundsPlayed > 0) : stats;
 
         if (SortMode is OperatorSortMode.Default)
+        {
             return filteredGroups;
+        }
 
         var partitionedGroups = filteredGroups.ToLookup(x => x.Stats != null);
         var orderedGroup = SortMode switch
