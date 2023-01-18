@@ -144,14 +144,16 @@ namespace DragonFruit.Six.Client.Screens.Stats
             UserPlayedGame = true;
 
             // get latest season id and create range to collect from the server
+            IEnumerable<int> seasonIds;
+
             using (var realm = await Realm.GetInstanceAsync())
             {
                 var latestSeason = Math.Max(ModernSeasonStart, realm.All<SeasonInfo>().OrderByDescending(x => x.SeasonId).First().SeasonId);
-                var range = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
-
-                var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, range.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Warmup, Region.EMEA).ConfigureAwait(false);
-                PostFreezeSeasons = postFreezeSeasonsEnumerable.ToList();
+                seasonIds = Enumerable.Range(ModernSeasonStart + 1, latestSeason - ModernSeasonStart);
             }
+
+            var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, seasonIds.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Warmup, Region.EMEA).ConfigureAwait(false);
+            PostFreezeSeasons = postFreezeSeasonsEnumerable.ToList();
 
             // the ubisoft activity api has been frozen so use leaderboards to work out the last time the user played a game.
             var lastLeaderboardUpdate = PostFreezeSeasons.Max(x => x.TimeUpdated);
