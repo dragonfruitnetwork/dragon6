@@ -37,12 +37,19 @@ namespace DragonFruit.Six.Client.Screens.Stats
         protected override async Task OnParametersSetAsync()
         {
             var operatorStatsContainer = await Client.GetModernOperatorStatsAsync(Account, PlaylistType.Independent, startDate: DateTime.UtcNow.AddDays(-Screens.Stats.Stats.ModernStatsRange)).ConfigureAwait(false);
-            var operatorStats = operatorStatsContainer.AllModes.AsAttacker.Concat(operatorStatsContainer.AllModes.AsDefender);
+            var operatorStats = operatorStatsContainer?.AllModes.AsAttacker.Concat(operatorStatsContainer.AllModes.AsDefender);
+
+            if (operatorStats == null)
+            {
+                Stats = null;
+                return;
+            }
 
             using var realm = await Realm.GetInstanceAsync();
-
-            // because realm entities are locked to the thread the realm was created on, the items need to be frozen to allow read-only access on render threads.
-            Stats = realm.All<OperatorInfo>().AsEnumerable().LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => new OperatorStatsContainer(info.Freeze(), stats)).ToList();
+            Stats = realm.All<OperatorInfo>()
+                         .AsEnumerable()
+                         .LeftJoin(operatorStats, x => x.Id, x => x.Name.ToLowerInvariant(), (info, stats) => new OperatorStatsContainer(info.Freeze(), stats))
+                         .ToList();
         }
 
         private IEnumerable<OperatorStatsContainer> GetDisplayableGroup(IEnumerable<OperatorStatsContainer> stats)

@@ -1,34 +1,33 @@
 @using BlazorPro.BlazorSize
 @using Humanizer
 
-<MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="SystemFilterUnplayed"/>
-
-<div class="d6-operator-card-header flex-md-row justify-content-md-between">
-    <h3 class="m-0">Operator Stats</h3>
-    <div class="d6-operator-card-header-options">
-        @if (!SystemFilterUnplayed)
-        {
-            <HxSwitch Text="Hide unplayed" @bind-Value="UserFilterUnplayed"/>
-        }
-        <HxDropdownButtonGroup Direction="DropdownDirection.Down">
-            <HxDropdownToggleButton CssClass="text-light border" Color="ThemeColor.None">
-                @SortMode.Humanize()
-            </HxDropdownToggleButton>
-            <HxDropdownMenu CssClass="dropdown-menu-dark">
-                @foreach (var sortMode in Enum.GetValues<OperatorSortMode>())
-                {
-                    <HxDropdownItem OnClick="() => SortMode = sortMode">@sortMode.Humanize()</HxDropdownItem>
-                }
-            </HxDropdownMenu>
-        </HxDropdownButtonGroup>
-    </div>
-</div>
-
 @if (Stats != null)
 {
-    var groups = Stats.ToLookup(x => x.Info.Type);
+    <MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="SystemFilterUnplayed"/>
+
+    <div class="d6-operator-card-header flex-md-row justify-content-md-between">
+        <h3 class="m-0">Operator Stats</h3>
+        <div class="d6-operator-card-header-options">
+            @if (!SystemFilterUnplayed)
+            {
+                <HxSwitch Text="Hide unplayed" @bind-Value="UserFilterUnplayed"/>
+            }
+            <HxDropdownButtonGroup Direction="DropdownDirection.Down">
+                <HxDropdownToggleButton CssClass="text-light border" Color="ThemeColor.None">
+                    @SortMode.Humanize()
+                </HxDropdownToggleButton>
+                <HxDropdownMenu CssClass="dropdown-menu-dark">
+                    @foreach (var sortMode in Enum.GetValues<OperatorSortMode>())
+                    {
+                        <HxDropdownItem OnClick="() => SortMode = sortMode">@sortMode.Humanize()</HxDropdownItem>
+                    }
+                </HxDropdownMenu>
+            </HxDropdownButtonGroup>
+        </div>
+    </div>
+
     <div class="d6-stat-container mt-4">
-        @foreach (var group in groups.OrderBy(x => x.Key))
+        @foreach (var group in Stats.ToLookup(x => x.Info.Type).OrderBy(x => x.Key))
         {
             <div>
                 <h4 class="m-0 mb-2 text-center">@group.Key.Humanize().Pluralize()</h4>
