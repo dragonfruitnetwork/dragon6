@@ -29,6 +29,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
     public partial class Stats
     {
         private UbisoftAccount _account;
+
         private const byte ModernSeasonStart = 23;
         internal const int ModernStatsRange = 60;
 
@@ -132,16 +133,14 @@ namespace DragonFruit.Six.Client.Screens.Stats
                 return;
             }
 
-            var legacyStats = await Client.GetLegacyStatsAsync(Account).ConfigureAwait(false);
+            // in some cases, the user may not have "legacy" stats - potentially due to only playing deathmatch or newcomer.
+            // when this happens, create a container with the properties needed for the process to finish.
             var warmup = new LegacyPlaylistStats();
-
-            if (legacyStats == null)
+            var legacyStats = await Client.GetLegacyStatsAsync(Account).ConfigureAwait(false) ?? new LegacyStats
             {
-                UserPlayedGame = false;
-                return;
-            }
-
-            UserPlayedGame = true;
+                Casual = new LegacyPlaylistStats(),
+                Ranked = new LegacyPlaylistStats()
+            };
 
             // get latest season id and create range to collect from the server
             IEnumerable<int> seasonIds;
@@ -179,10 +178,14 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Ranked = legacyStats.Ranked;
             Warmup = warmup;
 
+            // if a user only plays newcomer they will show up as not playing - nice for those that start off dying constantly
+            UserPlayedGame = Casual.MatchesPlayed + Ranked.MatchesPlayed + Warmup.MatchesPlayed > 0;
+
             // add/update user recent profiles
+            var recentAccount = Services.GetRequiredService<IMapper>().Map<RecentAccount>(Account);
+
             using (var realm = await Realm.GetInstanceAsync())
             {
-                var recentAccount = Services.GetRequiredService<IMapper>().Map<RecentAccount>(Account);
                 await realm.WriteAsync(() => realm.Add(recentAccount, true)).ConfigureAwait(false);
             }
         }

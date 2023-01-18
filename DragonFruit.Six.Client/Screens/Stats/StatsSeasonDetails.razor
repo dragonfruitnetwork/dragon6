@@ -2,59 +2,63 @@
 @using DragonFruit.Six.Client.Utils
 @using Humanizer
 @using DragonFruit.Six.Api.Seasonal.Entities
-@using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
 @using DragonFruit.Six.Api.Seasonal
+@using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
 
-<div>
-    <div class="d6-season-rank-type-container">
-        @if (Season.Ranked2Stats?.Board == BoardType.Ranked)
-        {
-            <SeasonalRankTypeDisplay Info="Season.Info" Title="Progression" Rank="Season.Ranked2Stats.MaxRankInfo">
-                <dl>
-                    <dt>Rank Poins</dt>
-                    <dd>@Season.Ranked2Stats.RankPoints.ToString("N0")</dd>
-                </dl>
-                <dl>
-                    <dt>Max Rank Points</dt>
-                    <dd>@Season.Ranked2Stats.MaxRankPoints.ToString("N0")</dd>
-                </dl>
-            </SeasonalRankTypeDisplay>
-        }
-
-        <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@GetDisplayedSkillRank()">
-            <dl>
-                <dt>MMR</dt>
-                <dd>@Season.Stats.MMR.ToString("N0")</dd>
-            </dl>
-
-            @if (Season.Stats.Board == BoardType.Ranked)
+<div class="card bg-transparent mt-3" style="border-color: @Season.Info.AccentColour">
+    <div class="card-body">
+        <div class="d6-season-rank-type-container">
+            @if (Season.Ranked2Stats?.Board == BoardType.Ranked)
             {
-                <dl>
-                    <dt>Max MMR</dt>
-                    <dd>@Season.Stats.MaxMMR.ToString("N0")</dd>
-                </dl>
+                <SeasonalRankTypeDisplay Info="Season.Info" Title="Progression" Rank="Season.Ranked2Stats.MaxRankInfo">
+                    <dl>
+                        <dt>Rank Poins</dt>
+                        <dd>@Season.Ranked2Stats.RankPoints.ToString("N0")</dd>
+                    </dl>
+                    <dl>
+                        <dt>Max Rank Points</dt>
+                        <dd>@Season.Ranked2Stats.MaxRankPoints.ToString("N0")</dd>
+                    </dl>
+                </SeasonalRankTypeDisplay>
             }
 
-            <dl>
-                <dt>Uncertainty</dt>
-                <dd>&plusmn; @((Season.Stats.SkillUncertainty * 100).ToString("N0"))</dd>
-            </dl>
-        </SeasonalRankTypeDisplay>
-    </div>
+            <SeasonalRankTypeDisplay Info="Season.Info" Title="Skill" Rank="@GetDisplayedSkillRank()">
+                <dl>
+                    <dt>MMR</dt>
+                    <dd>@Season.Stats.MMR.ToString("N0")</dd>
+                </dl>
 
-    <div class="d6-stat-container mt-4">
-        <StatsAggregationCard Title="@($"{Season.Info.SeasonName} K/D")" Progress="Season.Stats.Kd / 0.02f">
-            <StatsAggregationCardDescriptor>@Season.Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
-            <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Kills.ToString("N0") Kills</StatsAggregationCardDescriptor>
-            <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Deaths.ToString("N0") Deaths</StatsAggregationCardDescriptor>
-        </StatsAggregationCard>
+                @if (Season.Stats.Board == BoardType.Ranked)
+                {
+                    <dl>
+                        <dt>Max MMR</dt>
+                        <dd>@Season.Stats.MaxMMR.ToString("N0")</dd>
+                    </dl>
+                }
 
-        <StatsAggregationCard Title="@($"{Season.Info.SeasonName} W/L")" Progress="Season.Stats.Wl / 0.02f">
-            <StatsAggregationCardDescriptor>@Season.Stats.Wl.ToString("0.00") W/L</StatsAggregationCardDescriptor>
-            <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Wins.ToString("N0") Wins</StatsAggregationCardDescriptor>
-            <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Losses.ToString("N0") Losses</StatsAggregationCardDescriptor>
-            <StatsAggregationCardDescriptor CssClass="text-secondary">@Season.Stats.Abandons.ToString("N0") Abandons</StatsAggregationCardDescriptor>
-        </StatsAggregationCard>
+                <dl>
+                    <dt>Uncertainty</dt>
+                    <dd>&plusmn; @((Season.Stats.SkillUncertainty * 100).ToString("N0"))</dd>
+                </dl>
+            </SeasonalRankTypeDisplay>
+        </div>
+
+        <hr class="w-100"/>
+        
+        <div class="d6-stat-container mt-4">
+            <StatsAggregationCard Title="@($"{Season.Info.SeasonName} K/D")" Progress="Season.Stats.Kd / 0.02f">
+                <StatsAggregationCardDescriptor>@Season.Stats.Kd.ToString("0.00") K/D</StatsAggregationCardDescriptor>
+                <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Kills.ToString("N0") Kills</StatsAggregationCardDescriptor>
+                <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Deaths.ToString("N0") Deaths</StatsAggregationCardDescriptor>
+            </StatsAggregationCard>
+
+            <StatsAggregationCard Title="@($"{Season.Info.SeasonName} W/L")" Progress="Season.Stats.Wl / 0.02f">
+                <StatsAggregationCardDescriptor>@Season.Stats.Wl.ToString("0.00") W/L</StatsAggregationCardDescriptor>
+                <StatsAggregationCardDescriptor CssClass="text-success">@Season.Stats.Wins.ToString("N0") Wins</StatsAggregationCardDescriptor>
+                <StatsAggregationCardDescriptor CssClass="text-danger">@Season.Stats.Losses.ToString("N0") Losses</StatsAggregationCardDescriptor>
+                <StatsAggregationCardDescriptor CssClass="text-secondary">@Season.Stats.Abandons.ToString("N0") Abandons</StatsAggregationCardDescriptor>
+            </StatsAggregationCard>
+        </div>
     </div>
 </div>
 
