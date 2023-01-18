@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using BlazorPro.BlazorSize;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
@@ -33,6 +34,7 @@ namespace DragonFruit.Six.Client
 
             // core services
             services.AddHxServices();
+            services.AddMediaQueryService();
             services.AddSingleton<Dragon6Configuration>();
             services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
 

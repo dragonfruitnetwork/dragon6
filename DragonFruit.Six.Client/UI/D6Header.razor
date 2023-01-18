@@ -1,4 +1,6 @@
-﻿@foreach (var overlay in DiscoveredButtons.OfType<IOverlayInfo>())
+﻿@using BlazorPro.BlazorSize
+
+@foreach (var overlay in DiscoveredButtons.OfType<IOverlayInfo>())
 {
     <Dragon6Overlay @ref="Overlays[overlay]" Info="overlay"/>
 }
@@ -11,15 +13,19 @@
 
     <div class="d6-header-footer--container">
         <CascadingValue Value="Overlays">
-            <div class="d6-header--links d-md-flex d-none">
-                @foreach (var button in DiscoveredButtons)
-                {
-                    <D6HeaderButton Button="button" IsMenuButton="false"/>
-                }
-            </div>
-            <div class="d-md-none">
-                <Dragon6MenuOverlay Buttons="DiscoveredButtons"/>
-            </div>
+            <MediaQuery Media="@Breakpoints.MediumUp">
+                <Matched>
+                    <div class="d6-header--links">
+                        @foreach (var button in DiscoveredButtons)
+                        {
+                            <D6HeaderButton Button="button" IsMenuButton="false"/>
+                        }
+                    </div>
+                </Matched>
+                <Unmatched>
+                    <Dragon6MenuOverlay Buttons="DiscoveredButtons"/>
+                </Unmatched>
+            </MediaQuery>
         </CascadingValue>
     </div>
 </nav>
