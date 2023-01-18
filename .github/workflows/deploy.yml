@@ -11,14 +11,25 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'App Version'
+        description: "App Version"
         required: true
         type: string
 
 jobs:
-  publish-android:
-    runs-on: macos-latest
-    environment: android
+  publish:
+    strategy:
+      matrix:
+        include:
+          - os: macos-latest
+            platform: android
+            framework: net7.0-android
+
+          - os: windows-latest
+            platform: windows
+            framework: net7.0-windows10.0.19041.0
+
+    runs-on: ${{ matrix.os }}
+    environment: ${{ matrix.platform }}
 
     steps:
       - name: Set Build Number
@@ -29,84 +40,44 @@ jobs:
 
       - name: Import keystore
         uses: timheuer/base64-to-file@v1.2
+        if: matrix.platform == 'android'
         with:
           fileName: "dragonfruit.keystore"
-          fileDir: './DragonFruit.Six.Client.Maui'
+          fileDir: "./DragonFruit.Six.Client.Maui"
           encodedString: ${{ secrets.KEYSTORE_CONTENTS }}
 
       - name: Import IAM Credentials
         run: echo $IAM_KEY > google-play-iam.json
+        if: matrix.platform == 'android'
         env:
           IAM_KEY: ${{ secrets.GCLOUD_IAM }}
 
-      - uses: actions/setup-java@v3
-        with:
-          distribution: 'microsoft'
-          java-version: '11'
-
-      - uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: '7.0.x'
-
-      - name: Install Workloads
-        run: dotnet workload restore
-
-      - name: Authenticate NuGet Registry
-        run: dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text https://nuget.pkg.github.com/dragonfruitnetwork/index.json
-
-      - name: NuGet Restore
-        run: |
-          dotnet restore
-          dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
-
-      - name: Publish
-        run: dotnet publish -f net7.0-android -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET }} DragonFruit.Six.Client.Maui
-
-      - name: Fastlane (Internal Deployment)
-        run: fastlane internal version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
-
-      - name: Upload APK to Release
-        uses: softprops/action-gh-release@v1
-        if: github.event_name == 'release'
-        with:
-          files: DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.apk
-
-      - name: Fastlane (Beta)
-        run: fastlane beta version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
-        if: github.event_name == 'release' && github.event.release.prerelease
-
-      - name: Fastlane
-        run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
-        if: github.event_name == 'release' && !github.event.release.prerelease
-
-  publish-windows:
-    runs-on: windows-latest
-    environment: windows
-
-    steps:
-      - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
-
-      - name: Checkout
-        uses: actions/checkout@v3
-
       - name: Decode Certificate
         uses: timheuer/base64-to-file@v1.2
+        if: matrix.platform == 'windows'
         with:
           fileName: "dragonfruit.pfx"
-          fileDir: '.'
+          fileDir: "."
           encodedString: ${{ secrets.CERTIFICATE }}
 
       - name: Install Certificate
+        if: matrix.platform == 'windows'
         run: |
           $securePassword = ConvertTo-SecureString $Env:CertificatePassword -AsPlainText -Force
           Import-PfxCertificate -FilePath dragonfruit.pfx -CertStoreLocation cert:\CurrentUser\My -Password $securePassword
         env:
           CertificatePassword: ${{ secrets.CERTIFICATE_PASSWORD }}
 
+      # common build/publish actions
+      - uses: actions/setup-java@v3
+        if: matrix.platform == 'android'
+        with:
+          distribution: "microsoft"
+          java-version: "11"
+
       - uses: actions/setup-dotnet@v2
         with:
-          dotnet-version: '7.0.x'
+          dotnet-version: "7.0.x"
 
       - name: Install Workloads
         run: dotnet workload restore
@@ -120,23 +91,44 @@ jobs:
           dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
 
       - name: Publish
-        run: dotnet publish -f net7.0-windows10.0.19041.0 -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
 
+      # android publish actions
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v1
+        if: matrix.platform == 'android' && github.event_name == 'release'
+        with:
+          files: DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.apk
+
+      - name: Fastlane (Internal Deployment)
+        if: matrix.platform == 'android'
+        run: fastlane internal version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+
+      - name: Fastlane (Beta)
+        run: fastlane beta version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: matrix.platform == 'android' && github.event_name == 'release' && github.event.release.prerelease
+
+      - name: Fastlane
+        run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: matrix.platform == 'android' && github.event_name == 'release' && !github.event.release.prerelease
+
+      # windows publish actions
       - name: Rename and Move MSIX
-        working-directory: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages'
+        working-directory: "DragonFruit.Six.Client.Maui/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages"
+        if: matrix.platform == 'windows'
         run: |
           $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
           [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
 
       - name: Upload MSIX to Release
         uses: softprops/action-gh-release@v1
-        if: github.event_name == 'release'
+        if: matrix.platform == 'windows' && github.event_name == 'release'
         with:
           files: DragonFruit.Six.Client.Maui_x64.msix
 
       - name: Upload MSIX as Artifact
         uses: actions/upload-artifact@v3
-        if: github.event_name == 'workflow_dispatch'
+        if: matrix.platform == 'windows' && github.event_name == 'workflow_dispatch'
         with:
           retention-days: 7
           name: dragon6-msix
