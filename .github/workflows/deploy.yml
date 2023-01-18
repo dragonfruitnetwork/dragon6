@@ -1,5 +1,4 @@
 ﻿name: Deploy
-description: Deploys Dragon6 to all supported platforms
 
 permissions:
   packages: read
