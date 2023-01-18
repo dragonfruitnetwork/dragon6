@@ -153,7 +153,6 @@ img.d6-season-rank-mmr {
 .d6-operator-card-header-options {
     gap: 0.5rem;
     display: flex;
-    flex-wrap: wrap;
     justify-content: flex-end;
 
     align-items: center;

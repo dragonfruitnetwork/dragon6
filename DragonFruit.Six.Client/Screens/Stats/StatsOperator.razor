@@ -1,18 +1,15 @@
 @using BlazorPro.BlazorSize
 @using Humanizer
 
+<MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="SystemFilterUnplayed"/>
+
 <div class="d6-operator-card-header flex-md-row justify-content-md-between">
     <h3 class="m-0">Operator Stats</h3>
-    <div class="d6-operator-card-header-options flex-md-nowrap">
-        <MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="SystemFilterUnplayed">
-            <Unmatched>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" @bind="UserFilterUnplayed">
-                    <label class="form-check-label">Filter unplayed</label>
-                </div>
-            </Unmatched>
-        </MediaQuery>
-
+    <div class="d6-operator-card-header-options">
+        @if (!SystemFilterUnplayed)
+        {
+            <HxSwitch Label="Filter unplayed" @bind-Value="UserFilterUnplayed"/>
+        }
         <HxDropdownButtonGroup Direction="DropdownDirection.Down">
             <HxDropdownToggleButton CssClass="text-light border" Color="ThemeColor.None">
                 @SortMode.Humanize()
