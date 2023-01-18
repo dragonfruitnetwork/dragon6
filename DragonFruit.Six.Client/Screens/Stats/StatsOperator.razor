@@ -14,13 +14,13 @@
 <div class="d6-operator-card-header flex-md-row justify-content-md-between">
     <h3 class="m-0">Operator Stats</h3>
     <div class="d6-operator-card-header-options flex-md-nowrap">
-        <MediaQuery Media="@Breakpoints.MediumUp" @bind-Matches="SystemFilterUnplayed">
-            <Matched>
+        <MediaQuery Media="@Breakpoints.SmallDown" @bind-Matches="SystemFilterUnplayed">
+            <Unmatched>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" @bind="UserFilterUnplayed">
                     <label class="form-check-label">Filter unplayed</label>
                 </div>
-            </Matched>
+            </Unmatched>
         </MediaQuery>
 
         <HxDropdownButtonGroup Direction="DropdownDirection.Down">
