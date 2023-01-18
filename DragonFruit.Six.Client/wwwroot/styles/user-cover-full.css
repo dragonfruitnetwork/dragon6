@@ -7,6 +7,6 @@
     -webkit-transition: opacity 0.3s;
 }
 
-.d6-search:hover {
+.d6-search:hover, .d6-search:focus-within {
     opacity: 100%;
 }
