@@ -16,7 +16,7 @@ platform :android do
   desc "Internal App Sharing - Deployment"
   lane :internal do
     upload_to_play_store_internal_app_sharing(
-      aab: 'com.dragon.six.aab',
+      aab: 'com.dragon.six-Signed.aab',
       package_name: 'com.dragon.six'
     )
   end
