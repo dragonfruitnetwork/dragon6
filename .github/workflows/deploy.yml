@@ -30,6 +30,7 @@ jobs:
 
     runs-on: ${{ matrix.os }}
     environment: ${{ matrix.platform }}
+    name: Deploy ${{ matrix.platform }} (${{ matrix.framework }})
 
     steps:
       - name: Set Build Number
