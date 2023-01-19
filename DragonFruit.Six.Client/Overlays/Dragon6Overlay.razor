@@ -8,7 +8,9 @@
     <BodyTemplate>
         <ErrorBoundary @ref="_error">
             <ChildContent>
-                <DynamicComponent Type="Info.OverlayContent"/>
+                <CascadingValue Value="_offcanvas">
+                   <DynamicComponent Type="Info.OverlayContent"/> 
+                </CascadingValue>
             </ChildContent>
             <ErrorContent>
                 <div class="d6-overlay-center-content">
