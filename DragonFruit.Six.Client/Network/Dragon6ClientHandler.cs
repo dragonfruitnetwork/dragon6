@@ -1,27 +1,33 @@
 ﻿// Dragon6 Client Copyright (c) DragonFruit Network <inbox@dragonfruit.network>
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
+using Polly.Retry;
 
 namespace DragonFruit.Six.Client.Network
 {
-    public class ClientLoggingHandler : DelegatingHandler
+    public class Dragon6ClientHandler : DelegatingHandler
     {
         private readonly ILogger _logger;
 
-        public ClientLoggingHandler(ILogger logger, HttpMessageHandler handler)
+        public Dragon6ClientHandler(ILogger logger, HttpMessageHandler handler)
         {
             _logger = logger;
             InnerHandler = handler;
         }
 
+        private readonly AsyncRetryPolicy _httpRetryPolicy = Policy.Handle<HttpRequestException>(httpEx => (int?)httpEx.StatusCode is >= 500 and < 600)
+                                                                   .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(i * 2));
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            _logger.LogInformation("Starting HTTP request to {url}", request.RequestUri.Host);
-            var result = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            _logger.LogInformation("Starting HTTP request to {url}", request.RequestUri?.Host);
+            var result = await _httpRetryPolicy.ExecuteAsync(() => base.SendAsync(request, cancellationToken)).ConfigureAwait(false);
 
             if ((int)result.StatusCode is >= 400 and <= 599)
             {

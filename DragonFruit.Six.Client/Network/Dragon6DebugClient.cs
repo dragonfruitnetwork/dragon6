@@ -55,7 +55,7 @@ namespace DragonFruit.Six.Client.Network
                 _ => new SocketsHttpHandler { AutomaticDecompression = DecompressionMethods.All }
             };
 
-            return new ClientLoggingHandler(_logger, handler);
+            return new Dragon6ClientHandler(_logger, handler);
         }
     }
 }
