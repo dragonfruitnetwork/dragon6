@@ -165,9 +165,6 @@ jobs:
     needs: build
     
     steps:
-      - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
-
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -176,7 +173,7 @@ jobs:
 
       - name: Produce MSIX bundle file
         working-directory: ./msix-staging
-        run: "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /h SHA256 /d . /p DragonFruit.Six.Client.msixbundle /bv ${{ inputs.version || github.ref_name }}.0
+        run: "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /p DragonFruit.Six.Client.msixbundle /bv ${{ inputs.version || github.ref_name }}.0
 
       - name: Decode Certificate
         uses: timheuer/base64-to-file@v1.2
