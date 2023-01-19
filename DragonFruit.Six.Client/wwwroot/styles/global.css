@@ -115,10 +115,19 @@ a:hover {
     min-width: 50px;
 }
 
+.d6-spinner {
+    gap: 1rem;
+    margin-bottom: 3rem;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .d6-legal-notices {
     gap: 2rem;
     margin-bottom: 2rem;
-    
+
     display: flex;
     flex-direction: column;
 }
