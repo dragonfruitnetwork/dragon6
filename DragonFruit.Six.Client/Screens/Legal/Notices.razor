@@ -1,0 +1,46 @@
+﻿@page "/legal/notices"
+@using Markdig
+@using System.IO
+@using System.Text
+
+@if (string.IsNullOrEmpty(HtmlContent))
+{
+    <D6LoadingSpinner Text="Loading Notices..."/>
+}
+else
+{
+    <div class="container text-light" id="legal-notices">
+        @((MarkupString)HtmlContent)
+    </div>
+}
+
+@code {
+
+    [CascadingParameter]
+    private DefaultLayout Layout { get; set; }
+
+    [Inject]
+    private MarkdownPipeline Pipeline { get; set; }
+
+    private string HtmlContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Layout.Title = "Legal";
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        using var licenseStream = typeof(Dragon6App).Assembly.GetManifestResourceStream("DragonFruit.Six.Client.licenses.md");
+
+        if (licenseStream != null)
+        {
+            using var licenseStreamReader = new StreamReader(licenseStream, Encoding.ASCII);
+            var stringContent = await licenseStreamReader.ReadToEndAsync().ConfigureAwait(false);
+
+            HtmlContent = Markdown.ToHtml(stringContent, Pipeline);
+            _ = InvokeAsync(StateHasChanged);
+        }
+    }
+
+}
