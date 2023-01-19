@@ -190,9 +190,8 @@ jobs:
           encodedString: ${{ secrets.CERTIFICATE }}
 
       - name: Sign MSIX bundle
-        working-directory: ./msix-staging
         run: |
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f dragonfruit.pfx /p ${{ secrets.CERTIFICATE_PASSWORD }} DragonFruit.Six.Client.msixbundle
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f dragonfruit.pfx /p ${{ secrets.CERTIFICATE_PASSWORD }} ./msix-staging/DragonFruit.Six.Client.msixbundle
 
       - name: Upload bundle to Release
         uses: softprops/action-gh-release@v1
