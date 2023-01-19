@@ -43,7 +43,7 @@
         <None Include="..\nuget-notice.md" Pack="true" PackagePath="."/>
     </ItemGroup>
 
-    <ItemGroup Condition="'$(Configuration) == 'Release'">
+    <ItemGroup Condition="'$(Configuration)' == 'Release'">
         <EmbeddedResource Include="licenses.md"/>
     </ItemGroup>
 
