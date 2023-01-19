@@ -167,7 +167,8 @@ jobs:
     needs: build
     
     defaults:
-      shell: cmd
+      run:
+        shell: cmd
     
     steps:
       - name: Download artifacts
