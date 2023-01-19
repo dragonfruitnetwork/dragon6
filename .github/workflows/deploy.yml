@@ -15,22 +15,25 @@ on:
         required: true
         type: string
 
+env:
+  android_artifact_key: dragon6-android
+  windows_artifact_key: dragon6-msix
+
 jobs:
-  publish:
+  build:
     strategy:
       matrix:
         include:
-          - os: macos-latest
-            platform: android
+          - platform: android
             framework: net7.0-android
 
-          - os: windows-latest
-            platform: windows
+          - platform: windows
             framework: net7.0-windows10.0.19041.0
 
-    runs-on: ${{ matrix.os }}
     environment: ${{ matrix.platform }}
-    name: Deploy ${{ matrix.platform }} (${{ matrix.framework }})
+    name: ${{ matrix.platform }}
+
+    runs-on: windows-latest
 
     steps:
       - name: Set Build Number
@@ -46,12 +49,6 @@ jobs:
           fileName: "dragonfruit.keystore"
           fileDir: "./DragonFruit.Six.Client.Maui"
           encodedString: ${{ secrets.KEYSTORE_CONTENTS }}
-
-      - name: Import IAM Credentials
-        run: echo $IAM_KEY > google-play-iam.json
-        if: matrix.platform == 'android'
-        env:
-          IAM_KEY: ${{ secrets.GCLOUD_IAM }}
 
       - name: Decode Certificate
         uses: timheuer/base64-to-file@v1.2
@@ -98,26 +95,16 @@ jobs:
       - name: Publish
         run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
 
-      # android publish actions
-      - name: Upload APK to Release
-        uses: softprops/action-gh-release@v1
-        if: matrix.platform == 'android' && github.event_name == 'release'
-        with:
-          files: DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.apk
-
-      - name: Fastlane (Internal Deployment)
+      # upload artifacts
+      - name: Upload Android Artifacts
+        uses: actions/upload-artifact@v3
         if: matrix.platform == 'android'
-        run: fastlane internal version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        with:
+          name: ${{ env.android_artifact_key }}
+          path: |
+            DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.apk
+            DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab
 
-      - name: Fastlane (Beta)
-        run: fastlane beta version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
-        if: matrix.platform == 'android' && github.event_name == 'release' && github.event.release.prerelease
-
-      - name: Fastlane
-        run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
-        if: matrix.platform == 'android' && github.event_name == 'release' && !github.event.release.prerelease
-
-      # windows publish actions
       - name: Rename and Move MSIX
         working-directory: "DragonFruit.Six.Client.Maui/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages"
         if: matrix.platform == 'windows'
@@ -125,16 +112,85 @@ jobs:
           $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
           [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
 
-      - name: Upload MSIX to Release
-        uses: softprops/action-gh-release@v1
-        if: matrix.platform == 'windows' && github.event_name == 'release'
-        with:
-          files: DragonFruit.Six.Client.Maui_x64.msix
-
-      - name: Upload MSIX as Artifact
+      - name: Upload MSIX
         uses: actions/upload-artifact@v3
-        if: matrix.platform == 'windows' && github.event_name == 'workflow_dispatch'
+        if: matrix.platform == 'windows'
         with:
           retention-days: 7
-          name: dragon6-msix
+          name: ${{ env.windows_artifact_key }}
           path: DragonFruit.Six.Client.Maui_x64.msix
+
+  publish-android:
+    runs-on: macos-latest
+    environment: android
+    needs: build
+    
+    steps:
+      - name: Set Build Number
+        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Import IAM Credentials
+        run: echo $IAM_KEY > google-play-iam.json
+        env:
+          IAM_KEY: ${{ secrets.GCLOUD_IAM }}
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.android_artifact_key }}
+
+      - name: Upload APK to Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: com.dragon.six-Signed.apk
+
+      - name: Fastlane (Internal Deployment)
+        run: fastlane internal version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+
+      - name: Fastlane (Beta)
+        run: fastlane beta version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: github.event_name == 'release' && github.event.release.prerelease
+
+      - name: Fastlane
+        run: fastlane production version_name:${{ inputs.version || github.ref_name }} version_code:$VERSION_NUMBER
+        if: github.event_name == 'release' && !github.event.release.prerelease
+
+  publish-windows:
+    runs-on: windows-latest
+    environment: windows
+    needs: build
+    
+    steps:
+      - name: Set Build Number
+        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
+
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.windows_artifact_key }}
+          path: ./msix-staging
+
+      - name: Produce MSIX bundle file
+        working-directory: ./msix-staging
+        run: "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /h SHA256 /d . /p DragonFruit.Six.Client.msixbundle /bv ${{ inputs.version || github.ref_name }}.0
+
+      - name: Decode Certificate
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: "dragonfruit.pfx"
+          fileDir: "."
+          encodedString: ${{ secrets.CERTIFICATE }}
+
+      - name: Sign MSIX bundle
+        working-directory: ./msix-staging
+        run: "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f dragonfruit.pfx /p ${{ secrets.CERTIFICATE_PASSWORD }} DragonFruit.Six.Client.msixbundle
+
+      - name: Upload bundle to Release
+        uses: softprops/action-gh-release@v1
+        if: github.event_name == 'release'
+        with:
+          files: ./msix-staging/DragonFruit.Six.Client.msixbundle
