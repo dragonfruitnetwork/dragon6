@@ -114,3 +114,15 @@ a:hover {
 .d6-platform-selector {
     min-width: 50px;
 }
+
+.d6-legal-notices {
+    gap: 2rem;
+    margin-bottom: 2rem;
+    
+    display: flex;
+    flex-direction: column;
+}
+
+.d6-legal-notices *:not(a) {
+    color: white;
+}
