@@ -37,7 +37,7 @@ jobs:
 
     steps:
       - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
+        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $Env:GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -93,7 +93,7 @@ jobs:
         run: dotnet-project-licenses -i DragonFruit.Six.Client.sln -o --output-directory DragonFruit.Six.Client --outfile licenses.md --include-project-file --md --unique
 
       - name: Publish
-        run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
 
       # upload artifacts
       - name: Upload Android Artifacts
