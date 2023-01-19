@@ -37,7 +37,9 @@ jobs:
 
     steps:
       - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $Env:GITHUB_ENV
+        run: |
+          $version = 500 + ${{ github.run_number }}
+          echo "VERSION_NUMBER=$version" >> $Env:GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
@@ -163,6 +165,9 @@ jobs:
     runs-on: windows-latest
     environment: windows
     needs: build
+    
+    defaults:
+      shell: cmd
     
     steps:
       - name: Download artifacts
