@@ -15,14 +15,14 @@ namespace DragonFruit.Six.Client.Network
     {
         private readonly ILogger _logger;
 
+        private readonly AsyncRetryPolicy _httpRetryPolicy = Policy.Handle<HttpRequestException>(httpEx => (int?)httpEx.StatusCode is >= 500 and < 600)
+                                                                   .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(i * 2));
+
         public Dragon6ClientHandler(ILogger logger, HttpMessageHandler handler)
         {
             _logger = logger;
             InnerHandler = handler;
         }
-
-        private readonly AsyncRetryPolicy _httpRetryPolicy = Policy.Handle<HttpRequestException>(httpEx => (int?)httpEx.StatusCode is >= 500 and < 600)
-                                                                   .WaitAndRetryAsync(3, i => TimeSpan.FromSeconds(i * 2));
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
