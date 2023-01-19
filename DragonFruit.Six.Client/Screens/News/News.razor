@@ -26,13 +26,12 @@ else
             <span class="text-muted">All news articles are written and provided by Ubisoft.</span>
 
             <div class="d-flex">
+                <button @onclick="OpenWikiEntry" class="btn btn-text text-secondary">
+                    About News
+                </button>
+                
                 <button @onclick="OpenOfficialNews" class="btn btn-text text-info d-flex align-items-center gap-2">
                     <span style="color: inherit">View More</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                </button>
-
-                <button @onclick="OpenWikiEntry" class="btn btn-text text-secondary d-flex align-items-center gap-2">
-                    <span style="color: inherit">About News</span>
                     <i class="fa-solid fa-arrow-up-right-from-square"></i>
                 </button>
             </div>
