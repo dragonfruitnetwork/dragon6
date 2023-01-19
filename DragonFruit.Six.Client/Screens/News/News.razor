@@ -11,9 +11,7 @@
 
 @if (Entries == null)
 {
-    <div class="mb-5">
-        <D6LoadingSpinner Text="Loading News..."/>
-    </div>
+    <D6LoadingSpinner Text="Loading News..."/>
 }
 else
 {
@@ -25,10 +23,19 @@ else
             }
         </div>
         <div class="d6-news-navigation">
-            <button @onclick="OpenOfficialNews" class="btn btn-text text-info d-flex align-items-center gap-2">
-                <span style="color: inherit">View More</span>
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-            </button>
+            <span class="text-muted">All news articles are written and provided by Ubisoft.</span>
+
+            <div class="d-flex">
+                <button @onclick="OpenOfficialNews" class="btn btn-text text-info d-flex align-items-center gap-2">
+                    <span style="color: inherit">View More</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+
+                <button @onclick="OpenWikiEntry" class="btn btn-text text-secondary d-flex align-items-center gap-2">
+                    <span style="color: inherit">Learn More</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </button>
+            </div>
         </div>
     </div>
 }
@@ -64,5 +71,6 @@ else
     }
 
     private void OpenOfficialNews() => Platform.OpenUrl("https://www.ubisoft.com/en-gb/game/rainbow-six/siege/news-updates");
+    private void OpenWikiEntry() => Platform.OpenUrl("https://dragonfruit.network/wiki/dragon6/legal/news-publishers");
 
 }
