@@ -48,12 +48,24 @@
     width: 60px;
 }
 
-.d6-settings-container, .d6-settings-category {
+.d6-settings-overlay-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.d6-settings-copyright {
+    display: flex;
+    justify-content: space-between;
+}
+
+.d6-settings, .d6-settings-category {
     display: grid;
     grid-template-columns: 1fr;
 }
 
-.d6-settings-container {
+.d6-settings {
     gap: 1.5rem;
 }
 

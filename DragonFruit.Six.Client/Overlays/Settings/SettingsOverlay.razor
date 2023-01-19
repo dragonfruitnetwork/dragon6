@@ -4,24 +4,48 @@
 @using DragonFruit.Six.Api.Accounts.Enums
 @using DragonFruit.Six.Client.Database
 
-<div class="d6-settings-container">
-    <SettingsCategory Title="Defaults">
-        <SettingsEnumDropdown T="Platform" Setting="Dragon6Setting.DefaultPlatform" HumanizeValues="false" CanDisplaySetting="p => p is not Api.Accounts.Enums.Platform.CrossPlatform"/>
-        <SettingsEnumDropdown T="Region" Setting="Dragon6Setting.LegacyStatsRegion" HumanizeValues="false"/>
-        <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType" CanDisplaySetting="b => b is BoardType.Casual or BoardType.Ranked"/>
-    </SettingsCategory>
-
-    @if ((Platform.CurrentPlatform & HostPlatform.Desktop) != 0)
-    {
-        <SettingsCategory Title="Misc">
-            <SettingsCheckbox Setting="Dragon6Setting.EnableDiscordRPC"/>
+<div class="d6-settings-overlay-container">
+    <div class="d6-settings">
+        <SettingsCategory Title="Defaults">
+            <SettingsEnumDropdown T="Platform" Setting="Dragon6Setting.DefaultPlatform" HumanizeValues="false" CanDisplaySetting="p => p is not Api.Accounts.Enums.Platform.CrossPlatform"/>
+            <SettingsEnumDropdown T="Region" Setting="Dragon6Setting.LegacyStatsRegion" HumanizeValues="false"/>
+            <SettingsEnumDropdown T="BoardType" Setting="Dragon6Setting.DefaultSeasonalType" CanDisplaySetting="b => b is BoardType.Casual or BoardType.Ranked"/>
         </SettingsCategory>
-    }
+
+        @if ((Platform.CurrentPlatform & HostPlatform.Desktop) != 0)
+        {
+            <SettingsCategory Title="Misc">
+                <SettingsCheckbox Setting="Dragon6Setting.EnableDiscordRPC"/>
+            </SettingsCategory>
+        }
+    </div>
+
+    <div class="d6-settings-copyright">
+        <span class="text-muted">Version @typeof(Dragon6App).Assembly.GetName().Version.ToString(3)</span>
+        <span role="button" @onclick="NavigateToLegal" class="text-muted">Legal Notices</span>
+    </div>
 </div>
 
 @code {
 
     [Inject]
     private IDragon6Platform Platform { get; set; }
+
+    [Inject]
+    private NavigationManager Navigation { get; set; }
+
+    [CascadingParameter]
+    private HxOffcanvas Offcanvas { get; set; }
+
+    private async Task NavigateToLegal()
+    {
+        await Offcanvas.HideAsync().ConfigureAwait(false);
+
+        // allow the overlay to actually close first
+        await Task.Delay(250).ConfigureAwait(false);
+        await InvokeAsync(() => Offcanvas.HandleOffcanvasHidden()).ConfigureAwait(false);
+
+        Navigation.NavigateTo("/legal/notices");
+    }
 
 }
