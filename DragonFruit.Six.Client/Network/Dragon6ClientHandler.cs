@@ -26,8 +26,11 @@ namespace DragonFruit.Six.Client.Network
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            using var timeoutCts = new CancellationTokenSource(TimeSpan.FromSeconds(25));
+            using var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken, timeoutCts.Token);
+
             _logger.LogInformation("Starting HTTP request to {url}", request.RequestUri?.Host);
-            var result = await _httpRetryPolicy.ExecuteAsync(() => base.SendAsync(request, cancellationToken)).ConfigureAwait(false);
+            var result = await _httpRetryPolicy.ExecuteAsync(() => base.SendAsync(request, linkedCts.Token)).ConfigureAwait(false);
 
             if ((int)result.StatusCode is >= 400 and <= 599)
             {
