@@ -16,8 +16,8 @@ platform :android do
   desc "Internal App Sharing - Deployment"
   lane :internal do
     upload_to_play_store_internal_app_sharing(
-      package_name: 'com.dragon.six',
-      aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six.aab'
+      aab: 'com.dragon.six.aab',
+      package_name: 'com.dragon.six'
     )
   end
 
@@ -25,6 +25,7 @@ platform :android do
   lane :beta do |options|
     upload_to_play_store(
       track: options[:track] || 'beta',
+      aab: 'com.dragon.six-Signed.aab',
       skip_upload_apk: true,
       skip_upload_images: true,
       skip_upload_metadata: true,
@@ -32,8 +33,7 @@ platform :android do
       skip_upload_screenshots: true,
       package_name: 'com.dragon.six',
       version_name: options[:version_name],
-      version_code: options[:version_code],
-      aab: 'DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab'
+      version_code: options[:version_code]
     )
   end
   
