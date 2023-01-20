@@ -10,7 +10,7 @@
 
     @if (!string.IsNullOrWhiteSpace(User?.Image))
     {
-        @if (!User.Image.StartsWith("/"))
+        @if (!User.Image.StartsWith("https://d6static.dragonfruit.network"))
         {
             <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/user-cover-full.css"/>
         }
