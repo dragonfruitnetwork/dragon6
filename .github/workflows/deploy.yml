@@ -166,11 +166,25 @@ jobs:
     environment: windows
     needs: build
     
-    defaults:
-      run:
-        shell: cmd
-    
     steps:
+      - name: Setup PowerShell Modules
+        run: |
+          Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
+          Set-ExecutionPolicy RemoteSigned -Force
+          Install-Module -Name StoreBroker -Force
+          Import-Module StoreBroker
+          
+      - name: Set Partner Center Credentials
+        run: |
+          $clientSecret = echo $Env:AADSecret | ConvertTo-SecureString -AsPlainText -Force
+          $clientCredentials = New-Object System.Management.Automation.PSCredential "$Env:AADClient", $clientSecret
+          
+          Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
+        env:
+          AADSecret: ${{ secrets.AAD_SECRET }}
+          AADClient: ${{ secrets.AAD_CLIENT }}
+          AADTenant: ${{ secrets.AAD_TENANT }}
+
       - name: Download artifacts
         uses: actions/download-artifact@v3
         with:
@@ -179,6 +193,7 @@ jobs:
 
       - name: Produce MSIX bundle file
         working-directory: ./msix-staging
+        shell: cmd
         run: |
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
 
@@ -190,6 +205,7 @@ jobs:
           encodedString: ${{ secrets.CERTIFICATE }}
 
       - name: Sign MSIX bundle
+        shell: cmd
         run: |
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f dragonfruit.pfx /p ${{ secrets.CERTIFICATE_PASSWORD }} ./msix-staging/DragonFruit.Six.Client.msixbundle
 
