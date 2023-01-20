@@ -162,55 +162,76 @@ jobs:
         if: github.event_name == 'release' && !github.event.release.prerelease
 
   publish-windows:
+    if: github.event_name == 'release'
     runs-on: windows-latest
     environment: windows
     needs: build
     
     steps:
-      - name: Setup PowerShell Modules
+      - name: Setup Microsoft StoreBroker
         run: |
           Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
           Set-ExecutionPolicy RemoteSigned -Force
           Install-Module -Name StoreBroker -Force
           Import-Module StoreBroker
-          
-      - name: Set Partner Center Credentials
-        run: |
+
           $clientSecret = echo $Env:AADSecret | ConvertTo-SecureString -AsPlainText -Force
           $clientCredentials = New-Object System.Management.Automation.PSCredential "$Env:AADClient", $clientSecret
-          
+
           Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
         env:
           AADSecret: ${{ secrets.AAD_SECRET }}
           AADClient: ${{ secrets.AAD_CLIENT }}
           AADTenant: ${{ secrets.AAD_TENANT }}
 
-      - name: Download artifacts
-        uses: actions/download-artifact@v3
-        with:
-          name: ${{ env.windows_artifact_key }}
-          path: ./msix-staging
-
-      - name: Produce MSIX bundle file
-        working-directory: ./msix-staging
-        shell: cmd
-        run: |
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
-
-      - name: Decode Certificate
+      - name: Save Certificate
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: "dragonfruit.pfx"
           fileDir: "."
           encodedString: ${{ secrets.CERTIFICATE }}
 
-      - name: Sign MSIX bundle
+      # the deployment assets are private for now, but will be public in the future
+      - name: Get deploy token
+        id: d6deploy
+        uses: getsentry/action-github-app-token@v2
+        with:
+          app_id: ${{ secrets.D6DEPLOY_APP_ID }}
+          private_key: ${{ secrets.D6DEPLOY_PRIVATE_KEY }}
+
+      - name: Checkout store assets
+        uses: actions/checkout@v3
+        with:
+          repository: dragonfruitnetwork/dragon6-distribution-assets
+          token: ${{ steps.d6deploy.outputs.token }}
+
+      - name: Download MSIX
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.windows_artifact_key }}
+          path: ./bundle-staging
+
+      - name: Produce MSIX bundle file
+        working-directory: ./bundle-staging
         shell: cmd
         run: |
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f dragonfruit.pfx /p ${{ secrets.CERTIFICATE_PASSWORD }} ./msix-staging/DragonFruit.Six.Client.msixbundle
-
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f ../dragonfruit.pfx /p %CertPass% DragonFruit.Six.Client.msixbundle      
+        env:
+          CertPass: ${{ secrets.CERTIFICATE_PASSWORD }}
+      
       - name: Upload bundle to Release
         uses: softprops/action-gh-release@v1
-        if: github.event_name == 'release'
         with:
-          files: ./msix-staging/DragonFruit.Six.Client.msixbundle
+          files: ./bundle-staging/DragonFruit.Six.Client.msixbundle
+
+      - name: Create Release
+        run: New-SubmissionPackage -ConfigPath ./winstore-config.json -AppxPath ./bundle-staging/DragonFruit.Six.Client.msixbundle -OutPath .
+
+      - name: Flight package (beta)
+        if: github.event.release.prerelease
+        run: Update-ApplicationFlightSubmission -AppId 9N88CQPKGS15 -FlightId 203522cc-6c4a-42a0-8080-de225fb1ee74 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -ReplacePackages -TargetPublishMode Immediate
+
+      - name: Submit to Windows Store
+        if: !github.event.release.prerelease
+        run: Update-ApplicationSubmission -AppId 9N88CQPKGS15 -SubmissionDataPath ./dragon6-winstore.json -PackagePath ./dragon6-winstore.zip -AutoCommit -Force -AddPackages -UpdatePublishModeAndVisibility -UpdateListings -UpdateNotesForCertification
