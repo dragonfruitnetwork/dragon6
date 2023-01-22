@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
-using Microsoft.Maui.LifecycleEvents;
 
 namespace DragonFruit.Six.Client.Maui
 {
