@@ -39,7 +39,7 @@ else
     private Realm _realm;
     private IDisposable _notification;
 
-    [CascadingParameter]
+    [Inject]
     private SearchProviderState SearchProviderState { get; set; }
 
     private IRealmCollection<RecentAccount> Accounts { get; set; }

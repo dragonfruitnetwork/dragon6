@@ -44,7 +44,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         [Parameter]
         public Platform Platform { get; set; }
 
-        [CascadingParameter]
+        [Inject]
         private SearchProviderState SearchProviderState { get; set; }
 
         [Inject]

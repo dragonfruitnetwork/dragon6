@@ -5,11 +5,13 @@ using System.Diagnostics.CodeAnalysis;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Maui.Services;
+using DragonFruit.Six.Client.Overlays.Search;
 using DragonFruit.Six.Client.Presence;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using Microsoft.Maui.LifecycleEvents;
 
 namespace DragonFruit.Six.Client.Maui
 {
@@ -31,6 +33,9 @@ namespace DragonFruit.Six.Client.Maui
 
             builder.Services.AddSingleton<IDragon6Platform>(platformInfo);
             builder.Services.AddScoped<ILegacyVersionMigrator, LegacyMigrationService>();
+
+            var searchState = new SearchProviderState();
+            builder.Services.AddSingleton(searchState);
 
             builder.Services.AddDragon6Services();
 

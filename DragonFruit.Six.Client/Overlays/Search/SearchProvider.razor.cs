@@ -38,7 +38,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
         [Inject]
         private ILogger<SearchProvider> Logger { get; set; }
 
-        [CascadingParameter]
+        [Inject]
         private SearchProviderState SearchProviderState { get; set; }
 
         protected override void OnInitialized()

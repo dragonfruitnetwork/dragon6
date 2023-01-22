@@ -11,7 +11,7 @@ namespace DragonFruit.Six.Client.Screens.Home
 {
     public partial class Home
     {
-        [CascadingParameter]
+        [Inject]
         private SearchProviderState SearchProvider { get; set; }
 
         [Inject]

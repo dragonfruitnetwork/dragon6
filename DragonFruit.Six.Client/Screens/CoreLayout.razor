@@ -1,13 +1,6 @@
 ﻿@using DragonFruit.Six.Client.Overlays.Search
 @inherits LayoutComponentBase
 
-<CascadingValue Value="_providerState">
-    <SearchProvider/>
-    @Body
-</CascadingValue>
+<SearchProvider/>
 
-@code {
-
-    private readonly SearchProviderState _providerState = new();
-
-}
+@Body
