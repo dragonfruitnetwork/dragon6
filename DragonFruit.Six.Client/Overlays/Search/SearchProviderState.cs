@@ -12,12 +12,12 @@ namespace DragonFruit.Six.Client.Overlays.Search
     /// </summary>
     public class SearchProviderState
     {
-        private SearchArgs? _lastUnhandledSearchArgs;
+        private AccountSearchArgs? _lastUnhandledSearchArgs;
 
         /// <summary>
         /// Event fired when an account search is requested.
         /// </summary>
-        public event Action<SearchArgs> AccountSearchRequested;
+        public event Action<AccountSearchArgs> AccountSearchRequested;
 
         /// <summary>
         /// The most recently discovered account
@@ -25,9 +25,9 @@ namespace DragonFruit.Six.Client.Overlays.Search
         public UbisoftAccount DiscoveredAccount { get; set; }
 
         /// <summary>
-        /// The last unhandled <see cref="SearchArgs"/> requested by the system.
+        /// The last unhandled <see cref="AccountSearchArgs"/> requested by the system.
         /// </summary>
-        public SearchArgs? LastUnhandledSearchArgs
+        public AccountSearchArgs? LastUnhandledSearch
         {
             get
             {
@@ -52,15 +52,22 @@ namespace DragonFruit.Six.Client.Overlays.Search
                 return;
             }
 
-            var searchArgs = new SearchArgs(identifier, platform, type);
+            TriggerSearch(new AccountSearchArgs(identifier, platform, type));
+        }
 
+        /// <summary>
+        /// Triggers an account search using the provided criteria
+        /// </summary>
+        /// <param name="args">The <see cref="AccountSearchArgs"/> query to request</param>
+        public void TriggerSearch(AccountSearchArgs args)
+        {
             if (AccountSearchRequested?.GetInvocationList().Length > 0)
             {
-                AccountSearchRequested.Invoke(searchArgs);
+                AccountSearchRequested.Invoke(args);
                 return;
             }
 
-            LastUnhandledSearchArgs = searchArgs;
+            LastUnhandledSearch = args;
         }
     }
 }

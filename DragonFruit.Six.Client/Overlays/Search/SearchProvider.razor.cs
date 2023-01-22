@@ -53,20 +53,19 @@ namespace DragonFruit.Six.Client.Overlays.Search
                 return;
             }
 
-            // must be stored in a variable as it's wiped after access
-            var lastMissedSearch = SearchProviderState.LastUnhandledSearchArgs;
-
-            if (lastMissedSearch.HasValue)
-            {
-                SearchForAccount(lastMissedSearch.Value);
-            }
+            SearchForAccount(SearchProviderState.LastUnhandledSearch);
         }
 
         /// <summary>
         /// Begins searching for an account. Causes the current window to be blocked until completed.
         /// </summary>
-        private async void SearchForAccount(SearchArgs args)
+        private async void SearchForAccount(AccountSearchArgs args)
         {
+            if (args == null)
+            {
+                return;
+            }
+
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
             await _searchOverlay.HandleOffcanvasShown().ConfigureAwait(false);
