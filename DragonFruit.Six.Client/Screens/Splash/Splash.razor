@@ -1,5 +1,5 @@
 @page "/"
-@layout CoreLayout
+@layout BlankLayout
 
 <div class="d6-splash">
     <img src="_content/DragonFruit.Six.Client/assets/dragon6.svg" alt="" class="d6-splash-logo"/>
@@ -7,9 +7,9 @@
     {
         <HxSpinner Size="SpinnerSize.Regular" Color="ThemeColor.Danger"/>
     }
-    
+
     <span>@CurrentStatus</span>
-    
+
     @foreach (var button in Buttons ?? Enumerable.Empty<IServiceButton>())
     {
         <HxButton CssClass="btn-text d6-icon-button text-success" OnClick="() => button.OnClick(Services)">
