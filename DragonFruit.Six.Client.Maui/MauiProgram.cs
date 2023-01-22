@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using Microsoft.Maui.LifecycleEvents;
 
 namespace DragonFruit.Six.Client.Maui
 {
@@ -43,6 +44,23 @@ namespace DragonFruit.Six.Client.Maui
             {
                 builder.Services.AddSingleton<IPresenceClient, DiscordPresenceClient>();
             }
+
+            builder.ConfigureLifecycleEvents(events =>
+            {
+#if ANDROID
+                events.AddAndroid(android =>
+                {
+                    android.OnNewIntent((_, intent) =>
+                    {
+                        // handle account searches - on fresh boots this will be stored until the provider has loaded and completed it's first cycle
+                        if (AccountSearchArgs.TryParseFromUrl(intent?.DataString, out var searchArgs))
+                        {
+                            searchState.TriggerSearch(searchArgs);
+                        }
+                    });
+                });
+#endif
+            });
 
             return builder.Build();
         }
