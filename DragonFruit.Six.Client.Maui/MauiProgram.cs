@@ -40,7 +40,7 @@ namespace DragonFruit.Six.Client.Maui
             builder.Services.AddDragon6Services();
 
             // desktop-specific services
-            if ((platformInfo.CurrentPlatform & HostPlatform.Desktop) != 0)
+            if (platformInfo.CurrentPlatform.HasFlag(HostPlatform.Desktop))
             {
                 builder.Services.AddSingleton<IPresenceClient, DiscordPresenceClient>();
             }
