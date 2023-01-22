@@ -50,7 +50,11 @@ namespace DragonFruit.Six.Client.Maui
 #if ANDROID
                 events.AddAndroid(android =>
                 {
-                    android.OnNewIntent((_, intent) =>
+                    // because the intent can be triggered when the app is closed, handle both intents at the startup and when running
+                    android.OnCreate((activity, _) => HandleIntent(activity.Intent));
+                    android.OnNewIntent((_, intent) => HandleIntent(intent));
+
+                    void HandleIntent(Android.Content.Intent intent)
                     {
                         if (intent?.Action != Android.Content.Intent.ActionView)
                             return;
@@ -59,7 +63,7 @@ namespace DragonFruit.Six.Client.Maui
                             return;
 
                         searchState.TriggerSearch(searchArgs);
-                    });
+                    }
                 });
 #endif
             });
