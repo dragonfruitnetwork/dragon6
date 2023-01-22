@@ -46,24 +46,36 @@ namespace DragonFruit.Six.Client.Overlays.Search
             SearchProviderState.AccountSearchRequested += SearchForAccount;
         }
 
+        protected override void OnAfterRender(bool firstRender)
+        {
+            if (!firstRender)
+            {
+                return;
+            }
+
+            // must be stored in a variable as it's wiped after access
+            var lastMissedSearch = SearchProviderState.LastUnhandledSearchArgs;
+
+            if (lastMissedSearch.HasValue)
+            {
+                SearchForAccount(lastMissedSearch.Value);
+            }
+        }
+
         /// <summary>
         /// Begins searching for an account. Causes the current window to be blocked until completed.
         /// </summary>
-        /// <param name="identifier">The username or ubisoft id of the user to load</param>
-        /// <param name="platform">The <see cref="Platform"/> the user is playing on</param>
-        /// <param name="identifierType">The type of <see cref="identifier"/>, if known</param>
-        private async void SearchForAccount(string identifier, Platform platform, IdentifierType? identifierType = null)
+        private async void SearchForAccount(SearchArgs args)
         {
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
-            await Task.Delay(500).ConfigureAwait(false);
+            await _searchOverlay.HandleOffcanvasShown().ConfigureAwait(false);
 
-            // do account search
-            identifierType ??= Guid.TryParse(identifier, out _) ? IdentifierType.UserId : IdentifierType.Name;
+            await Task.Delay(400).ConfigureAwait(false);
 
             try
             {
-                var matchingAccounts = await Accounts.LookupAsync(new[] { identifier }, platform, identifierType.Value).ConfigureAwait(false);
+                var matchingAccounts = await Accounts.LookupAsync(new[] { args.Identifier }, args.Platform, args.IdentifierType).ConfigureAwait(false);
 
                 // todo handle edge cases where multiple accounts are returned
                 SearchProviderState.DiscoveredAccount = matchingAccounts.FirstOrDefault();
@@ -71,7 +83,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
             catch (Exception e)
             {
-                Logger.LogWarning("Error occured while searching for {user} on {platform}: {@ex}", identifier, platform, e);
+                Logger.LogWarning("Error occured while searching for {user}: {@ex}", args, e);
                 CurrentState = SearchState.OtherError;
             }
 
