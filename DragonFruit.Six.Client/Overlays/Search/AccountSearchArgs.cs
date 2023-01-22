@@ -2,6 +2,7 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
+using System.Text.RegularExpressions;
 using DragonFruit.Six.Api.Accounts.Enums;
 
 namespace DragonFruit.Six.Client.Overlays.Search
@@ -54,17 +55,19 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
 
             // there are 3 parts to a base stats url and always starts with /stats (see remarks)
-            if (uri.Segments.Length < 3 || !uri.Segments[0].Equals("stats", StringComparison.OrdinalIgnoreCase))
+            var pathMatcher = Regex.Match(uri.AbsolutePath, "/stats/(?<platform>[A-Z]{2,3})/(?<identifier>.*)", RegexOptions.IgnoreCase);
+
+            if (!pathMatcher.Success)
             {
                 return false;
             }
 
-            if (!Enum.TryParse<Platform>(uri.Segments[1], true, out var platform))
+            if (!Enum.TryParse<Platform>(pathMatcher.Groups["platform"].Value, true, out var platform))
             {
                 return false;
             }
 
-            args = new AccountSearchArgs(uri.Segments[2], platform, uri.Query.Contains("id=true", StringComparison.OrdinalIgnoreCase) ? IdentifierType.UserId : null);
+            args = new AccountSearchArgs(pathMatcher.Groups["identifier"].Value, platform, uri.Query.Contains("id=true", StringComparison.OrdinalIgnoreCase) ? IdentifierType.UserId : null);
             return true;
         }
 
