@@ -52,11 +52,13 @@ namespace DragonFruit.Six.Client.Maui
                 {
                     android.OnNewIntent((_, intent) =>
                     {
-                        // handle account searches - on fresh boots this will be stored until the provider has loaded and completed it's first cycle
-                        if (AccountSearchArgs.TryParseFromUrl(intent?.DataString, out var searchArgs))
-                        {
-                            searchState.TriggerSearch(searchArgs);
-                        }
+                        if (intent?.Action != Android.Content.Intent.ActionView)
+                            return;
+
+                        if (!AccountSearchArgs.TryParseFromUrl(intent.DataString, out var searchArgs))
+                            return;
+
+                        searchState.TriggerSearch(searchArgs);
                     });
                 });
 #endif
