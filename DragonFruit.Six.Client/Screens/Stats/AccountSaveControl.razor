@@ -2,7 +2,6 @@
 @using DragonFruit.Six.Client.Database.Entities
 @using Realms
 @using AutoMapper
-
 @implements IDisposable
 
 <button class="btn btn-text text-@(IsSaved ? "warning" : "secondary")" @onclick="ToggleSave">
@@ -11,7 +10,7 @@
 
 @code {
 
-    private Realm _realm;
+    private Realm _notificationRealm;
     private IDisposable _notificationListener;
 
     [Parameter]
@@ -31,10 +30,8 @@
             return;
         }
 
-        _realm ??= Realm.GetInstance();
-
-        _notificationListener?.Dispose();
-        _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
+        _notificationRealm = Realm.GetInstance();
+        _notificationListener = _notificationRealm.All<SavedAccount>().SubscribeForNotifications((sender, _, _) =>
         {
             IsSaved = sender.Any(x => x.ProfileId == Account.ProfileId);
             InvokeAsync(StateHasChanged);
@@ -43,20 +40,21 @@
 
     private async Task ToggleSave()
     {
-        using var transaction = await _realm.BeginWriteAsync();
+        using var realm = await Realm.GetInstanceAsync();
+        using var transaction = await realm.BeginWriteAsync();
 
         if (IsSaved)
         {
-            var account = _realm.Find<SavedAccount>(Account.ProfileId);
+            var account = realm.Find<SavedAccount>(Account.ProfileId);
             if (account != null)
             {
-                _realm.Remove(account);
+                realm.Remove(account);
             }
         }
         else
         {
             var savedAccount = Mapper.Map<SavedAccount>(Account);
-            _realm.Add(savedAccount);
+            realm.Add(savedAccount);
         }
 
         await transaction.CommitAsync().ConfigureAwait(false);
@@ -65,7 +63,7 @@
     public void Dispose()
     {
         _notificationListener?.Dispose();
-        _notificationListener = null;
+        _notificationRealm?.Dispose();
     }
 
 }
