@@ -94,7 +94,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
             if (CurrentState == SearchState.Discovered)
             {
-                Navigation.NavigateTo("/stats");
+                Navigation.NavigateTo("/stats", true);
             }
         }
 
