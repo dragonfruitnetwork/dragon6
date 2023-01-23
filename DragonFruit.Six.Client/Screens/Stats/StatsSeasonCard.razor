@@ -1,8 +1,8 @@
 ﻿@using DragonFruit.Six.Api.Seasonal.Enums
 @using DragonFruit.Six.Api.Seasonal.Entities
+@using DragonFruit.Six.Client.Database.Entities
 @using DragonFruit.Six.Client.Utils
 @using JetBrains.Annotations
-@using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo
 
 <div class="d6-season-card justify-content-md-center" id="d6-season-@SeasonInfo.Season" @onclick="Clicked" role="@(Clicked.HasDelegate ? "button" : "none")">
     <img src="@RankIconUtils.FormatRankIconUrl(Rank.IconUrl)" alt="@Rank.Name" class="d6-season-rank user-select-none @(Provisional ? "d6-season-rank-mmr" : null)">
@@ -15,7 +15,7 @@
 @code {
 
     [Parameter]
-    public SeasonInfo SeasonInfo { get; set; }
+    public ISeasonInfo SeasonInfo { get; set; }
 
     [Parameter]
     public RankInfo Rank { get; set; }
