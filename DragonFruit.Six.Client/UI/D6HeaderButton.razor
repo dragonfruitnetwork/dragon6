@@ -3,14 +3,14 @@
     case IOverlayInfo overlay:
         <Dragon6HeaderButton Name="@overlay.Name"
                              Icon="@overlay.Icon"
-                             CardLayout="IsMenuButton"
+                             LayoutMode="LayoutMode"
                              Clicked="() => Overlays[overlay].Toggle()"/>
         break;
 
     case IServiceButton navigation:
         <Dragon6HeaderButton Name="@navigation.Name"
                              Icon="@navigation.Icon"
-                             CardLayout="IsMenuButton"
+                             LayoutMode="LayoutMode"
                              Clicked="() => navigation.OnClick(Services)"/>
         break;
 
@@ -37,5 +37,7 @@
 
     [CascadingParameter]
     public IDictionary<IOverlayInfo, Dragon6Overlay> Overlays { get; set; }
+
+    public Dragon6HeaderButton.ButtonLayoutMode LayoutMode => IsMenuButton ? Dragon6HeaderButton.ButtonLayoutMode.Card : Dragon6HeaderButton.ButtonLayoutMode.Normal;
 
 }

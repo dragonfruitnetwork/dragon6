@@ -1,4 +1,7 @@
-﻿<Dragon6HeaderButton Name="Menu" Icon="bars" Clicked="() => _offcanvas?.ShowAsync()"/>
+﻿<Dragon6HeaderButton Name="Menu"
+                     Icon="bars"
+                     Clicked="() => _offcanvas?.ShowAsync()"
+                     LayoutMode="Dragon6HeaderButton.ButtonLayoutMode.NoTooltip"/>
 
 <HxOffcanvas @ref="_offcanvas"
              HeaderCssClass="d-none"

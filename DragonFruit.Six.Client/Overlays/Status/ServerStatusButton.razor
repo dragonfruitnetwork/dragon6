@@ -18,10 +18,10 @@
 }
 
 <Dragon6HeaderButton Icon="globe"
-                     CardLayout="IsMenuButton"
                      CssClass="@($"color: {iconColour}")"
                      Clicked="() => Platform.OpenUrl(StatusUrl)"
-                     Name="@(IsMenuButton ? "Servers" : $"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"/>
+                     Name="@(IsMenuButton ? "Servers" : $"Rainbow Six Servers {Status?.Humanize() ?? "Unknown"}")"
+                     LayoutMode="@(IsMenuButton ? Dragon6HeaderButton.ButtonLayoutMode.Card : Dragon6HeaderButton.ButtonLayoutMode.Normal)"/>
 
 @code {
 
