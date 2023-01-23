@@ -7,7 +7,7 @@
 @if (Accounts?.Any() == true)
 {
     <div class="d6-account-grid">
-        @foreach (var user in Accounts.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze()))
+        @foreach (var user in Accounts)
         {
             <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
         }
@@ -42,16 +42,16 @@ else
     [Inject]
     private SearchProviderState SearchProviderState { get; set; }
 
-    private IRealmCollection<RecentAccount> Accounts { get; set; }
+    private IEnumerable<RecentAccount> Accounts { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _realm ??= await Realm.GetInstanceAsync();
+        _realm = await Realm.GetInstanceAsync();
         _notification = _realm.All<RecentAccount>().SubscribeForNotifications((sender, changes, _) =>
         {
             if (changes == null)
             {
-                Accounts = sender;
+                Accounts = sender.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze());
             }
 
             InvokeAsync(StateHasChanged);
