@@ -39,7 +39,7 @@
                 >= 2 => "dumpster-fire",
                 1 => "dumpster",
                 _ => "trash"
-            };
+                };
         }
 
         <StatsOverviewCard Icon="@acesIcon"
@@ -51,11 +51,11 @@
                            Title="@($"{Summary.TeamKills:N0} Teamkills")"
                            Subtitle="@($"died first {totalOpeningDeaths:N0} times")"
                            Colour="@ColourUtils.SampleFromGradient(_teamkillGradient, Summary.TeamKills)"/>
-    
+
         <StatsOverviewCard Icon="stopwatch"
                            Title="@($"{Summary.TimePlayed.Humanize(maxUnit: TimeUnit.Hour, precision: 2)} played")"
                            Subtitle="@($"{Summary.TimeAlivePerMatch.Humanize(precision: 1)} average time alive per match")"/>
-    
+
         <StatsOverviewCard Icon="shoe-prints"
                            Title="@($"{Summary.DistanceTravelled:N0}m Travelled")"
                            Subtitle="@($"{Summary.DistanceTravelledPerRound:N0} average distance per round")"/>
@@ -93,13 +93,17 @@ else
     [Parameter]
     public UbisoftAccount Account { get; set; }
 
+    [Parameter]
+    public ModernStatsSummary Summary { get; set; }
+
     [Inject]
     private Dragon6Client Client { get; set; }
 
-    private ModernStatsSummary Summary { get; set; }
-
     protected override async Task OnParametersSetAsync()
     {
+        if (Summary != null)
+            return;
+
         var summaryContainer = await Client.GetModernStatsSummaryAsync(Account, PlaylistType.Independent, OperatorType.Independent, DateTime.UtcNow.AddDays(-Stats.ModernStatsRange)).ConfigureAwait(false);
         Summary = summaryContainer?.AllModes.AsAny.FirstOrDefault();
     }
