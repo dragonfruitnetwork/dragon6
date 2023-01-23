@@ -68,9 +68,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
-            await _searchOverlay.HandleOffcanvasShown().ConfigureAwait(false);
-
-            await Task.Delay(400).ConfigureAwait(false);
+            await Task.Delay(500).ConfigureAwait(false);
 
             try
             {
@@ -93,7 +91,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
             if (CurrentState == SearchState.Discovered)
             {
-                Navigation.NavigateTo("/stats");
+                Navigation.NavigateTo("/stats", true);
             }
         }
 
