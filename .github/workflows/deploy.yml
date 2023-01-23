@@ -229,9 +229,9 @@ jobs:
         run: New-SubmissionPackage -ConfigPath ./winstore-config.json -AppxPath ./bundle-staging/DragonFruit.Six.Client.msixbundle -OutPath .
 
       - name: Flight package (beta)
-        if: github.event.release.prerelease
+        if: ${{ github.event.release.prerelease }}
         run: Update-ApplicationFlightSubmission -AppId 9N88CQPKGS15 -FlightId 203522cc-6c4a-42a0-8080-de225fb1ee74 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -ReplacePackages -TargetPublishMode Immediate
 
       - name: Submit to Windows Store
-        if: !github.event.release.prerelease
+        if: ${{ !github.event.release.prerelease }}
         run: Update-ApplicationSubmission -AppId 9N88CQPKGS15 -SubmissionDataPath ./dragon6-winstore.json -PackagePath ./dragon6-winstore.zip -AutoCommit -Force -AddPackages -UpdatePublishModeAndVisibility -UpdateListings -UpdateNotesForCertification
