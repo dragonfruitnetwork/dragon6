@@ -12,7 +12,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
     /// </summary>
     public class SearchProviderState
     {
-        private AccountSearchArgs? _lastUnhandledSearchArgs;
+        private AccountSearchArgs _lastUnhandledSearchArgs;
 
         /// <summary>
         /// Event fired when an account search is requested.
@@ -27,7 +27,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
         /// <summary>
         /// The last unhandled <see cref="AccountSearchArgs"/> requested by the system.
         /// </summary>
-        public AccountSearchArgs? LastUnhandledSearch
+        public AccountSearchArgs LastUnhandledSearch
         {
             get
             {
