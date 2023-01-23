@@ -67,7 +67,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
 
             CurrentState = SearchState.Searching;
-            await _searchOverlay.ShowAsync().ConfigureAwait(false);
+            await InvokeAsync(() => _searchOverlay.ShowAsync()).ConfigureAwait(false);
             await Task.Delay(500).ConfigureAwait(false);
 
             try
@@ -87,7 +87,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
             await Task.Delay(2500).ConfigureAwait(false);
 
-            await _searchOverlay.HideAsync().ConfigureAwait(false);
+            await InvokeAsync(() => _searchOverlay.HideAsync()).ConfigureAwait(false);
 
             if (CurrentState == SearchState.Discovered)
             {
