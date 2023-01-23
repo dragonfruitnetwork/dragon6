@@ -43,7 +43,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
         protected override void OnInitialized()
         {
-            SearchProviderState.AccountSearchRequested += SearchForAccount;
+            SearchProviderState.AccountSearchRequested += TriggerAccountSearch;
         }
 
         protected override void OnAfterRender(bool firstRender)
@@ -53,13 +53,16 @@ namespace DragonFruit.Six.Client.Overlays.Search
                 return;
             }
 
-            SearchForAccount(SearchProviderState.LastUnhandledSearch);
+            SearchForAccountAsync(SearchProviderState.LastUnhandledSearch);
         }
 
+        private void TriggerAccountSearch(AccountSearchArgs args) => SearchForAccountAsync(args);
+
         /// <summary>
-        /// Begins searching for an account. Causes the current window to be blocked until completed.
+        /// Begins searching for an account.
+        /// Causes the current window to be blocked until completed.
         /// </summary>
-        private async void SearchForAccount(AccountSearchArgs args)
+        private async Task SearchForAccountAsync(AccountSearchArgs args)
         {
             if (args == null)
             {
@@ -67,7 +70,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
 
             CurrentState = SearchState.Searching;
-            await InvokeAsync(() => _searchOverlay.ShowAsync()).ConfigureAwait(false);
+            await _searchOverlay.ShowAsync().ConfigureAwait(false);
             await Task.Delay(500).ConfigureAwait(false);
 
             try
@@ -87,17 +90,17 @@ namespace DragonFruit.Six.Client.Overlays.Search
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
             await Task.Delay(2500).ConfigureAwait(false);
 
-            await InvokeAsync(() => _searchOverlay.HideAsync()).ConfigureAwait(false);
+            await _searchOverlay.HideAsync().ConfigureAwait(false);
 
             if (CurrentState == SearchState.Discovered)
             {
-                Navigation.NavigateTo("/stats", true);
+                Navigation.NavigateTo("/stats");
             }
         }
 
         public void Dispose()
         {
-            SearchProviderState.AccountSearchRequested -= SearchForAccount;
+            SearchProviderState.AccountSearchRequested -= TriggerAccountSearch;
         }
 
         private enum SearchState
