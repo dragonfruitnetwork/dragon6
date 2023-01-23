@@ -13,6 +13,7 @@ using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
 using DragonFruit.Six.Client.Configuration;
+using DragonFruit.Six.Client.Database.Entities;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Components;
 using Realms;
@@ -105,13 +106,13 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
     public class SeasonalStatsContainer
     {
-        public SeasonalStatsContainer(SeasonInfo info, SeasonalStats stats)
+        public SeasonalStatsContainer(ISeasonInfo info, SeasonalStats stats)
         {
             Info = info;
             Stats = stats;
         }
 
-        public SeasonInfo Info { get; }
+        public ISeasonInfo Info { get; }
         public SeasonalStats Stats { get; }
 
         /// <summary>

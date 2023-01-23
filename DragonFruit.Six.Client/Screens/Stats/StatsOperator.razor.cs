@@ -89,13 +89,13 @@ namespace DragonFruit.Six.Client.Screens.Stats
 
         private class OperatorStatsContainer
         {
-            public OperatorStatsContainer(OperatorInfo info, ModernOperatorStats stats)
+            public OperatorStatsContainer(IOperatorInfo info, ModernOperatorStats stats)
             {
                 Info = info;
                 Stats = stats;
             }
 
-            public OperatorInfo Info { get; set; }
+            public IOperatorInfo Info { get; set; }
             public ModernOperatorStats Stats { get; set; }
         }
     }
