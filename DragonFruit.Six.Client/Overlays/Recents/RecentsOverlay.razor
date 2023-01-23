@@ -51,7 +51,7 @@ else
         {
             if (changes == null)
             {
-                Accounts = sender.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze());
+                Accounts = sender.OrderByDescending(x => x.LastSearched).Select(x => x.Freeze()).ToList();
             }
 
             InvokeAsync(StateHasChanged);

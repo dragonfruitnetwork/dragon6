@@ -76,7 +76,7 @@ else
         {
             if (changes == null)
             {
-                ;
+                return;
             }
 
             UpdateAccountRegistry(sender).ContinueWith(_ => InvokeAsync(StateHasChanged));
