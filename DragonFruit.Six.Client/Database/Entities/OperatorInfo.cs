@@ -10,7 +10,7 @@ namespace DragonFruit.Six.Client.Database.Entities
 {
     [MapTo("operators")]
     [JsonObject(MemberSerialization.OptIn)]
-    public class OperatorInfo : RealmObject, IUpdatableEntity
+    public class OperatorInfo : RealmObject, IUpdatableEntity, IOperatorInfo
     {
         [PrimaryKey]
         [JsonProperty("id")]

@@ -9,7 +9,7 @@ namespace DragonFruit.Six.Client.Database.Entities
 {
     [MapTo("seasons")]
     [JsonObject(MemberSerialization.OptIn)]
-    public class SeasonInfo : RealmObject, IUpdatableEntity
+    public class SeasonInfo : RealmObject, IUpdatableEntity, ISeasonInfo
     {
         [PrimaryKey]
         [JsonProperty("id")]
