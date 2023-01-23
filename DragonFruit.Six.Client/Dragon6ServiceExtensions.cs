@@ -12,9 +12,11 @@ using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Services;
 using DragonFruit.Six.Client.Network;
+using DragonFruit.Six.Client.Overlays.Search;
 using Havit.Blazor.Components.Web;
 using Markdig;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -38,8 +40,9 @@ namespace DragonFruit.Six.Client
             services.AddHxServices();
             services.AddMediaQueryService();
             services.AddSingleton<Dragon6Configuration>();
+            services.TryAddSingleton<SearchProviderState>();
             services.AddAutoMapper(Dragon6EntityMapper.ConfigureMapper);
-            services.AddSingleton(new MarkdownPipelineBuilder().UseAdvancedExtensions().UseBootstrap().Build());
+            services.AddSingleton(new MarkdownPipelineBuilder().UsePipeTables().UseBootstrap().Build());
 
             var servicesLocation = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), ExternalServicesLocation);
 

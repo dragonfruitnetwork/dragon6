@@ -38,32 +38,44 @@ namespace DragonFruit.Six.Client.Overlays.Search
         [Inject]
         private ILogger<SearchProvider> Logger { get; set; }
 
-        [CascadingParameter]
+        [Inject]
         private SearchProviderState SearchProviderState { get; set; }
 
         protected override void OnInitialized()
         {
-            SearchProviderState.AccountSearchRequested += SearchForAccount;
+            SearchProviderState.AccountSearchRequested += TriggerAccountSearch;
         }
 
-        /// <summary>
-        /// Begins searching for an account. Causes the current window to be blocked until completed.
-        /// </summary>
-        /// <param name="identifier">The username or ubisoft id of the user to load</param>
-        /// <param name="platform">The <see cref="Platform"/> the user is playing on</param>
-        /// <param name="identifierType">The type of <see cref="identifier"/>, if known</param>
-        private async void SearchForAccount(string identifier, Platform platform, IdentifierType? identifierType = null)
+        protected override void OnAfterRender(bool firstRender)
         {
+            if (!firstRender)
+            {
+                return;
+            }
+
+            SearchForAccountAsync(SearchProviderState.LastUnhandledSearch);
+        }
+
+        private void TriggerAccountSearch(AccountSearchArgs args) => SearchForAccountAsync(args);
+
+        /// <summary>
+        /// Begins searching for an account.
+        /// Causes the current window to be blocked until completed.
+        /// </summary>
+        private async Task SearchForAccountAsync(AccountSearchArgs args)
+        {
+            if (args == null)
+            {
+                return;
+            }
+
             CurrentState = SearchState.Searching;
             await _searchOverlay.ShowAsync().ConfigureAwait(false);
             await Task.Delay(500).ConfigureAwait(false);
 
-            // do account search
-            identifierType ??= Guid.TryParse(identifier, out _) ? IdentifierType.UserId : IdentifierType.Name;
-
             try
             {
-                var matchingAccounts = await Accounts.LookupAsync(new[] { identifier }, platform, identifierType.Value).ConfigureAwait(false);
+                var matchingAccounts = await Accounts.LookupAsync(new[] { args.Identifier }, args.Platform, args.IdentifierType).ConfigureAwait(false);
 
                 // todo handle edge cases where multiple accounts are returned
                 SearchProviderState.DiscoveredAccount = matchingAccounts.FirstOrDefault();
@@ -71,7 +83,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
             catch (Exception e)
             {
-                Logger.LogWarning("Error occured while searching for {user} on {platform}: {@ex}", identifier, platform, e);
+                Logger.LogWarning("Error occured while searching for {user}: {@ex}", args, e);
                 CurrentState = SearchState.OtherError;
             }
 
@@ -88,7 +100,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
         public void Dispose()
         {
-            SearchProviderState.AccountSearchRequested -= SearchForAccount;
+            SearchProviderState.AccountSearchRequested -= TriggerAccountSearch;
         }
 
         private enum SearchState

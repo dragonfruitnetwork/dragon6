@@ -12,7 +12,12 @@ namespace DragonFruit.Six.Client.Overlays.Search
     /// </summary>
     public class SearchProviderState
     {
-        public event Action<string, Platform, IdentifierType?> AccountSearchRequested;
+        private AccountSearchArgs _lastUnhandledSearchArgs;
+
+        /// <summary>
+        /// Event fired when an account search is requested.
+        /// </summary>
+        public event Action<AccountSearchArgs> AccountSearchRequested;
 
         /// <summary>
         /// The most recently discovered account
@@ -20,14 +25,49 @@ namespace DragonFruit.Six.Client.Overlays.Search
         public UbisoftAccount DiscoveredAccount { get; set; }
 
         /// <summary>
-        /// Triggers an account search
+        /// The last unhandled <see cref="AccountSearchArgs"/> requested by the system.
         /// </summary>
+        public AccountSearchArgs LastUnhandledSearch
+        {
+            get
+            {
+                var args = _lastUnhandledSearchArgs;
+                _lastUnhandledSearchArgs = null;
+
+                return args;
+            }
+            private set => _lastUnhandledSearchArgs = value;
+        }
+
+        /// <summary>
+        /// Triggers an account search using the provided criteria
+        /// </summary>
+        /// <param name="identifier">The username or ubisoft id of the user to load</param>
+        /// <param name="platform">The <see cref="Platform"/> the user is playing on</param>
+        /// <param name="type">Optional <see cref="IdentifierType"/> if known</param>
         public void TriggerSearch(string identifier, Platform platform, IdentifierType? type = null)
         {
             if (string.IsNullOrWhiteSpace(identifier))
+            {
                 return;
+            }
 
-            AccountSearchRequested?.Invoke(identifier, platform, type);
+            TriggerSearch(new AccountSearchArgs(identifier, platform, type));
+        }
+
+        /// <summary>
+        /// Triggers an account search using the provided criteria
+        /// </summary>
+        /// <param name="args">The <see cref="AccountSearchArgs"/> query to request</param>
+        public void TriggerSearch(AccountSearchArgs args)
+        {
+            if (AccountSearchRequested?.GetInvocationList().Length > 0)
+            {
+                AccountSearchRequested.Invoke(args);
+                return;
+            }
+
+            LastUnhandledSearch = args;
         }
     }
 }

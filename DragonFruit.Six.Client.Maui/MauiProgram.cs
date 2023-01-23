@@ -5,11 +5,13 @@ using System.Diagnostics.CodeAnalysis;
 using DragonFruit.Six.Client.Configuration;
 using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Maui.Services;
+using DragonFruit.Six.Client.Overlays.Search;
 using DragonFruit.Six.Client.Presence;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Maui.Controls.Hosting;
 using Microsoft.Maui.Hosting;
+using Microsoft.Maui.LifecycleEvents;
 
 namespace DragonFruit.Six.Client.Maui
 {
@@ -32,13 +34,39 @@ namespace DragonFruit.Six.Client.Maui
             builder.Services.AddSingleton<IDragon6Platform>(platformInfo);
             builder.Services.AddScoped<ILegacyVersionMigrator, LegacyMigrationService>();
 
+            var searchState = new SearchProviderState();
+            builder.Services.AddSingleton(searchState);
+
             builder.Services.AddDragon6Services();
 
             // desktop-specific services
-            if ((platformInfo.CurrentPlatform & HostPlatform.Desktop) != 0)
+            if (platformInfo.CurrentPlatform.HasFlag(HostPlatform.Desktop))
             {
                 builder.Services.AddSingleton<IPresenceClient, DiscordPresenceClient>();
             }
+
+            builder.ConfigureLifecycleEvents(events =>
+            {
+#if ANDROID
+                events.AddAndroid(android =>
+                {
+                    // because the intent can be triggered when the app is closed, handle both intents at the startup and when running
+                    android.OnCreate((activity, _) => HandleIntent(activity.Intent));
+                    android.OnNewIntent((_, intent) => HandleIntent(intent));
+
+                    void HandleIntent(Android.Content.Intent intent)
+                    {
+                        if (intent?.Action != Android.Content.Intent.ActionView)
+                            return;
+
+                        if (!AccountSearchArgs.TryParseFromUrl(intent.DataString, out var searchArgs))
+                            return;
+
+                        searchState.TriggerSearch(searchArgs);
+                    }
+                });
+#endif
+            });
 
             return builder.Build();
         }

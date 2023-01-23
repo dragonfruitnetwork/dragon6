@@ -45,7 +45,7 @@
     [Parameter]
     public Dragon6User User { get; set; }
 
-    [CascadingParameter]
+    [Inject]
     private SearchProviderState SearchProviderState { get; set; }
 
 }

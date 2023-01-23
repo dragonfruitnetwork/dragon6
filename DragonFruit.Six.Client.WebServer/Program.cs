@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using DragonFruit.Six.Client.Database;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 namespace DragonFruit.Six.Client.WebServer
@@ -13,7 +12,7 @@ namespace DragonFruit.Six.Client.WebServer
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Host.ConfigureLogging(c => c.ClearProviders());
+            builder.Logging.ClearProviders();
 
             // Add services to the container.
             builder.Services.AddRazorPages();
