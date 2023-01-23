@@ -5,10 +5,11 @@ namespace DragonFruit.Six.Client.Database.Entities
 {
     public interface ISeasonInfo
     {
-        byte SeasonId { get; set; }
+        int SeasonId { get; set; }
         string SeasonName { get; set; }
         string AccentColour { get; set; }
+
         int Year { get; set; }
-        byte Season { get; set; }
+        int Season { get; set; }
     }
 }
