@@ -14,7 +14,7 @@
         ServerStatus.Maintenance => "#607d8b",
 
         _ => "royalblue"
-    };
+        };
 }
 
 <Dragon6HeaderButton Icon="globe"
@@ -26,6 +26,7 @@
 @code {
 
     private Timer _timer;
+
     private const string StatusUrl = "https://www.ubisoft.com/en-us/game/rainbow-six/siege/status";
 
     [Parameter]
@@ -39,12 +40,17 @@
 
     private ServerStatus? Status { get; set; }
 
-    protected override void OnInitialized()
+    protected override void OnAfterRender(bool firstRender)
     {
-        _timer = new Timer(UpdateStatus, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _timer = new Timer(_ => UpdateStatus(), null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
     }
 
-    private async void UpdateStatus(object state)
+    private async Task UpdateStatus()
     {
         var serverStatus = await Client.GetServerStatusAsync().ConfigureAwait(false);
         Status = serverStatus.Max(x => x.Status);
