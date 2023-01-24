@@ -47,6 +47,7 @@
             return;
         }
 
+        // the timer is created after the first render to ensure the tooltip content doesn't change too quickly
         _timer = new Timer(_ => UpdateStatus(), null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
     }
 
