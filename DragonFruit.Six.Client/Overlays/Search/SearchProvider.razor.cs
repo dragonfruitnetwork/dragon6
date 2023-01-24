@@ -25,6 +25,7 @@ namespace DragonFruit.Six.Client.Overlays.Search
         private HxOffcanvas _searchOverlay;
 
         private SearchState CurrentState { get; set; }
+        private UbisoftAccount CurrentAccount { get; set; }
 
         [Inject]
         private IJSRuntime JavaRuntime { get; set; }
@@ -75,11 +76,13 @@ namespace DragonFruit.Six.Client.Overlays.Search
 
             try
             {
+                // todo handle edge cases where multiple accounts are returned
                 var matchingAccounts = await Accounts.LookupAsync(new[] { args.Identifier }, args.Platform, args.IdentifierType).ConfigureAwait(false);
 
-                // todo handle edge cases where multiple accounts are returned
-                SearchProviderState.DiscoveredAccount = matchingAccounts.FirstOrDefault();
-                CurrentState = SearchProviderState.DiscoveredAccount == null ? SearchState.NotFound : SearchState.Discovered;
+                // by setting the discovered account, it invokes an event to alert other components the account has changed
+                // we want to wait for the overlay to finish before that, so we store locally then set afterwards.
+                CurrentAccount = matchingAccounts.FirstOrDefault();
+                CurrentState = CurrentAccount == null ? SearchState.NotFound : SearchState.Discovered;
             }
             catch (Exception e)
             {
@@ -88,13 +91,14 @@ namespace DragonFruit.Six.Client.Overlays.Search
             }
 
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-            await Task.Delay(2500).ConfigureAwait(false);
 
+            await Task.Delay(2500).ConfigureAwait(false);
             await _searchOverlay.HideAsync().ConfigureAwait(false);
 
             if (CurrentState == SearchState.Discovered)
             {
-                Navigation.NavigateTo("/stats", true);
+                SearchProviderState.DiscoveredAccount = CurrentAccount;
+                Navigation.NavigateTo("/stats");
             }
         }
 

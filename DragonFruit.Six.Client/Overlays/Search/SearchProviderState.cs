@@ -13,6 +13,12 @@ namespace DragonFruit.Six.Client.Overlays.Search
     public class SearchProviderState
     {
         private AccountSearchArgs _lastUnhandledSearchArgs;
+        private UbisoftAccount _discoveredAccount;
+
+        /// <summary>
+        /// Event fired when a new account has been set
+        /// </summary>
+        public event Action<UbisoftAccount> AccountLoaded;
 
         /// <summary>
         /// Event fired when an account search is requested.
@@ -22,7 +28,15 @@ namespace DragonFruit.Six.Client.Overlays.Search
         /// <summary>
         /// The most recently discovered account
         /// </summary>
-        public UbisoftAccount DiscoveredAccount { get; set; }
+        public UbisoftAccount DiscoveredAccount
+        {
+            get => _discoveredAccount;
+            set
+            {
+                _discoveredAccount = value;
+                AccountLoaded?.Invoke(value);
+            }
+        }
 
         /// <summary>
         /// The last unhandled <see cref="AccountSearchArgs"/> requested by the system.
