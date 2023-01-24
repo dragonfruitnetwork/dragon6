@@ -54,7 +54,7 @@ else
         var users = await UserLookup.LookupAsync(saved.Select(x => x.ProfileId).ToList(), Platform.PC, IdentifierType.UserId);
         var accounts = await Task.WhenAll(accountSearchTasks).ConfigureAwait(false);
 
-        // use query syntax as using functional api looks bad
+    // use query syntax as using functional api looks bad
         var profiles = from info in savedAccounts
                        join account in accounts.SelectMany(x => x) on info.ProfileId equals account.ProfileId
                        join user in users on info.ProfileId equals user.ProfileId
@@ -74,7 +74,7 @@ else
         _realm = await Realm.GetInstanceAsync();
         _notificationListener = _realm.All<SavedAccount>().SubscribeForNotifications((sender, changes, error) =>
         {
-            if (changes == null)
+            if (Profiles != null && changes == null)
             {
                 return;
             }
