@@ -26,7 +26,7 @@ using SeasonInfo = DragonFruit.Six.Client.Database.Entities.SeasonInfo;
 
 namespace DragonFruit.Six.Client.Screens.Stats
 {
-    public partial class Stats
+    public partial class Stats : IDisposable
     {
         private UbisoftAccount _account;
 
@@ -92,7 +92,16 @@ namespace DragonFruit.Six.Client.Screens.Stats
         /// </summary>
         private IReadOnlyCollection<SeasonalStats> PostFreezeSeasons { get; set; }
 
-        protected override void OnParametersSet()
+        protected override void OnInitialized()
+        {
+            SearchProviderState.AccountLoaded += OnAccountLoaded;
+            Services.GetService<IPresenceClient>()?.PushUpdate(new PresenceStatus("Stats"));
+        }
+
+        private void OnAccountLoaded(UbisoftAccount obj) => UpdateStats(true);
+        protected override Task OnParametersSetAsync() => UpdateStats(false);
+
+        private async Task UpdateStats(bool eventTriggered)
         {
             // reset all stats properties
             Account = null;
@@ -102,11 +111,6 @@ namespace DragonFruit.Six.Client.Screens.Stats
             Ranked = null;
             Warmup = null;
 
-            Services.GetService<IPresenceClient>()?.PushUpdate(new PresenceStatus("Stats"));
-        }
-
-        protected override async Task OnParametersSetAsync()
-        {
             // use search provider account if not directly loaded in
             if (string.IsNullOrEmpty(Identifier))
             {
@@ -188,6 +192,17 @@ namespace DragonFruit.Six.Client.Screens.Stats
             {
                 await realm.WriteAsync(() => realm.Add(recentAccount, true)).ConfigureAwait(false);
             }
+
+            // event-based updates (i.e. searching for a user from within the stats page) requires a forced-update
+            if (eventTriggered)
+            {
+                InvokeAsync(StateHasChanged);
+            }
+        }
+
+        public void Dispose()
+        {
+            SearchProviderState.AccountLoaded -= OnAccountLoaded;
         }
     }
 }
