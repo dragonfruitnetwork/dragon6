@@ -89,6 +89,7 @@ jobs:
         run: |
           dotnet restore
           dotnet tool install --global dotnet-project-licenses
+          dotnet tool install --global DragonFruit.Six.Client.Publishing
           dotnet add DragonFruit.Six.Client.Maui package DragonFruit.Six.Client.Services
 
       - name: Generate Package License Table
@@ -121,6 +122,10 @@ jobs:
           retention-days: 7
           name: ${{ env.windows_artifact_key }}
           path: DragonFruit.Six.Client.Maui_x64.msix
+          
+      # submit version info to dragon6-web
+      # - name: Submit Version Info
+      #   run: d6client submit --dir DragonFruit.Six.Client.Maui\bin\Release\${{ matrix.framework }} --platform ${{ matrix.platform }} --client-id ${{ secrets.HINA_ID }} --client-secret ${{ secrets.HINA_SECRET }}
 
   publish-android:
     runs-on: macos-latest
