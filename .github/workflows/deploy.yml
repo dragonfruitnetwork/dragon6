@@ -26,9 +26,11 @@ jobs:
         include:
           - platform: android
             framework: net7.0-android
+            output-folder: .\DragonFruit.Six.Client.Maui\bin\Debug\net7.0-android
 
           - platform: windows
             framework: net7.0-windows10.0.19041.0
+            output-folder: .\DragonFruit.Six.Client.Maui\bin\Debug\net7.0-windows10.0.19041.0\win10-x64
 
     environment: ${{ matrix.platform }}
     name: ${{ matrix.platform }}
@@ -109,8 +111,8 @@ jobs:
             DragonFruit.Six.Client.Maui/bin/Release/net7.0-android/publish/com.dragon.six-Signed.aab
 
       - name: Rename and Move MSIX
-        working-directory: "DragonFruit.Six.Client.Maui/bin/Release/net7.0-windows10.0.19041.0/win10-x64/AppPackages"
         if: matrix.platform == 'windows'
+        working-directory: ${{ matrix.output-folder }}/AppPackages"
         run: |
           $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
           [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
@@ -122,10 +124,10 @@ jobs:
           retention-days: 7
           name: ${{ env.windows_artifact_key }}
           path: DragonFruit.Six.Client.Maui_x64.msix
-          
+      
       # submit version info to dragon6-web
-      # - name: Submit Version Info
-      #   run: d6client submit --dir DragonFruit.Six.Client.Maui\bin\Release\${{ matrix.framework }} --platform ${{ matrix.platform }} --client-id ${{ secrets.HINA_ID }} --client-secret ${{ secrets.HINA_SECRET }}
+      - name: Submit Version Info
+        run: d6client submit --dir ${{ matrix.output-folder }} --obj .\DragonFruit.Six.Client.Maui\obj --platform ${{ matrix.platform }} --client-id ${{ secrets.HINA_ID }} --client-secret ${{ secrets.HINA_SECRET }}
 
   publish-android:
     runs-on: macos-latest
@@ -224,7 +226,7 @@ jobs:
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f ../dragonfruit.pfx /p %CertPass% DragonFruit.Six.Client.msixbundle      
         env:
           CertPass: ${{ secrets.CERTIFICATE_PASSWORD }}
-      
+
       - name: Upload bundle to Release
         uses: softprops/action-gh-release@v1
         with:
