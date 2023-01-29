@@ -127,7 +127,10 @@ jobs:
       
       # submit version info to dragon6-web
       - name: Submit Version Info
-        run: d6client submit --dir ${{ matrix.output-folder }} --obj .\DragonFruit.Six.Client.Maui\obj --platform ${{ matrix.platform }} --client-id ${{ secrets.HINA_ID }} --client-secret ${{ secrets.HINA_SECRET }}
+        run: d6client submit --platform ${{ matrix.platform }} --dir ${{ matrix.output-folder }} --obj .\DragonFruit.Six.Client.Maui\obj --client-id $Env:ClientId --client-secret $Env:ClientSecret
+        env:
+          ClientId: ${{ secrets.HINA_ID }}
+          ClientSecret: ${{ secrets.HINA_SECRET }}
 
   publish-android:
     runs-on: macos-latest
