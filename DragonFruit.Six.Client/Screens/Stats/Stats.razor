@@ -9,7 +9,7 @@
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
 
-    @if (User.Covers != null)
+    @if (User?.Covers != null)
     {
         @if (!User.Covers.Raw.StartsWith("https://d6static.dragonfruit.network"))
         {
