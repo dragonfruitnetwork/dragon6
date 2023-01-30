@@ -15,7 +15,7 @@ namespace DragonFruit.Six.Client.Network.User
         public AccountRole AccountRole { get; set; }
 
         [JsonProperty("cover")]
-        private Dragon6UserCovers Covers { get; set; }
+        public Dragon6UserCovers Covers { get; set; }
 
         [JsonProperty("title")]
         public string Title { get; set; }

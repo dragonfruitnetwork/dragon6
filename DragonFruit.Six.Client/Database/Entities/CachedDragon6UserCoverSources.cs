@@ -6,6 +6,7 @@ using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
 {
+    [MapTo("cached_user_covers")]
     public class CachedDragon6UserCoverSources : EmbeddedObject, IDragon6UserCoverSources
     {
         [MapTo("raw")]
