@@ -3,7 +3,7 @@
 @using DragonFruit.Six.Client.Database.Entities
 @using DragonFruit.Six.Api.Accounts.Enums
 @using DragonFruit.Six.Api.Accounts.Entities
-@using DragonFruit.Six.Api.Services.Verification
+@using DragonFruit.Six.Client.Network.User
 @implements IDisposable
 
 @if (Profiles?.Any() == true)
@@ -57,7 +57,7 @@ else
         // use query syntax as using functional api looks bad
         var profiles = from info in savedAccounts
                        join account in accounts.SelectMany(x => x) on info.ProfileId equals account.ProfileId
-                       join user in users on info.ProfileId equals user.ProfileId
+                       join user in users on info.UbisoftId equals user.UbisoftId
                        orderby info.SavedAt
                        select (info, account, user);
 

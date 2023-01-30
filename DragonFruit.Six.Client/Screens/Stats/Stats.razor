@@ -2,22 +2,23 @@
 @page "/stats/{platform}/{identifier}"
 @layout CoreLayout
 @using DragonFruit.Six.Api.Seasonal.Enums
-@using DragonFruit.Six.Api.Services.Verification
+@using DragonFruit.Six.Client.Database.Entities
+@using DragonFruit.Six.Client.Utils
 @using Humanizer
 
 <HeadContent>
     <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/stats.css"/>
 
-    @if (!string.IsNullOrWhiteSpace(User?.Image))
+    @if (User.Covers != null)
     {
-        @if (!User.Image.StartsWith("https://d6static.dragonfruit.network"))
+        @if (!User.Covers.Raw.StartsWith("https://d6static.dragonfruit.network"))
         {
             <link rel="stylesheet" href="/_content/DragonFruit.Six.Client/styles/user-cover-full.css"/>
         }
 
         <style>
             .d6-account-cover {
-                background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(@User.Image) !important;
+                background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(@User.Covers.Raw) !important;
             }
         </style>
     }
