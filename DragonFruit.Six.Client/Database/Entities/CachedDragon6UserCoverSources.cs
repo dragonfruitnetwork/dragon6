@@ -6,7 +6,7 @@ using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
 {
-    public class CachedDragon6UserCoverSources : RealmObject, IDragon6UserCoverSources
+    public class CachedDragon6UserCoverSources : EmbeddedObject, IDragon6UserCoverSources
     {
         [MapTo("raw")]
         public string Raw { get; set; }
