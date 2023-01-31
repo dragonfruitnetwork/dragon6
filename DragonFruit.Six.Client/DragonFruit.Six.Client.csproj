@@ -18,33 +18,33 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="AutoMapper" Version="12.0.1"/>
-        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0"/>
-        <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.0"/>
-        <PackageReference Include="DragonFruit.Data" Version="2023.123.0"/>
-        <PackageReference Include="DragonFruit.Data.Serializers.Newtonsoft" Version="2023.123.0"/>
-        <PackageReference Include="DragonFruit.Six.Api" Version="2023.130.0"/>
-        <PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" Version="3.2.6"/>
-        <PackageReference Include="Humanizer.Core" Version="2.14.1"/>
-        <PackageReference Include="Markdig" Version="0.30.4"/>
-        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0"/>
-        <PackageReference Include="Polly" Version="7.2.3"/>
-        <PackageReference Include="Realm" Version="10.19.0"/>
-        <PackageReference Include="Sentry.Serilog" Version="3.26.1"/>
-        <PackageReference Include="Serilog" Version="2.12.0"/>
-        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0"/>
-        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0"/>
-        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
-        <PackageReference Include="sharpconfig" Version="3.2.9.1"/>
+        <PackageReference Include="AutoMapper" Version="12.0.1" />
+        <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
+        <PackageReference Include="BlazorPro.BlazorSize" Version="6.2.0" />
+        <PackageReference Include="DragonFruit.Data" Version="2023.123.0" />
+        <PackageReference Include="DragonFruit.Data.Serializers.Newtonsoft" Version="2023.123.0" />
+        <PackageReference Include="DragonFruit.Six.Api" Version="2023.130.0" />
+        <PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" Version="3.2.6" />
+        <PackageReference Include="Humanizer.Core" Version="2.14.1" />
+        <PackageReference Include="Markdig" Version="0.30.4" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
+        <PackageReference Include="Polly" Version="7.2.3" />
+        <PackageReference Include="Realm" Version="10.19.0" />
+        <PackageReference Include="Sentry.Serilog" Version="3.26.2" />
+        <PackageReference Include="Serilog" Version="2.12.0" />
+        <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
+        <PackageReference Include="Serilog.Sinks.Console" Version="4.1.0" />
+        <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+        <PackageReference Include="sharpconfig" Version="3.2.9.1" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\icon.png" Pack="true" PackagePath="."/>
-        <None Include="..\nuget-notice.md" Pack="true" PackagePath="."/>
+        <None Include="..\icon.png" Pack="true" PackagePath="." />
+        <None Include="..\nuget-notice.md" Pack="true" PackagePath="." />
     </ItemGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="licenses.md"/>
+        <EmbeddedResource Include="licenses.md" />
     </ItemGroup>
 
 </Project>
