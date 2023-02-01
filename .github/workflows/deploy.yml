@@ -139,7 +139,7 @@ jobs:
     
     steps:
       - name: Set Build Number
-        run: echo "VERSION_NUMBER=$(500 + ${{ github.run_number }})" >> $GITHUB_ENV
+        run: echo "VERSION_NUMBER=$((500 + ${{ github.run_number }}))" >> $GITHUB_ENV
 
       - name: Checkout
         uses: actions/checkout@v3
