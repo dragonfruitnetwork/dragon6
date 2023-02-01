@@ -112,7 +112,7 @@ jobs:
 
       - name: Rename and Move MSIX
         if: matrix.platform == 'windows'
-        working-directory: ${{ matrix.output-folder }}/AppPackages"
+        working-directory: ${{ matrix.output-folder }}\AppPackages"
         run: |
           $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
           [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
