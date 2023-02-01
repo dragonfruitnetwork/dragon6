@@ -9,23 +9,11 @@
         <ErrorBoundary @ref="_error">
             <ChildContent>
                 <CascadingValue Value="_offcanvas">
-                   <DynamicComponent Type="Info.OverlayContent"/> 
+                    <DynamicComponent Type="Info.OverlayContent"/>
                 </CascadingValue>
             </ChildContent>
             <ErrorContent>
-                <div class="d6-overlay-center-content">
-                    <span class="material-icons-round fa-2x text-danger">report</span>
-
-                    <div>
-                        <h4>Well this is unexpected...</h4>
-                        <p>There's been an issue with this overlay. We've reported the error and will get to fixing it ASAP</p>
-                    </div>
-
-                    <HxButton CssClass="btn-text d6-icon-button text-success" OnClick="() => _error?.Recover()">
-                        <span class="material-icons-round">refresh</span>
-                        <span>Reload</span>
-                    </HxButton>
-                </div>
+                <D6ErrorOverlay ComponentName="@Info.Name" Error="context" ReloadRequested="() => _error?.Recover()"/>
             </ErrorContent>
         </ErrorBoundary>
     </BodyTemplate>
