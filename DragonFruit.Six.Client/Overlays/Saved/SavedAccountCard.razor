@@ -6,8 +6,25 @@
 @using DragonFruit.Six.Client.Network.User
 @using DragonFruit.Six.Client.Overlays.Search
 @using DragonFruit.Six.Client.Utils
+@using System.Text
+@using Markdig.Helpers
 
-<div class="card bg-transparent user-select-none" role="button" @onclick="() => SearchProviderState.TriggerSearch(Account.UbisoftId, Account.Platform, IdentifierType.UserId)">
+@{
+    var cardStyle = new StringBuilder();
+
+    if (string.IsNullOrEmpty(User?.Covers?.Banner))
+    {
+        cardStyle.Append("background: transparent;");
+    }
+    else
+    {
+        cardStyle.Append("border: none;");
+        cardStyle.Append("background-position: center;");
+        cardStyle.Append($"background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url({User.Covers.Banner});");
+    }
+}
+
+<div role="button" class="card user-select-none" style="@cardStyle.ToString()" @onclick="() => SearchProviderState.TriggerSearch(Account.UbisoftId, Account.Platform, IdentifierType.UserId)">
     <div class="card-body d-flex align-items-center gap-3">
         @if (Info == null)
         {
