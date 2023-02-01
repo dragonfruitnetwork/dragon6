@@ -2,13 +2,14 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System.IO;
+using DragonFruit.Six.Client.Database.Entities;
 using Realms;
 
 namespace DragonFruit.Six.Client.Database
 {
     public static class RealmConfigurator
     {
-        private const int SchemaVersion = 1;
+        private const int SchemaVersion = 2;
         private const string RealmName = "dragon6.realm";
 
         public static void Initialise(IDragon6Platform devicePlatform)
@@ -26,7 +27,12 @@ namespace DragonFruit.Six.Client.Database
 
         private static void PerformMigration(Migration migration, ulong oldschemaversion)
         {
-            // no migrations yet...
+            switch (oldschemaversion)
+            {
+                case 1: // change dragon6 id from profile to ubisoft - clear all
+                    migration.NewRealm.RemoveAll<CachedDragon6User>();
+                    break;
+            }
         }
     }
 }

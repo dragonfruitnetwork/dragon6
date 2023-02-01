@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DragonFruit.Six.Api;
 using DragonFruit.Six.Api.Accounts.Enums;
-using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Network.User;
 
@@ -27,7 +26,7 @@ namespace DragonFruit.Six.Client.Database.Services
 
         protected override IEnumerable<CachedDragon6User> LookupCached(IQueryable<CachedDragon6User> collection, string id, Platform platform, IdentifierType identifierType)
         {
-            return collection.Where(x => x.Expires > DateTimeOffset.Now && x.ProfileId.Equals(id, StringComparison.OrdinalIgnoreCase));
+            return collection.Where(x => x.Expires > DateTimeOffset.Now && x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase));
         }
 
         protected override async Task<IEnumerable<Dragon6User>> LookupOnline(IReadOnlyCollection<string> ids, Platform platform, IdentifierType identifierType)
@@ -37,9 +36,9 @@ namespace DragonFruit.Six.Client.Database.Services
                 var request = new Dragon6UserRequest(ids);
                 var response = await _client.PerformAsync<IReadOnlyCollection<Dragon6User>>(request).ConfigureAwait(false);
 
-                var missingUsers = ids.Except(response.Select(x => x.ProfileId)).Select(x => new Dragon6User
+                var missingUsers = ids.Except(response.Select(x => x.UbisoftId)).Select(x => new Dragon6User
                 {
-                    ProfileId = x,
+                    UbisoftId = x,
                     AccountRole = AccountRole.Normal
                 });
 
@@ -47,7 +46,11 @@ namespace DragonFruit.Six.Client.Database.Services
             }
             catch (HttpRequestException)
             {
-                return Enumerable.Empty<Dragon6User>();
+                return ids.Select(x => new Dragon6User
+                {
+                    UbisoftId = x,
+                    AccountRole = AccountRole.Normal
+                });
             }
         }
     }

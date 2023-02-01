@@ -9,7 +9,7 @@ namespace DragonFruit.Six.Client.Network.User
 {
     public class Dragon6UserRequest : ApiRequest
     {
-        public override string Path => $"https://dragon6.dragonfruit.network/api/v2/users";
+        public override string Path => "https://dragon6.dragonfruit.network/api/v3/users";
 
         public Dragon6UserRequest(IEnumerable<string> profileIds)
         {

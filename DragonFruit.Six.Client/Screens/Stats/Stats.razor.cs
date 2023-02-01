@@ -14,9 +14,9 @@ using DragonFruit.Six.Api.Legacy.Entities;
 using DragonFruit.Six.Api.Seasonal;
 using DragonFruit.Six.Api.Seasonal.Entities;
 using DragonFruit.Six.Api.Seasonal.Enums;
-using DragonFruit.Six.Api.Services.Verification;
 using DragonFruit.Six.Client.Database.Entities;
 using DragonFruit.Six.Client.Database.Services;
+using DragonFruit.Six.Client.Network.User;
 using DragonFruit.Six.Client.Overlays.Search;
 using DragonFruit.Six.Client.Presence;
 using Microsoft.AspNetCore.Components;
@@ -62,7 +62,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
         [Inject]
         private IServiceProvider Services { get; set; }
 
-        private Dragon6User User { get; set; }
+        private IDragon6User User { get; set; }
 
         private UbisoftAccount Account
         {
@@ -71,7 +71,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             {
                 _account = value;
 
-                if (User?.ProfileId != Account?.ProfileId)
+                if (User?.UbisoftId != Account?.UbisoftId)
                 {
                     User = null;
                     LastUpdated = null;
@@ -128,7 +128,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             // do user lookup - may return either 0 or 1 results
-            User = await UserCache.LookupAsync(Account.ProfileId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { ProfileId = Account.ProfileId, AccountRole = AccountRole.Normal };
+            User = await UserCache.LookupAsync(Account.UbisoftId, Platform, IdentifierType.UserId).ConfigureAwait(false) ?? new Dragon6User { UbisoftId = Account.ProfileId, AccountRole = AccountRole.Normal };
             await InvokeAsync(StateHasChanged).ConfigureAwait(false);
 
             if (User.AccountRole < AccountRole.Normal)

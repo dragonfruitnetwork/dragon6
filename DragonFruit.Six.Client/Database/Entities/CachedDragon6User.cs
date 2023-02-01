@@ -2,32 +2,32 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
-using DragonFruit.Six.Api.Services.Verification;
+using DragonFruit.Six.Client.Network.User;
 using JetBrains.Annotations;
 using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
 {
     [MapTo("cached_users")]
-    public class CachedDragon6User : RealmObject
+    public class CachedDragon6User : RealmObject, IDragon6User
     {
         [PrimaryKey]
-        [MapTo("profile_id")]
-        public string ProfileId { get; set; }
+        [MapTo("ubisoft_id")]
+        public string UbisoftId { get; set; }
 
         [Ignored]
         public AccountRole AccountRole
         {
             get => (AccountRole)RoleValue;
-            set => RoleValue = (byte)value;
+            set => RoleValue = (int)value;
         }
 
         [MapTo("role")]
-        private byte RoleValue { get; set; }
+        private int RoleValue { get; set; }
 
         [CanBeNull]
         [MapTo("cover")]
-        public string Image { get; set; }
+        public CachedDragon6UserCoverSources Covers { get; set; }
 
         [CanBeNull]
         [MapTo("title")]
@@ -43,5 +43,8 @@ namespace DragonFruit.Six.Client.Database.Entities
 
         [MapTo("expiry")]
         public DateTimeOffset Expires { get; set; } = DateTimeOffset.Now.AddHours(12);
+
+        [Ignored]
+        IDragon6UserCoverSources IDragon6User.Covers => Covers;
     }
 }
