@@ -26,11 +26,11 @@ jobs:
         include:
           - platform: android
             framework: net7.0-android
-            output-folder: .\DragonFruit.Six.Client.Maui\bin\Release\net7.0-android
+            output-folder: DragonFruit.Six.Client.Maui\bin\Release\net7.0-android
 
           - platform: windows
             framework: net7.0-windows10.0.19041.0
-            output-folder: .\DragonFruit.Six.Client.Maui\bin\Release\net7.0-windows10.0.19041.0\win10-x64
+            output-folder: DragonFruit.Six.Client.Maui\bin\Release\net7.0-windows10.0.19041.0\win10-x64
 
     environment: ${{ matrix.platform }}
     name: ${{ matrix.platform }}
@@ -112,7 +112,7 @@ jobs:
 
       - name: Rename and Move MSIX
         if: matrix.platform == 'windows'
-        working-directory: ${{ matrix.output-folder }}\AppPackages"
+        working-directory: "${{ matrix.output-folder }}\AppPackages"
         run: |
           $path = Get-ChildItem -Path **\DragonFruit.Six.Client.Maui_*_x64.msix
           [System.IO.File]::Move($path.FullName, [System.IO.Path]::Combine($Env:GITHUB_WORKSPACE, 'DragonFruit.Six.Client.Maui_x64.msix'))
