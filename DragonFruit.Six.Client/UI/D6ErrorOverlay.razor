@@ -1,0 +1,35 @@
+﻿<div class="d6-error-overlay">
+    <div></div>
+
+    <div class="d6-overlay-center-content">
+        <span class="material-icons-round fa-2x text-danger">report</span>
+
+        <div>
+            <h4>Well, this is unexpected...</h4>
+            <p>Something has gone wrong with @ComponentName. We've reported the error and will investigate ASAP</p>
+        </div>
+
+        @if (ReloadRequested.HasDelegate)
+        {
+            <HxButton CssClass="btn-text d6-icon-button text-success" OnClick="ReloadRequested">
+                <span class="material-icons-round">refresh</span>
+                <span>Reload</span>
+            </HxButton>
+        }
+    </div>
+
+    <span class="text-muted text-center">@Error.GetType().Name: @Error.Message</span>
+</div>
+
+@code {
+
+    [Parameter]
+    public string ComponentName { get; set; }
+
+    [Parameter]
+    public Exception Error { get; set; }
+
+    [Parameter]
+    public EventCallback ReloadRequested { get; set; }
+
+}
