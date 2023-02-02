@@ -226,7 +226,7 @@ jobs:
         shell: cmd
         run: |
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f ../dragonfruit.pfx /p %CertPass% DragonFruit.Six.Client.msixbundle      
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f ..\dragonfruit.pfx /p %CertPass% DragonFruit.Six.Client.msixbundle      
         env:
           CertPass: ${{ secrets.CERTIFICATE_PASSWORD }}
 
