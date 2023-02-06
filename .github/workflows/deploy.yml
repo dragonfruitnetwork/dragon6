@@ -198,7 +198,7 @@ jobs:
         uses: timheuer/base64-to-file@v1.2
         with:
           fileName: "dragonfruit.pfx"
-          fileDir: "."
+          fileDir: ${{ github.workspace }}
           encodedString: ${{ secrets.CERTIFICATE }}
 
       # the deployment assets are private for now, but will be public in the future
@@ -222,7 +222,7 @@ jobs:
           path: ./bundle-staging
 
       - name: Produce MSIX bundle file
-        working-directory: ./bundle-staging
+        working-directory: ${{ github.workspace }}/bundle-staging
         shell: cmd
         run: |
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
