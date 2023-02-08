@@ -10,7 +10,7 @@
          class="rounded d6-news-image"
          src="@Item.ImageThumbnail.Url"/>
 
-    <div class="w-100 ms-4">
+    <div class="w-100 ps-2">
         <div role="button" @onclick="OpenArticle">
             <span class="user-select-none">
                 Published @Item.Date.Humanize() &middot; @TimeSpan.FromMinutes(Item.ReadTime).Humanize(minUnit: TimeUnit.Second) to read
