@@ -200,6 +200,13 @@ jobs:
           fileName: "dragonfruit.pfx"
           fileDir: ${{ github.workspace }}
           encodedString: ${{ secrets.CERTIFICATE }}
+          
+      - name: Install Certificate
+        run: |
+          $securePassword = ConvertTo-SecureString $Env:CertificatePassword -AsPlainText -Force
+          Import-PfxCertificate -FilePath dragonfruit.pfx -CertStoreLocation cert:\CurrentUser\My -Password $securePassword
+        env:
+          CertificatePassword: ${{ secrets.CERTIFICATE_PASSWORD }}
 
       # the deployment assets are private for now, but will be public in the future
       - name: Get deploy token
@@ -226,9 +233,7 @@ jobs:
         shell: cmd
         run: |
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 /f ..\dragonfruit.pfx /p %CertPass% DragonFruit.Six.Client.msixbundle      
-        env:
-          CertPass: ${{ secrets.CERTIFICATE_PASSWORD }}
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 DragonFruit.Six.Client.msixbundle
 
       - name: Upload bundle to Release
         uses: softprops/action-gh-release@v1
