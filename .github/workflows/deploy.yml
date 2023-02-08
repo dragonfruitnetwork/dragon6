@@ -178,6 +178,11 @@ jobs:
     needs: build
     
     steps:
+      - name: Set Build Number
+        run: |
+          $version = 500 + ${{ github.run_number }}
+          echo "VERSION_NUMBER=$version" >> $Env:GITHUB_ENV
+
       - name: Setup Microsoft StoreBroker
         run: |
           Set-PSRepository -Name "PSGallery" -InstallationPolicy Trusted
@@ -223,7 +228,7 @@ jobs:
         working-directory: ${{ github.workspace }}/bundle-staging
         shell: cmd
         run: |
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.$Env:VERSION_NUMBER /p DragonFruit.Six.Client.msixbundle
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 DragonFruit.Six.Client.msixbundle
 
       - name: Upload bundle to Release
