@@ -98,7 +98,7 @@ jobs:
         run: dotnet-project-licenses -i DragonFruit.Six.Client.sln -o --output-directory DragonFruit.Six.Client --outfile licenses.md --include-project-file --md --unique
 
       - name: Publish
-        run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:ApplicationVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
+        run: dotnet publish -f ${{ matrix.framework }} -c Release -p:Version=${{ inputs.version || github.ref_name }} -p:AppVersion=$Env:VERSION_NUMBER -p:ApplicationDisplayVersion=${{ inputs.version || github.ref_name }} -p:AndroidSigningStorePass=${{ secrets.KEYSTORE_SECRET || 'dragon6' }} -p:AndroidSigningKeyPass=${{ secrets.KEY_SECRET || 'dragon6' }} DragonFruit.Six.Client.Maui
 
       # upload artifacts
       - name: Upload Android Artifacts
@@ -228,7 +228,7 @@ jobs:
         working-directory: ${{ github.workspace }}/bundle-staging
         shell: cmd
         run: |
-          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.$Env:VERSION_NUMBER /p DragonFruit.Six.Client.msixbundle
+          "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\MakeAppx.exe" bundle /v /d . /bv ${{ inputs.version || github.ref_name }}.0 /p DragonFruit.Six.Client.msixbundle
           "%ProgramFiles(x86)%\Windows Kits\10\bin\10.0.22000.0\x64\signtool.exe" sign /fd SHA256 DragonFruit.Six.Client.msixbundle
 
       - name: Upload bundle to Release
