@@ -184,10 +184,6 @@ jobs:
           Set-ExecutionPolicy RemoteSigned -Force
           Install-Module -Name StoreBroker -Force
           Import-Module StoreBroker
-        env:
-          AADSecret: ${{ secrets.AAD_SECRET }}
-          AADClient: ${{ secrets.AAD_CLIENT }}
-          AADTenant: ${{ secrets.AAD_TENANT }}
 
       - name: Save Certificate
         uses: timheuer/base64-to-file@v1.2
@@ -195,7 +191,7 @@ jobs:
           fileName: "dragonfruit.pfx"
           fileDir: ${{ github.workspace }}
           encodedString: ${{ secrets.CERTIFICATE }}
-          
+
       - name: Install Certificate
         run: |
           $securePassword = ConvertTo-SecureString $Env:CertificatePassword -AsPlainText -Force
@@ -246,6 +242,10 @@ jobs:
 
           Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
           Update-ApplicationFlightSubmission -AppId 9N88CQPKGS15 -FlightId 203522cc-6c4a-42a0-8080-de225fb1ee74 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -ReplacePackages -TargetPublishMode Immediate
+        env:
+          AADSecret: ${{ secrets.AAD_SECRET }}
+          AADClient: ${{ secrets.AAD_CLIENT }}
+          AADTenant: ${{ secrets.AAD_TENANT }}
 
       - name: Submit to Windows Store
         if: ${{ !github.event.release.prerelease }}
@@ -255,3 +255,7 @@ jobs:
 
           Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
           Update-ApplicationSubmission -AppId 9N88CQPKGS15 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -AddPackages -UpdatePublishModeAndVisibility -UpdateListings -UpdateNotesForCertification
+        env:
+          AADSecret: ${{ secrets.AAD_SECRET }}
+          AADClient: ${{ secrets.AAD_CLIENT }}
+          AADTenant: ${{ secrets.AAD_TENANT }}
