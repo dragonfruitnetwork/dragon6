@@ -184,11 +184,6 @@ jobs:
           Set-ExecutionPolicy RemoteSigned -Force
           Install-Module -Name StoreBroker -Force
           Import-Module StoreBroker
-
-          $clientSecret = echo $Env:AADSecret | ConvertTo-SecureString -AsPlainText -Force
-          $clientCredentials = New-Object System.Management.Automation.PSCredential "$Env:AADClient", $clientSecret
-
-          Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
         env:
           AADSecret: ${{ secrets.AAD_SECRET }}
           AADClient: ${{ secrets.AAD_CLIENT }}
@@ -245,8 +240,18 @@ jobs:
 
       - name: Flight package (beta)
         if: ${{ github.event.release.prerelease }}
-        run: Update-ApplicationFlightSubmission -AppId 9N88CQPKGS15 -FlightId 203522cc-6c4a-42a0-8080-de225fb1ee74 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -ReplacePackages -TargetPublishMode Immediate
+        run: |
+          $clientSecret = echo $Env:AADSecret | ConvertTo-SecureString -AsPlainText -Force
+          $clientCredentials = New-Object System.Management.Automation.PSCredential "$Env:AADClient", $clientSecret
+
+          Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
+          Update-ApplicationFlightSubmission -AppId 9N88CQPKGS15 -FlightId 203522cc-6c4a-42a0-8080-de225fb1ee74 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -ReplacePackages -TargetPublishMode Immediate
 
       - name: Submit to Windows Store
         if: ${{ !github.event.release.prerelease }}
-        run: Update-ApplicationSubmission -AppId 9N88CQPKGS15 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -AddPackages -UpdatePublishModeAndVisibility -UpdateListings -UpdateNotesForCertification
+        run: |
+          $clientSecret = echo $Env:AADSecret | ConvertTo-SecureString -AsPlainText -Force
+          $clientCredentials = New-Object System.Management.Automation.PSCredential "$Env:AADClient", $clientSecret
+
+          Set-StoreBrokerAuthentication -TenantId "$Env:AADTenant" -Credential $clientCredentials
+          Update-ApplicationSubmission -AppId 9N88CQPKGS15 -SubmissionDataPath .\dragon6-winstore.json -PackagePath .\dragon6-winstore.zip -AutoCommit -Force -AddPackages -UpdatePublishModeAndVisibility -UpdateListings -UpdateNotesForCertification
