@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using DragonFruit.Six.Client.Database;
 using Microsoft.Extensions.Logging;
+using SharpConfig;
 
 namespace DragonFruit.Six.Client.Configuration
 {
@@ -42,8 +43,15 @@ namespace DragonFruit.Six.Client.Configuration
         /// <typeparam name="T">The type the value represents</typeparam>
         public T Get<T>(Dragon6Setting setting) where T : notnull, new()
         {
-            var settingName = setting.ToString();
-            return _configuration[Category][settingName].GetValue<T>();
+            try
+            {
+                var settingName = setting.ToString();
+                return _configuration[Category][settingName].GetValue<T>();
+            }
+            catch (SettingValueCastException)
+            {
+                return default;
+            }
         }
 
         /// <summary>
@@ -51,7 +59,7 @@ namespace DragonFruit.Six.Client.Configuration
         /// </summary>
         /// <param name="setting">The <see cref="Dragon6Setting"/> to set</param>
         /// <param name="value">The value to apply to the setting</param>
-        public void Set(Dragon6Setting setting, object value)
+        public void Set<T>(Dragon6Setting setting, T value)
         {
             SettingUpdated?.Invoke(setting, value);
 
