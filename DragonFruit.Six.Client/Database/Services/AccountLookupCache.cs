@@ -27,11 +27,22 @@ namespace DragonFruit.Six.Client.Database.Services
 
         protected override IEnumerable<CachedUbisoftAccount> LookupCached(IQueryable<CachedUbisoftAccount> collection, string id, Platform platform, IdentifierType identifierType)
         {
+            var platformName = platform switch
+            {
+                Platform.PC => UbisoftPlatforms.PC,
+                Platform.XB1 => UbisoftPlatforms.XBOX,
+                Platform.PSN => UbisoftPlatforms.PLAYSTATION,
+
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            var baseQuery = collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformName == platformName);
+
             return identifierType switch
             {
-                IdentifierType.Name => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                IdentifierType.UserId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
-                IdentifierType.PlatformId => collection.Where(x => x.Expires > DateTimeOffset.Now && x.PlatformValue == (int)platform && x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.Name => baseQuery.Where(x => x.Username.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.UserId => baseQuery.Where(x => x.UbisoftId.Equals(id, StringComparison.OrdinalIgnoreCase)),
+                IdentifierType.PlatformId => baseQuery.Where(x => x.PlatformId.Equals(id, StringComparison.OrdinalIgnoreCase)),
 
                 _ => throw new ArgumentOutOfRangeException(nameof(identifierType), identifierType, null)
             };

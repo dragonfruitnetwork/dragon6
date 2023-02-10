@@ -9,7 +9,7 @@ namespace DragonFruit.Six.Client.Database
 {
     public static class RealmConfigurator
     {
-        private const int SchemaVersion = 2;
+        private const int SchemaVersion = 3;
         private const string RealmName = "dragon6.realm";
 
         public static void Initialise(IDragon6Platform devicePlatform)
@@ -31,6 +31,10 @@ namespace DragonFruit.Six.Client.Database
             {
                 case 1: // change dragon6 id from profile to ubisoft - clear all
                     migration.NewRealm.RemoveAll<CachedDragon6User>();
+                    break;
+
+                case 2: // change cached ubisoft account to store platform name over enum
+                    migration.NewRealm.RemoveAll<CachedUbisoftAccount>();
                     break;
             }
         }

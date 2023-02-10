@@ -3,7 +3,6 @@
 
 using System;
 using DragonFruit.Six.Api.Accounts.Entities;
-using DragonFruit.Six.Api.Accounts.Enums;
 using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
@@ -24,21 +23,14 @@ namespace DragonFruit.Six.Client.Database.Entities
         [MapTo("username")]
         public string Username { get; set; }
 
-        [Ignored]
-        public Platform Platform
-        {
-            get => (Platform)PlatformValue;
-            set => PlatformValue = (int)value;
-        }
-
         [MapTo("platform")]
-        internal int PlatformValue { get; set; }
+        public string PlatformName { get; set; }
 
         [MapTo("expiry")]
         public DateTimeOffset Expires { get; set; } = DateTimeOffset.Now.AddHours(6);
 
         public bool Equals(UbisoftAccount other) => ProfileId == other?.ProfileId;
 
-        public override string ToString() => $"{Username} ({UbisoftId} - {Platform})";
+        public override string ToString() => $"{Username} ({UbisoftId} - {PlatformName})";
     }
 }
