@@ -2,7 +2,6 @@
 // Licensed under GNU AGPLv3. Refer to the LICENSE file for more info
 
 using System;
-using DragonFruit.Six.Api.Accounts.Enums;
 using Realms;
 
 namespace DragonFruit.Six.Client.Database.Entities
@@ -17,15 +16,8 @@ namespace DragonFruit.Six.Client.Database.Entities
         [MapTo("ubisoft_id")]
         public string UbisoftId { get; set; }
 
-        [Ignored]
-        public Platform Platform
-        {
-            get => (Platform)PlatformValue;
-            set => PlatformValue = (int)value;
-        }
-
-        [MapTo("platform")]
-        private int PlatformValue { get; set; }
+        [MapTo("platform_name")]
+        public string PlatformName { get; set; }
 
         [MapTo("saved_at")]
         public DateTimeOffset SavedAt { get; set; } = DateTimeOffset.Now;
