@@ -105,7 +105,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                         UbisoftId = player.ubisoft_id,
                         PlatformName = PlatformUtils.ToPlatformName((Platform)player.platform),
 
-                        SavedAt = DateTimeOffset.Parse(player.account_added),
+                        SavedAt = DateTimeOffset.Parse((string)player.account_added),
                         LastStatsUpdate = DateTimeOffset.MinValue
                     });
                 }
@@ -119,7 +119,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                         PlatformName = PlatformUtils.ToPlatformName((Platform)player.platform),
 
                         Username = player.account_name,
-                        LastSearched = DateTimeOffset.Parse(player.last_searched_at)
+                        LastSearched = DateTimeOffset.Parse((string)player.last_searched_at)
                     });
                 }
 
