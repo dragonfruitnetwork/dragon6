@@ -22,7 +22,6 @@ namespace DragonFruit.Six.Client.Database.Services
         private readonly IMapper _mapper;
         private readonly Dragon6Client _client;
 
-        private Realm _realm;
         private IDisposable _notificationListener;
 
         public SavedPlayerRankService(Dragon6Client client, IMapper mapper)
@@ -33,8 +32,7 @@ namespace DragonFruit.Six.Client.Database.Services
 
         public void StartService()
         {
-            _realm ??= Realm.GetInstance();
-            _notificationListener ??= _realm.All<SavedAccount>().SubscribeForNotifications(DatabaseChangeOccured);
+            _notificationListener ??= Realm.GetInstance().All<SavedAccount>().SubscribeForNotifications(DatabaseChangeOccured);
         }
 
         private void DatabaseChangeOccured(IRealmCollection<SavedAccount> sender, ChangeSet changes, Exception error)
@@ -42,17 +40,22 @@ namespace DragonFruit.Six.Client.Database.Services
             if (changes == null && sender.Any())
             {
                 // do full update check
-                _ = UpdateAccounts(sender.Where(x => x.LastStatsUpdate < DateTimeOffset.Now.AddHours(-6)));
+                _ = UpdateAccounts(sender.Where(x => x.LastStatsUpdate < DateTimeOffset.Now.AddHours(-6)).ToList());
             }
             else if (changes?.InsertedIndices.Any() == true)
             {
                 // process new accounts
-                _ = UpdateAccounts(changes.InsertedIndices.Select(x => sender[x]));
+                _ = UpdateAccounts(changes.InsertedIndices.Select(x => sender[x]).ToList());
             }
         }
 
-        private async Task UpdateAccounts(IEnumerable<SavedAccount> accounts)
+        private async Task UpdateAccounts(IReadOnlyCollection<SavedAccount> accounts)
         {
+            if (!accounts.Any())
+            {
+                return;
+            }
+
             var statsDownloadDate = DateTimeOffset.UtcNow;
             var seasonalStatsTasks = accounts.Select(x => _mapper.Map<UbisoftAccount>(x))
                                              .GroupBy(x => x.Platform == Platform.PC)
@@ -76,10 +79,7 @@ namespace DragonFruit.Six.Client.Database.Services
 
         public void Dispose()
         {
-            _realm?.Dispose();
             _notificationListener?.Dispose();
-
-            _realm = null;
             _notificationListener = null;
         }
     }

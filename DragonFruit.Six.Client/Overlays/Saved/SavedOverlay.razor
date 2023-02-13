@@ -4,6 +4,7 @@
 @using DragonFruit.Six.Api.Accounts.Enums
 @using DragonFruit.Six.Api.Accounts.Entities
 @using DragonFruit.Six.Client.Network.User
+@using DragonFruit.Six.Client.Database
 @implements IDisposable
 
 @if (Profiles?.Any() == true)
@@ -47,11 +48,11 @@ else
     {
         var savedAccounts = saved.Freeze();
         var accountSearchTasks = savedAccounts
-            .GroupBy(x => x.Platform)
             .AsEnumerable()
+            .GroupBy(x => PlatformUtils.GetPlatform(x.PlatformName))
             .Select(x => AccountLookup.LookupAsync(x.Select(y => y.UbisoftId).ToList(), x.Key, IdentifierType.UserId));
 
-        var users = await UserLookup.LookupAsync(saved.Select(x => x.ProfileId).ToList(), Platform.PC, IdentifierType.UserId);
+        var users = await UserLookup.LookupAsync(saved.Select(x => x.UbisoftId).ToList(), Platform.PC, IdentifierType.UserId);
         var accounts = await Task.WhenAll(accountSearchTasks).ConfigureAwait(false);
 
         // use query syntax as using functional api looks bad

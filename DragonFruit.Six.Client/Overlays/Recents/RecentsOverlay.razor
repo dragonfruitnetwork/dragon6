@@ -2,6 +2,7 @@
 @using DragonFruit.Six.Client.Overlays.Search
 @using Realms
 @using DragonFruit.Six.Api.Accounts.Enums
+@using DragonFruit.Six.Client.Database
 @implements IDisposable
 
 @if (Accounts?.Any() == true)
@@ -9,7 +10,7 @@
     <div class="d6-account-grid">
         @foreach (var user in Accounts)
         {
-            <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, user.Platform, IdentifierType.UserId)"/>
+            <RecentAccountCard Account="user" Clicked="() => SearchProviderState.TriggerSearch(user.UbisoftId, PlatformUtils.GetPlatform(user.PlatformName), IdentifierType.UserId)"/>
         }
     </div>
 
