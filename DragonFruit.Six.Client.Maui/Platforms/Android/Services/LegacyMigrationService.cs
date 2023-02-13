@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Dapper;
 using DragonFruit.Six.Api.Accounts.Enums;
+using DragonFruit.Six.Client.Database;
 using DragonFruit.Six.Client.Database.Entities;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Logging;
@@ -87,7 +88,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                     {
                         ProfileId = player.profile_id,
                         UbisoftId = player.ubisoft_id,
-                        Platform = (Platform)player.platform,
+                        PlatformName = PlatformUtils.ToPlatformName((Platform)player.platform),
 
                         LastStatsUpdate = DateTimeOffset.MinValue,
                         SavedAt = new DateTimeOffset(new DateTime(2021, 01, 01).AddDays(player.rowid), TimeSpan.Zero)
@@ -100,7 +101,7 @@ namespace DragonFruit.Six.Client.Maui.Services
                     {
                         ProfileId = player.profile_id,
                         UbisoftId = player.ubisoft_id,
-                        Platform = (Platform)player.platform,
+                        PlatformName = PlatformUtils.ToPlatformName((Platform)player.platform),
 
                         Username = player.username,
                         LastSearched = new DateTimeOffset(DateTime.Parse(player.last_searched), TimeSpan.Zero)
