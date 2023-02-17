@@ -17,6 +17,7 @@ using Havit.Blazor.Components.Web;
 using Markdig;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Sentry;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -90,6 +91,8 @@ namespace DragonFruit.Six.Client
                 s.MaxBreadcrumbs = 50;
                 s.MinimumEventLevel = LogEventLevel.Error;
                 s.MinimumBreadcrumbLevel = LogEventLevel.Debug;
+
+                s.DisableUnobservedTaskExceptionCapture();
             });
 
             config.WriteTo.Console(theme: AnsiConsoleTheme.Literate);
