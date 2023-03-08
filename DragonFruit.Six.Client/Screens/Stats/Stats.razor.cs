@@ -156,7 +156,7 @@ namespace DragonFruit.Six.Client.Screens.Stats
             }
 
             var postFreezeSeasonsEnumerable = await Client.GetSeasonalStatsRecordsAsync(Account, seasonIds.Append(-1), BoardType.Casual | BoardType.Ranked | BoardType.Warmup, Region.EMEA).ConfigureAwait(false);
-            PostFreezeSeasons = postFreezeSeasonsEnumerable.ToList();
+            PostFreezeSeasons = postFreezeSeasonsEnumerable.DistinctBy(x => new { x.SeasonId, x.Board }).ToList();
 
             // the ubisoft activity api has been frozen so use leaderboards to work out the last time the user played a game.
             var lastLeaderboardUpdate = PostFreezeSeasons.Max(x => x.TimeUpdated);
